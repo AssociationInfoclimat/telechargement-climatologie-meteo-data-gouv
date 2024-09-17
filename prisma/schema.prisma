@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Station {
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @updatedAt
+    id          String            @db.Char(8)
+    nom         String
+    departement Int
+    frequence   String            @db.VarChar(15)
+    posteOuvert Boolean
+    typePoste   Int
+    lon         Float
+    lat         Float
+    alt         Float
+    postePublic Boolean
+    commandes   CommandeStation[]
+
+    @@id([id, frequence])
+}
+
+model InformationStation {
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    id          String       @id @db.Char(8)
+    nom         String
+    lieuDit     String?
+    bassin      String
+    dateDebut   DateTime
+    dateFin     DateTime?
+    typesPoste  TypePoste[]
+    parametres  Parametre[]
+    producteurs Producteur[]
+    positions   Position[]
+}
+
+model TypePoste {
+    id        Int                @id @default(autoincrement())
+    type      Int
+    dateDebut DateTime
+    dateFin   DateTime?
+    stationId String             @db.Char(8)
+    station   InformationStation @relation(fields: [stationId], references: [id], onDelete: Cascade)
+}
+
+model Parametre {
+    id        Int                @id @default(autoincrement())
+    nom       String
+    dateDebut DateTime
+    dateFin   DateTime?
+    stationId String             @db.Char(8)
+    station   InformationStation @relation(fields: [stationId], references: [id], onDelete: Cascade)
+}
+
+model Producteur {
+    id        Int                @id @default(autoincrement())
+    nom       String
+    dateDebut DateTime
+    dateFin   DateTime?
+    stationId String             @db.Char(8)
+    station   InformationStation @relation(fields: [stationId], references: [id], onDelete: Cascade)
+}
+
+model Position {
+    id        Int                @id @default(autoincrement())
+    altitude  Float
+    latitude  Float
+    longitude Float
+    dateDebut DateTime
+    dateFin   DateTime?
+    stationId String             @db.Char(8)
+    station   InformationStation @relation(fields: [stationId], references: [id], onDelete: Cascade)
+}
+
+model CommandeStation {
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    id             String   @id
+    status         String   @default("pending")
+    dateDebPeriode DateTime
+    dateFinPeriode DateTime
+    idStation      String   @db.Char(8)
+    frequence      String   @db.VarChar(15)
+    station        Station  @relation(fields: [idStation, frequence], references: [id, frequence], onDelete: Cascade)
+}

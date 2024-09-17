@@ -1,0 +1,64 @@
+{
+    "name": "telechargement-climatologie-meteo-data-gouv",
+    "version": "1.0.0",
+    "description": "Téléchargement des données de climatologie de meteo.data.gouv.fr",
+    "type": "module",
+    "main": "index.js",
+    "keywords": [
+        "Infoclimat",
+        "Météo-France"
+    ],
+    "author": "Jean LECORDIER",
+    "license": "UNLICENSED",
+    "scripts": {
+        "check": "tsc --noEmit",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix .",
+        "format": "prettier --write .",
+        "test:unit": "vitest --project unit",
+        "test:integration": "pnpm run deploy:dev && vitest run --project integration --no-file-parallelism",
+        "test:all": "pnpm run deploy:dev && vitest run --no-file-parallelism",
+        "test:ci": "pnpm run deploy:dev && vitest run --no-file-parallelism",
+        "coverage": "pnpm run deploy:dev && vitest run --coverage",
+        "migrate:dev": "prisma migrate dev",
+        "deploy:dev": "prisma migrate deploy",
+        "deploy:preprod": "dotenv -e .env.preprod -- prisma migrate deploy",
+        "prepare": "husky",
+        "start-docker": "docker compose --file db/compose.yaml up -d"
+    },
+    "lint-staged": {
+        "*.html": "prettier --write --ignore-unknown",
+        "*.{js,ts}": [
+            "eslint --fix",
+            "prettier --write --ignore-unknown",
+            "pnpm run deploy:dev",
+            "vitest related --run --no-file-parallelism"
+        ]
+    },
+    "dependencies": {
+        "@prisma/client": "5.19.0",
+        "axios": "^1.7.7",
+        "dotenv": "^16.4.5",
+        "pino": "^9.4.0",
+        "typescript": "^5.5.4",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.9.1",
+        "@types/eslint-config-prettier": "^6.11.3",
+        "@types/eslint__js": "^8.42.3",
+        "@types/node": "^22.5.1",
+        "dotenv-cli": "^7.4.2",
+        "eslint": "^9.9.1",
+        "eslint-config-prettier": "^9.1.0",
+        "globals": "^15.9.0",
+        "husky": "^9.1.5",
+        "lint-staged": "^15.2.9",
+        "prettier": "^3.3.3",
+        "prisma": "^5.19.0",
+        "testcontainers": "^10.12.0",
+        "tsx": "^4.19.0",
+        "typescript-eslint": "^8.3.0",
+        "vitest": "^2.0.5"
+    }
+}
