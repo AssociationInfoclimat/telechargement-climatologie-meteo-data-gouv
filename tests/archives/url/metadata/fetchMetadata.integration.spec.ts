@@ -1,5 +1,5 @@
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
-import { fetchMetadata } from '@/archives/url/fetchMetadata.js';
+import { fetchMetadata } from '@/archives/url/metadata/fetchMetadata.js';
 
 import { describe, expect, it } from 'vitest';
 
