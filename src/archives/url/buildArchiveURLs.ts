@@ -12,10 +12,29 @@ export function buildArchiveURLs(Y: number = new Date().getUTCFullYear()): strin
         ['DECADAGRO', 'DECADAGRO'],
     ].forEach(([freq1, freq2]) => {
         departements.forEach(departement => {
-            [
-                [1950, Y - 2],
-                [Y - 1, Y],
-            ].forEach(([startYear, endYear]) => {
+            let years: [string | number, number][] = [];
+            switch (freq1) {
+                case 'MIN':
+                    years = [
+                        [2000, 2009],
+                        [2010, 2019],
+                        ['previous-2020', Y - 2],
+                        [`latest-${Y - 1}`, Y],
+                    ];
+                    break;
+                case 'HOR':
+                    for (let y = 1770; y < (Y / 10) * 10; y += 10) {
+                        years.push([y, y + 9]);
+                    }
+                    years.push([`previous-${(Y / 10) * 10}`, Y - 2], [`latest-${Y - 1}`, Y]);
+                    break;
+                default:
+                    years = [
+                        ['previous-1950', Y - 2],
+                        [`latest-${Y - 1}`, Y],
+                    ];
+            }
+            years.forEach(([startYear, endYear]) => {
                 const params = freq1 === 'QUOT' ? ['_RR-T-Vent', '_autres-parametres'] : [''];
                 params.forEach(param => {
                     urls.push(
