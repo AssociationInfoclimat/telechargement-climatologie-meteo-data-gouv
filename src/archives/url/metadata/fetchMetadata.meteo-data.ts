@@ -1,8 +1,9 @@
 import { DatasetId } from '@/archives/url/DATASETS_IDS.js';
+import { MetadataFetcher } from '@/archives/url/metadata/MetadataFetcher.js';
 import { UrlsData } from '@/archives/url/UrlsData.js';
 import { z } from 'zod';
 
-export async function fetchMetadata(
+export const fetchMetadata: MetadataFetcher = async function (
     datasetId: DatasetId,
     { pageSize = 999999, page = 1 }: { pageSize?: number; page?: number } = {}
 ): Promise<UrlsData> {
@@ -18,4 +19,4 @@ export async function fetchMetadata(
         ),
     });
     return schema.parse(json);
-}
+};
