@@ -6,7 +6,7 @@ import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 
 async function main(): Promise<void> {
     LoggerSingleton.getSingleton().setLogLevel('info');
-    LoggerSingleton.getSingleton().info({ message: 'Downloading all archives...' });
+    LoggerSingleton.getSingleton().info({ message: 'Downloading missing archives...' });
     await downloadArchives({
         metadataFetcher: fetchMetadata,
         fileExistenceChecker: fileExists,
