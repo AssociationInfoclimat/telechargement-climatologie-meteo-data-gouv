@@ -2,12 +2,14 @@ import { createInMemoryDownloader, DownloaderSpy } from '@/archives/download/dow
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
 import { createInMemoryMetadataFetcher } from '@/archives/url/metadata/fetchMetadata.in-memory.js';
 import { downloadFrequenceArchives } from '@/archives/use-cases/downloadFrequenceArchives.js';
+import { InMemoryFileSystem } from '@/lib/fs/fileExists.in-memory.js';
 
 import { describe, expect, it } from 'vitest';
 
 describe('downloadFrequenceArchives', () => {
     it('should download all archives of this data frequency', async () => {
-        const spy = new DownloaderSpy();
+        const fs = new InMemoryFileSystem({ files: [] });
+        const spy = new DownloaderSpy({ fs });
         await downloadFrequenceArchives({
             datasetId: DATASETS_IDS.infrahoraire,
             metadataFetcher: createInMemoryMetadataFetcher({
@@ -16,8 +18,10 @@ describe('downloadFrequenceArchives', () => {
                     'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2010-2019.csv.gz',
                 ],
             }),
+            fileExistenceChecker: fs.getFileExistenceChecker(),
             downloader: createInMemoryDownloader(spy),
             directory: '/my/directory',
+            overwrite: false,
         });
         expect(spy.calls).toEqual([
             {

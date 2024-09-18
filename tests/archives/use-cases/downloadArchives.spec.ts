@@ -2,12 +2,14 @@ import { createInMemoryDownloader, DownloaderSpy } from '@/archives/download/dow
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
 import { createInMemoryMetadataFetcher } from '@/archives/url/metadata/fetchMetadata.in-memory.js';
 import { downloadArchives } from '@/archives/use-cases/downloadArchives.js';
+import { InMemoryFileSystem } from '@/lib/fs/fileExists.in-memory.js';
 
 import { describe, expect, it } from 'vitest';
 
 describe('downloadArchives', () => {
     it('should download all archives', async () => {
-        const spy = new DownloaderSpy();
+        const fs = new InMemoryFileSystem({ files: [] });
+        const spy = new DownloaderSpy({ fs });
         await downloadArchives({
             metadataFetcher: createInMemoryMetadataFetcher({
                 [DATASETS_IDS.infrahoraire]: [
@@ -19,8 +21,10 @@ describe('downloadArchives', () => {
                     'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/HOR/H_01_1890-1899.csv.gz',
                 ],
             }),
+            fileExistenceChecker: fs.getFileExistenceChecker(),
             downloader: createInMemoryDownloader(spy),
             directory: '/my/directory',
+            overwrite: false,
         });
         expect(spy.calls).toEqual([
             {

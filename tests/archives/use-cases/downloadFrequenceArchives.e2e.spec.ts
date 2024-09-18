@@ -2,6 +2,7 @@ import { download } from '@/archives/download/download.real.js';
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
 import { fetchMetadata } from '@/archives/url/metadata/fetchMetadata.meteo-data.js';
 import { downloadFrequenceArchives } from '@/archives/use-cases/downloadFrequenceArchives.js';
+import { fileExists } from '@/lib/fs/fileExists.node.js';
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 
@@ -15,8 +16,10 @@ describe('downloadFrequenceArchives', () => {
         await downloadFrequenceArchives({
             datasetId: DATASETS_IDS.infrahoraire,
             metadataFetcher: fetchMetadata,
+            fileExistenceChecker: fileExists,
             downloader: download,
             directory: `${import.meta.dirname}/downloads`,
+            overwrite: true,
             page: 1,
             pageSize: 2,
         });

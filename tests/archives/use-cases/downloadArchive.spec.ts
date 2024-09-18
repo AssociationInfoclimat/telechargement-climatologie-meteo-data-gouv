@@ -1,21 +1,64 @@
 import { createInMemoryDownloader, DownloaderSpy } from '@/archives/download/download.in-memory.js';
 import { downloadArchive } from '@/archives/use-cases/downloadArchive.js';
+import { InMemoryFileSystem } from '@/lib/fs/fileExists.in-memory.js';
 
 import { describe, expect, it } from 'vitest';
 
 describe('downloadArchive', () => {
-    it('should download the archive', async () => {
-        const spy = new DownloaderSpy();
-        await downloadArchive({
-            url: 'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
-            download: createInMemoryDownloader(spy),
-            directory: '/my/directory',
-        });
-        expect(spy.calls).toEqual([
-            {
+    describe('when not overwriting', () => {
+        it('should download the archive only once', async () => {
+            const fs = new InMemoryFileSystem({ files: [] });
+            const spy = new DownloaderSpy({ fs });
+            await downloadArchive({
                 url: 'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
+                fileExists: fs.getFileExistenceChecker(),
+                download: createInMemoryDownloader(spy),
                 directory: '/my/directory',
-            },
-        ]);
+                overwrite: false,
+            });
+            await downloadArchive({
+                url: 'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
+                fileExists: fs.getFileExistenceChecker(),
+                download: createInMemoryDownloader(spy),
+                directory: '/my/directory',
+                overwrite: false,
+            });
+            expect(spy.calls).toEqual([
+                {
+                    url: 'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
+                    directory: '/my/directory',
+                },
+            ]);
+        });
+    });
+    describe('when overwriting', () => {
+        it('should download the archive twice', async () => {
+            const fs = new InMemoryFileSystem({ files: [] });
+            const spy = new DownloaderSpy({ fs });
+            await downloadArchive({
+                url: 'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
+                fileExists: fs.getFileExistenceChecker(),
+                download: createInMemoryDownloader(spy),
+                directory: '/my/directory',
+                overwrite: true,
+            });
+            await downloadArchive({
+                url: 'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
+                fileExists: fs.getFileExistenceChecker(),
+                download: createInMemoryDownloader(spy),
+                directory: '/my/directory',
+                overwrite: true,
+            });
+            expect(spy.calls).toEqual([
+                {
+                    url: 'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
+                    directory: '/my/directory',
+                },
+                {
+                    url: 'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
+                    directory: '/my/directory',
+                },
+            ]);
+        });
     });
 });
