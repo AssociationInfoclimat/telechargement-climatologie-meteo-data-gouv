@@ -3,5 +3,5 @@ import { UrlsData } from '@/archives/url/UrlsData.js';
 
 export type MetadataFetcher = (
     datasetId: DatasetId,
-    options?: { pageSize?: number; page?: number }
+    options?: { page?: number; pageSize?: number }
 ) => Promise<UrlsData>;

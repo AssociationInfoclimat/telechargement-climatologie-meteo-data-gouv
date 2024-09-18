@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 export const fetchMetadata: MetadataFetcher = async function (
     datasetId: DatasetId,
-    { pageSize = 999999, page = 1 }: { pageSize?: number; page?: number } = {}
+    { page = 1, pageSize = 999999 }: { page?: number; pageSize?: number } = {}
 ): Promise<UrlsData> {
     const response = await fetch(
         `https://www.data.gouv.fr/api/2/datasets/${datasetId}/resources/?page=${page}&page_size=${pageSize}`
