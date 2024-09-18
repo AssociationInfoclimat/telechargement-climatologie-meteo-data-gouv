@@ -12,6 +12,11 @@ describe('downloadUsingCurl', () => {
             'https://raw.githubusercontent.com/AssociationInfoclimat/telechargement-climatologie-meteo-data-gouv/refs/heads/main/README.md',
             { directory: `${import.meta.dirname}/downloads` }
         );
+        await downloadUsingCurl(
+            'https://raw.githubusercontent.com/AssociationInfoclimat/telechargement-climatologie-meteo-data-gouv/refs/heads/main/README.md',
+            { directory: `${import.meta.dirname}/downloads` }
+        );
         expect(existsSync(`${import.meta.dirname}/downloads/README.md`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/README.md.1`)).toBeFalsy();
     });
 });
