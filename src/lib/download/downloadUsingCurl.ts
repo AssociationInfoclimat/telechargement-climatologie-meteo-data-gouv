@@ -9,5 +9,6 @@ export const downloadUsingCurl: Downloader = async function (
         directory = process.cwd();
     }
     const filename = url.split('/').pop();
+    await execute('mkdir', ['-p', directory]);
     await execute('curl', [url, '-o', `${directory}/${filename}`]);
 };
