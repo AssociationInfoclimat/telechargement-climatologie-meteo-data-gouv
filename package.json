@@ -25,7 +25,7 @@
         "deploy:preprod": "dotenv -e .env.preprod -- prisma migrate deploy",
         "prepare": "husky",
         "start-docker": "docker compose --file db/compose.yaml up -d",
-        "download-all-archives": "tsx ./src/apps/download-all-archives.ts"
+        "download-all-archives": "tsx ./src/apps/downloadAllArchives.ts"
     },
     "lint-staged": {
         "*.html": "prettier --write --ignore-unknown",
