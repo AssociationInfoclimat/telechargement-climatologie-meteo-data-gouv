@@ -14,6 +14,7 @@ export const fetchMetadata: MetadataFetcher = async function (
     const schema = z.object({
         data: z.array(
             z.object({
+                format: z.string(),
                 url: z.string(),
             })
         ),
