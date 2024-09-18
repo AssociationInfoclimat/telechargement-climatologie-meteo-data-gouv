@@ -1,5 +1,5 @@
 import { createInMemoryDownloader, DownloaderSpy } from '@/archives/download/download.in-memory.js';
-import { downloadArchive } from '@/archives/use-cases/downloadArchive.js';
+import { downloadArchive } from '@/archives/use-cases/download/downloadArchive.js';
 import { InMemoryFileSystem } from '@/lib/fs/fileExists.in-memory.js';
 
 import { describe, expect, it } from 'vitest';

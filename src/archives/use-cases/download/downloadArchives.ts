@@ -1,7 +1,7 @@
 import { Downloader } from '@/archives/download/Downloader.js';
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
 import { MetadataFetcher } from '@/archives/url/metadata/MetadataFetcher.js';
-import { downloadFrequenceArchives } from '@/archives/use-cases/downloadFrequenceArchives.js';
+import { downloadFrequenceArchives } from '@/archives/use-cases/download/downloadFrequenceArchives.js';
 import { FileExistenceChecker } from '@/lib/fs/FileExistenceChecker.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 
