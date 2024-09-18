@@ -8,5 +8,8 @@ export const downloadUsingWget: Downloader = async function (
     if (!directory) {
         directory = process.cwd();
     }
-    await execute('wget', ['-P', directory, url]);
+    const filename = url.split('/').pop();
+    const filepath = `${directory}/${filename}`;
+    await execute('mkdir', ['-p', directory]);
+    await execute('wget', ['-O', filepath, url]);
 };
