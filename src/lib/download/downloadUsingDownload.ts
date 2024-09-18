@@ -1,4 +1,6 @@
 import { Downloader } from '@/lib/download/Downloader.js';
+// import decompressUnzip from 'decompress-unzip';
+// import decompressTargz from 'decompress-targz';
 import download from 'download';
 
 export const downloadUsingDownload: Downloader = async function (
@@ -8,5 +10,8 @@ export const downloadUsingDownload: Downloader = async function (
     if (!directory) {
         directory = process.cwd();
     }
-    await download(url, directory, { extract: true });
+    await download(url, directory, {
+        // extract: true,
+        // plugins: [decompressUnzip()],
+    });
 };
