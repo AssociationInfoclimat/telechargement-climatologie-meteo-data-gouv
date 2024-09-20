@@ -1,3 +1,4 @@
+import { Departement } from '@/archives/departements/Departement.js';
 import { Downloader } from '@/archives/download/Downloader.js';
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
 import { MetadataFetcher } from '@/archives/url/metadata/MetadataFetcher.js';
@@ -13,6 +14,7 @@ export async function downloadArchives({
     overwrite,
     page = 1,
     pageSize = 999999,
+    departement,
 }: {
     metadataFetcher: MetadataFetcher;
     fileExistenceChecker: FileExistenceChecker;
@@ -21,6 +23,7 @@ export async function downloadArchives({
     overwrite: boolean;
     page?: number;
     pageSize?: number;
+    departement?: Departement;
 }): Promise<void> {
     for (const [name, datasetId] of Object.entries(DATASETS_IDS)) {
         LoggerSingleton.getSingleton().info({ message: `Downloading '${name}' :` });
@@ -33,6 +36,7 @@ export async function downloadArchives({
             overwrite,
             page,
             pageSize,
+            departement,
         });
     }
 }

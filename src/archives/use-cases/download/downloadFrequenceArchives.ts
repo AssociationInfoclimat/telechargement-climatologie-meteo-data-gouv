@@ -1,3 +1,4 @@
+import { Departement } from '@/archives/departements/Departement.js';
 import { Downloader } from '@/archives/download/Downloader.js';
 import { DatasetId } from '@/archives/url/DATASETS_IDS.js';
 import { getURLs } from '@/archives/url/getURLs.js';
@@ -14,6 +15,7 @@ export async function downloadFrequenceArchives({
     overwrite,
     page = 1,
     pageSize = 999999,
+    departement,
 }: {
     datasetId: DatasetId;
     metadataFetcher: MetadataFetcher;
@@ -23,8 +25,15 @@ export async function downloadFrequenceArchives({
     overwrite: boolean;
     page?: number;
     pageSize?: number;
+    departement?: Departement;
 }): Promise<void> {
-    const urls = await getURLs({ datasetId, fetchMetadata: metadataFetcher, page, pageSize });
+    const urls = await getURLs({
+        datasetId,
+        fetchMetadata: metadataFetcher,
+        page,
+        pageSize,
+        departement,
+    });
     for (const url of urls) {
         await downloadArchive({
             url,

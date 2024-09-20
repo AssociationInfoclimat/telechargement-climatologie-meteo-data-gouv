@@ -1,3 +1,4 @@
+import { Departement } from '@/archives/departements/Departement.js';
 import { download } from '@/archives/download/download.real.js';
 import { fetchMetadata } from '@/archives/url/metadata/fetchMetadata.meteo-data.js';
 import { downloadArchives } from '@/archives/use-cases/download/downloadArchives.js';
@@ -20,6 +21,7 @@ describe('downloadArchives', () => {
             overwrite: true,
             page: 1,
             pageSize: 1,
+            departement: Departement.of(1),
         });
         expect(existsSync(`${import.meta.dirname}/downloads/MN_01_2000-2009.csv.gz`)).toBeTruthy();
         expect(existsSync(`${import.meta.dirname}/downloads/H_01_1850-1859.csv.gz`)).toBeTruthy();

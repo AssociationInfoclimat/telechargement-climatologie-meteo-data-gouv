@@ -1,3 +1,4 @@
+import { Departement } from '@/archives/departements/Departement.js';
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
 import { getURLs } from '@/archives/url/getURLs.js';
 import { fetchMetadata } from '@/archives/url/metadata/fetchMetadata.meteo-data.js';
@@ -11,6 +12,7 @@ describe('getURLs', () => {
             fetchMetadata,
             page: 1,
             pageSize: 2,
+            departement: Departement.of(1),
         });
         expect(urls).toEqual([
             'https://object.files.data.gouv.fr/meteofrance/data/synchro_ftp/BASE/MIN/MN_01_2000-2009.csv.gz',
