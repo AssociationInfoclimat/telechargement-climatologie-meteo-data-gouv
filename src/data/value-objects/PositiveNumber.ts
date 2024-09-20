@@ -23,6 +23,6 @@ export class PositiveNumber {
     }
 
     toString(): string {
-        return this.v !== null ? this.v.toString() : '';
+        return this.v?.toString() ?? '';
     }
 }

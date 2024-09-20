@@ -23,6 +23,6 @@ export class CodeQualite {
     }
 
     toString(): string {
-        return this.code !== null ? this.code.toString() : '';
+        return this.code?.toString() ?? '';
     }
 }
