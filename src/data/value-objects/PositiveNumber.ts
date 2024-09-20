@@ -5,9 +5,9 @@ export class InvalidPositiveNumberError extends Error {
 }
 
 export class PositiveNumber {
-    private readonly v: number | null;
+    protected readonly v: number | null;
 
-    private constructor(value: number | null) {
+    protected constructor(value: number | null) {
         this.v = value;
     }
 
