@@ -1,6 +1,7 @@
 import { InfrahoraireLine, parseCSV } from '@/csv/infrahoraires/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
-import { PositiveNumber } from '@/data/value-objects/PositiveNumber.js';
+import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
+import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
@@ -29,8 +30,8 @@ describe('parseCSV', () => {
                     LON: 5.669,
                     ALTI: 534,
                     AAAAMMJJHHMN: new Date('2005-07-01T00:00:00Z'),
-                    RR: PositiveNumber.of(0.2),
-                    QRR: CodeQualite.of(9),
+                    RR: PositiveFloat.of(0.2),
+                    QRR: CodeQualite.of(PositiveInteger.of(9)),
                 },
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),
@@ -39,8 +40,8 @@ describe('parseCSV', () => {
                     LON: 5.669,
                     ALTI: 534,
                     AAAAMMJJHHMN: new Date('2005-07-01T00:06:00Z'),
-                    RR: PositiveNumber.of(2.6),
-                    QRR: CodeQualite.of(9),
+                    RR: PositiveFloat.of(2.6),
+                    QRR: CodeQualite.of(PositiveInteger.of(9)),
                 },
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),
@@ -49,8 +50,8 @@ describe('parseCSV', () => {
                     LON: 5.669,
                     ALTI: 534,
                     AAAAMMJJHHMN: new Date('2005-07-01T00:12:00Z'),
-                    RR: PositiveNumber.of(null),
-                    QRR: CodeQualite.of(null),
+                    RR: PositiveFloat.of(null),
+                    QRR: CodeQualite.of(PositiveInteger.of(null)),
                 },
             ]);
         });

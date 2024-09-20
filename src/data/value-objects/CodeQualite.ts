@@ -1,25 +1,28 @@
+import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+
 export class InvalidCodeQualiteError extends Error {
-    constructor(code: number) {
+    constructor(code: PositiveInteger) {
         super(`Invalid code qualité: '${code}'. Must be 0, 1, 2 or 9.`);
     }
 }
 
 export class CodeQualite {
-    private readonly code: number | null;
+    private readonly code: PositiveInteger;
 
-    private constructor(code: number | null) {
+    private constructor(code: PositiveInteger) {
         this.code = code;
     }
 
-    static of(code: number | null): CodeQualite {
-        if (code !== null && ![0, 1, 2, 9].includes(code)) {
+    static of(code: PositiveInteger): CodeQualite {
+        const value = code.value();
+        if (value !== null && ![0, 1, 2, 9].includes(value)) {
             throw new InvalidCodeQualiteError(code);
         }
         return new CodeQualite(code);
     }
 
     value(): number | null {
-        return this.code;
+        return this.code.value();
     }
 
     toString(): string {
