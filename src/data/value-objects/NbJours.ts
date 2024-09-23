@@ -15,7 +15,7 @@ export class NbJours {
 
     static of(nbJours: PositiveInteger): NbJours {
         const value = nbJours.value();
-        if (value !== null && !(0 <= value && value <= 31)) {
+        if (value !== null && value > 31) {
             throw new InvalidNbJoursError(nbJours);
         }
         return new NbJours(nbJours);
