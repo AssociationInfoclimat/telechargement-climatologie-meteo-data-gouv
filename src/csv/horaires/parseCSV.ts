@@ -3,7 +3,6 @@ import { CodeTemps } from '@/csv/horaires/value-objects/CodeTemps.js';
 import { Etat } from '@/csv/horaires/value-objects/Etat.js';
 import { HouleDirection } from '@/csv/horaires/value-objects/HouleDirection.js';
 import { Visibility } from '@/csv/horaires/value-objects/Visibility.js';
-import { WindDirection } from '@/csv/horaires/value-objects/WindDirection.js';
 import {
     parseCodeQualite,
     parseFloatOrNull,
@@ -14,6 +13,7 @@ import {
     parsePositiveInteger,
     parseTime,
     parseUVIndex,
+    parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { z } from 'zod';
@@ -24,10 +24,6 @@ export function parseDate(date: string): Date {
     const dd = date.slice('YYYYMM'.length, 'YYYYMMDD'.length);
     const hh = date.slice('YYYYMMDD'.length, 'YYYYMMDDHH'.length);
     return new Date(`${yyyy}-${mm}-${dd}T${hh}:00:00Z`);
-}
-
-export function parseWindDirection(value: string): WindDirection {
-    return WindDirection.of(parsePositiveInteger(value));
 }
 
 export function parseCodeSynop(value: string): CodeSynop {

@@ -1,5 +1,5 @@
-import { InvalidWindDirectionError, WindDirection } from '@/csv/horaires/value-objects/WindDirection.js';
 import { InvalidPositiveIntegerError, PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { InvalidWindDirectionError, WindDirection } from '@/data/value-objects/WindDirection.js';
 import { describe, expect, it } from 'vitest';
 
 describe('WindDirection', () => {

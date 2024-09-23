@@ -5,6 +5,7 @@ import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
+import { WindDirection } from '@/data/value-objects/WindDirection.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 
 export function parseNumeroPoste(numero: string): NumeroPoste {
@@ -53,4 +54,8 @@ export function parseOcta(value: string): Octa {
 
 export function parseUVIndex(value: string): UVIndex {
     return UVIndex.of(parsePositiveInteger(value));
+}
+
+export function parseWindDirection(value: string): WindDirection {
+    return WindDirection.of(parsePositiveInteger(value));
 }

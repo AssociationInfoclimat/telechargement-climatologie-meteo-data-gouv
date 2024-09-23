@@ -4,7 +4,6 @@ import { CodeTemps } from '@/csv/horaires/value-objects/CodeTemps.js';
 import { Etat } from '@/csv/horaires/value-objects/Etat.js';
 import { HouleDirection } from '@/csv/horaires/value-objects/HouleDirection.js';
 import { Visibility } from '@/csv/horaires/value-objects/Visibility.js';
-import { WindDirection } from '@/csv/horaires/value-objects/WindDirection.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { Octa } from '@/data/value-objects/Octa.js';
 import { Percentage } from '@/data/value-objects/Percentage.js';
@@ -12,6 +11,7 @@ import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
+import { WindDirection } from '@/data/value-objects/WindDirection.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
