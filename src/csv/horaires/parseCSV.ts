@@ -2,18 +2,18 @@ import { CodeSynop } from '@/csv/horaires/value-objects/CodeSynop.js';
 import { CodeTemps } from '@/csv/horaires/value-objects/CodeTemps.js';
 import { Etat } from '@/csv/horaires/value-objects/Etat.js';
 import { HouleDirection } from '@/csv/horaires/value-objects/HouleDirection.js';
-import { Octa } from '@/csv/horaires/value-objects/Octa.js';
-import { Percentage } from '@/csv/horaires/value-objects/Percentage.js';
-import { Time } from '@/csv/horaires/value-objects/Time.js';
-import { UVIndex } from '@/csv/horaires/value-objects/UVIndex.js';
 import { Visibility } from '@/csv/horaires/value-objects/Visibility.js';
 import { WindDirection } from '@/csv/horaires/value-objects/WindDirection.js';
 import {
     parseCodeQualite,
     parseFloatOrNull,
     parseInteger,
+    parseOcta,
+    parsePercentage,
     parsePositiveFloat,
     parsePositiveInteger,
+    parseTime,
+    parseUVIndex,
 } from '@/csv/parseCSVUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { z } from 'zod';
@@ -28,18 +28,6 @@ export function parseDate(date: string): Date {
 
 export function parseWindDirection(value: string): WindDirection {
     return WindDirection.of(parsePositiveInteger(value));
-}
-
-export function parseTime(value: string): Time {
-    return Time.of(value);
-}
-
-export function parsePercentage(value: string): Percentage {
-    return Percentage.of(parsePositiveInteger(value));
-}
-
-export function parseOcta(value: string): Octa {
-    return Octa.of(parsePositiveInteger(value));
 }
 
 export function parseCodeSynop(value: string): CodeSynop {
@@ -60,10 +48,6 @@ export function parseVisibility(value: string): Visibility {
 
 export function parseHouleDirection(value: string): HouleDirection {
     return HouleDirection.of(parsePositiveInteger(value));
-}
-
-export function parseUVIndex(value: string): UVIndex {
-    return UVIndex.of(parsePositiveInteger(value));
 }
 
 const horaireLineSchema = z.object({

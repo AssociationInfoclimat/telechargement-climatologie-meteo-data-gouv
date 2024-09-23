@@ -1,4 +1,4 @@
-import { InvalidOctaError, Octa } from '@/csv/horaires/value-objects/Octa.js';
+import { InvalidOctaError, Octa } from '@/data/value-objects/Octa.js';
 import { InvalidPositiveIntegerError, PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { describe, expect, it } from 'vitest';
 

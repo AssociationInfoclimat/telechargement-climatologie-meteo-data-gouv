@@ -1,4 +1,4 @@
-import { InvalidTimeError, Time } from '@/csv/horaires/value-objects/Time.js';
+import { InvalidTimeError, Time } from '@/data/value-objects/Time.js';
 import { describe, expect, it } from 'vitest';
 
 describe('Time', () => {

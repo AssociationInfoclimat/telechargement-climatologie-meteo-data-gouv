@@ -1,5 +1,5 @@
-import { InvalidUVIndexError, UVIndex } from '@/csv/horaires/value-objects/UVIndex.js';
 import { InvalidPositiveIntegerError, PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { InvalidUVIndexError, UVIndex } from '@/data/value-objects/UVIndex.js';
 import { describe, expect, it } from 'vitest';
 
 describe('UVIndex', () => {

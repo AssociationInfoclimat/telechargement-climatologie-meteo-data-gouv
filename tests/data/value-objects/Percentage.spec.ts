@@ -1,4 +1,4 @@
-import { InvalidPercentageError, Percentage } from '@/csv/horaires/value-objects/Percentage.js';
+import { InvalidPercentageError, Percentage } from '@/data/value-objects/Percentage.js';
 import { InvalidPositiveIntegerError, PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { describe, expect, it } from 'vitest';
 
