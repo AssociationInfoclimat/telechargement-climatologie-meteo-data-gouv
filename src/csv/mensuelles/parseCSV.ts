@@ -2,6 +2,8 @@ import {
     parseCodeQualite,
     parseFloatOrNull,
     parseInteger,
+    parseJour,
+    parseNbJours,
     parseNomUsuel,
     parseNumeroPoste,
     parsePercentage,
@@ -9,81 +11,12 @@ import {
     parsePositiveInteger,
     parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
-import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { z } from 'zod';
 
 export function parseDate(date: string): Date {
     const yyyy = date.slice(''.length, 'YYYY'.length);
     const mm = date.slice('YYYY'.length, 'YYYYMM'.length);
     return new Date(`${yyyy}-${mm}-01T00:00:00Z`);
-}
-
-export class InvalidNbJoursError extends Error {
-    constructor(nbJours: PositiveInteger) {
-        super(`Invalid nbJours: ${nbJours}. Must be an integer between 0 and 31.`);
-    }
-}
-
-export class NbJours {
-    private readonly nbJours: PositiveInteger;
-
-    private constructor(nbJours: PositiveInteger) {
-        this.nbJours = nbJours;
-    }
-
-    static of(nbJours: PositiveInteger): NbJours {
-        const value = nbJours.value();
-        if (value !== null && !(0 <= value && value <= 31)) {
-            throw new InvalidNbJoursError(nbJours);
-        }
-        return new NbJours(nbJours);
-    }
-
-    value(): number | null {
-        return this.nbJours.value();
-    }
-
-    toString(): string {
-        return this.nbJours?.toString() ?? '';
-    }
-}
-
-export function parseNbJours(nbJours: string): NbJours {
-    return NbJours.of(parsePositiveInteger(nbJours));
-}
-
-export class InvalidJourError extends Error {
-    constructor(jour: PositiveInteger) {
-        super(`Invalid jour: ${jour}. Must be an integer between 1 and 31.`);
-    }
-}
-
-export class Jour {
-    private readonly jour: PositiveInteger;
-
-    private constructor(jour: PositiveInteger) {
-        this.jour = jour;
-    }
-
-    static of(jour: PositiveInteger): Jour {
-        const value = jour.value();
-        if (value !== null && !(1 <= value && value <= 31)) {
-            throw new InvalidJourError(jour);
-        }
-        return new Jour(jour);
-    }
-
-    value(): number | null {
-        return this.jour.value();
-    }
-
-    toString(): string {
-        return this.jour?.toString() ?? '';
-    }
-}
-
-export function parseJour(jour: string): Jour {
-    return Jour.of(parsePositiveInteger(jour));
 }
 
 const mensuelleLineSchema = z.object({

@@ -1,5 +1,7 @@
-import { Jour, MensuelleLine, NbJours, parseCSV } from '@/csv/mensuelles/parseCSV.js';
+import { MensuelleLine, parseCSV } from '@/csv/mensuelles/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
+import { Jour } from '@/data/value-objects/Jour.js';
+import { NbJours } from '@/data/value-objects/NbJours.js';
 import { Percentage } from '@/data/value-objects/Percentage.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';

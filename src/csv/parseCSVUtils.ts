@@ -1,4 +1,6 @@
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
+import { Jour } from '@/data/value-objects/Jour.js';
+import { NbJours } from '@/data/value-objects/NbJours.js';
 import { Octa } from '@/data/value-objects/Octa.js';
 import { Percentage } from '@/data/value-objects/Percentage.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
@@ -58,4 +60,12 @@ export function parseUVIndex(value: string): UVIndex {
 
 export function parseWindDirection(value: string): WindDirection {
     return WindDirection.of(parsePositiveInteger(value));
+}
+
+export function parseNbJours(nbJours: string): NbJours {
+    return NbJours.of(parsePositiveInteger(nbJours));
+}
+
+export function parseJour(jour: string): Jour {
+    return Jour.of(parsePositiveInteger(jour));
 }
