@@ -7,9 +7,9 @@ export class InvalidDecadeError extends Error {
 }
 
 export class Decade {
-    private readonly decade: PositiveInteger;
+    private readonly decade: number;
 
-    private constructor(decade: PositiveInteger) {
+    private constructor(decade: number) {
         this.decade = decade;
     }
 
@@ -18,11 +18,11 @@ export class Decade {
         if (value === null || !(1 <= value && value <= 3)) {
             throw new InvalidDecadeError(decade);
         }
-        return new Decade(decade);
+        return new Decade(value);
     }
 
-    value(): number | null {
-        return this.decade.value();
+    value(): number {
+        return this.decade;
     }
 
     toString(): string {
