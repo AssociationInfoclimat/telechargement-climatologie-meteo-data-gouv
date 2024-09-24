@@ -12,19 +12,14 @@ import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
 import { WindDirection } from '@/data/value-objects/WindDirection.js';
+import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
-export function* arrayGenerator<T>(array: T[]): Generator<T> {
-    for (const item of array) {
-        yield item;
-    }
-}
-
 describe('parseCSV', () => {
     describe('parseCSV', () => {
-        it('should parse the CSV', () => {
-            const csvLines = arrayGenerator([
+        it('should parse the CSV', async () => {
+            const csvLines = getAsyncGeneratorFromArray([
                 'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJHH;RR1;QRR1;DRR1;QDRR1;FF;QFF;DD;QDD;FXY;QFXY;DXY;QDXY;HXY;QHXY;FXI;QFXI;DXI;QDXI;HXI;QHXI;FF2;QFF2;DD2;QDD2;FXI2;QFXI2;DXI2;QDXI2;HXI2;QHXI2;FXI3S;QFXI3S;DXI3S;QDXI3S;HFXI3S;QHFXI3S;T;QT;TD;QTD;TN;QTN;HTN;QHTN;TX;QTX;HTX;QHTX;DG;QDG;T10;QT10;T20;QT20;T50;QT50;T100;QT100;TNSOL;QTNSOL;TN50;QTN50;TCHAUSSEE;QTCHAUSSEE;DHUMEC;QDHUMEC;U;QU;UN;QUN;HUN;QHUN;UX;QUX;HUX;QHUX;DHUMI40;QDHUMI40;DHUMI80;QDHUMI80;TSV;QTSV;PMER;QPMER;PSTAT;QPSTAT;PMERMIN;QPERMIN;GEOP;QGEOP;N;QN;NBAS;QNBAS;CL;QCL;CM;QCM;CH;QCH;N1;QN1;C1;QC1;B1;QB1;N2;QN2;C2;QC2;B2;QCB2;N3;QN3;C3;QC3;B3;QB3;N4;QN4;C4;QC4;B4;QB4;VV;QVV;DVV200;QDVV200;WW;QWW;W1;QW1;W2;QW2;SOL;QSOL;SOLNG;QSOLNG;TMER;QTMER;VVMER;QVVMER;ETATMER;QETATMER;DIRHOULE;QDIRHOULE;HVAGUE;QHVAGUE;PVAGUE;QPVAGUE;HNEIGEF;QHNEIGEF;NEIGETOT;QNEIGETOT;TSNEIGE;QTSNEIGE;TUBENEIGE;QTUBENEIGE;HNEIGEFI3;QHNEIGEFI3;HNEIGEFI1;QHNEIGEFI1;ESNEIGE;QESNEIGE;CHARGENEIGE;QCHARGENEIGE;GLO;QGLO;GLO2;QGLO2;DIR;QDIR;DIR2;QDIR2;DIF;QDIF;DIF2;QDIF2;UV;QUV;UV2;QUV2;UV_INDICE;QUV_INDICE;INFRAR;QINFRAR;INFRAR2;QINFRAR2;INS;QINS;INS2;QINS2;TLAGON;QTLAGON;TVEGETAUX;QTVEGETAUX;ECOULEMENT;QECOULEMENT',
                 '01014002;ARBENT;46.278167;5.669000;534;2023010100;0.0;1;;;2.6;1;200;1;4.1;1;170;1;2313;9;8.8;1;160;1;2317;9;;;;;;;;;;;7.7;9;;;2317;9;12.3;1;7.6;1;11.9;1;2345;9;12.9;1;2308;9;0;9;;;;;;;;;;;;;;;;;73;1;71;1;2312;9;75;1;2345;9;0;9;0;9;10.4;1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;0;9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '01014002;ARBENT;46.278167;5.669000;534;2023010101;0.0;1;;;2.2;1;170;1;4.0;1;160;1;40;9;8.3;1;150;1;31;9;;;;;;;;;;;7.1;9;;;31;9;12.0;1;7.6;1;12.0;1;16;9;12.5;1;41;9;0;9;;;;;;;;;;;;;;;;;74;1;73;1;1;9;75;1;27;9;0;9;0;9;10.4;1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;0;9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
@@ -32,7 +27,7 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;2023010103;3.3;0;4;1;3.3;2;359;9;3.3;0;359;1;1230;2;3.3;9;359;0;1230;1;3.3;2;359;9;3.3;0;359;1;1230;2;3.3;9;359;0;1230;1;-5.5;2;-5.5;9;-5.5;0;1230;1;-5.5;2;1230;9;4;0;-5.5;1;-5.5;2;-5.5;9;-5.5;0;-5.5;1;-5.5;2;-5.5;9;4;0;100;1;100;2;1230;9;100;0;1230;1;4;2;4;9;3.3;0;3.3;1;3.3;2;3.3;9;4;0;8;1;8;2;/;9;/;0;/;1;8;2;/;9;4;0;8;1;/;2;4;9;8;0;/;1;4;2;8;9;/;0;4;1;4;2;4;9;99;0;99;1;99;2;7;9;7;0;-5.5;1;6;2;7;9;999;0;3.3;1;3.3;2;4;9;4;0;3.3;1;4;2;4;9;4;0;7;1;4;2;4;9;4;0;4;1;4;2;4;9;4;0;4;1;4;2;12;9;4;0;4;1;4;2;4;9;-5.5;0;-5.5;1;-5.5;2',
                 '',
             ]);
-            const horaireLines = Array.from(parseCSV(csvLines));
+            const horaireLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
             expect(horaireLines).toEqual<HoraireLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),

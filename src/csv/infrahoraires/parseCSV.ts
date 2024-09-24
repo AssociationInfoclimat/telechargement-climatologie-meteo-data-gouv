@@ -46,9 +46,10 @@ export function parseLine(line: string, headersNameToIndex: InfrahoraireHeaders)
     );
 }
 
-export function* parseCSV(lines: Generator<string>): Generator<InfrahoraireLine> {
-    const headersNameToIndex = parseHeaders(lines.next().value as string);
-    for (const line of lines) {
+export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<InfrahoraireLine> {
+    const headers = await lines.next();
+    const headersNameToIndex = parseHeaders(headers.value as string);
+    for await (const line of lines) {
         if (line.trim()) {
             yield parseLine(line, headersNameToIndex);
         }

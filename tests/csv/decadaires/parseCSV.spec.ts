@@ -7,19 +7,14 @@ import { Percentage } from '@/data/value-objects/Percentage.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { WindDirection } from '@/data/value-objects/WindDirection.js';
+import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
-export function* arrayGenerator<T>(array: T[]): Generator<T> {
-    for (const item of array) {
-        yield item;
-    }
-}
-
 describe('parseCSV', () => {
     describe('parseCSV', () => {
-        it('should parse the CSV', () => {
-            const csvLines = arrayGenerator([
+        it('should parse the CSV', async () => {
+            const csvLines = getAsyncGeneratorFromArray([
                 'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMM;NUM_DECADE;RR;QRR;NBRR;RRAB;QRRAB;RRABDAT;NBJRR1;NBJRR5;NBJRR10;NBJRR30;NBJRR50;NBJRR100;PMERM;QPMERM;NBPMERM;PMERMINAB;QPMERMINAB;PMERMINABDAT;TX;QTX;NBTX;TXAB;QTXAB;TXDAT;TXMIN;QTXMIN;TXMINDAT;NBJTX0;NBJTX25;NBJTX30;NBJTX35;NBJTXI20;NBJTXI27;NBJTXS32;TN;QTN;NBTN;TNAB;QTNAB;TNDAT;TNMAX;QTNMAX;TNMAXDAT;NBJTN5;NBJTN10;NBJTNI10;NBJTNI15;NBJTNI20;NBJTNS20;NBJTNS25;NBJGELEE;TAMPLIM;QTAMPLIM;TAMPLIAB;QTAMPLIAB;TAMPLIABDAT;NBTAMPLI;TM;QTM;NBTM;TMM;QTMM;NBTMM;NBJTMS24;TMMIN;QTMMIN;TMMINDAT;TMMAX;QTMMAX;TMMAXDAT;UNAB;QUNAB;UNABDAT;NBUN;UXAB;QUXAB;UXABDAT;NBUX;UMM;QUMM;NBUM;TSVM;QTSVM;NBTSVM;FXIAB;QFXIAB;DXIAB;QDXIAB;FXIDAT;NBJFF10;NBJFF16;NBJFF28;NBFXI;FXI3SAB;QFXI3SAB;DXI3SAB;QDXI3SAB;FXI3SDAT;NBJFXI3S10;NBJFXI3S16;NBJFXI3S28;NBFXI3S;FXYAB;QFXYAB;DXYAB;QDXYAB;FXYABDAT;NBJFXY8;NBJFXY10;NBJFXY15;NBFXY;FFM;QFFM;NBFFM;INST;QINST;NBINST;NBSIGMA0;NBSIGMA20;NBSIGMA80;GLOT;QGLOT;NBGLOT;DIFT;QDIFT;NBDIFT;DIRT;QDIRT;NBDIRT;HNEIGEFTOT;QHNEIGEFTOT;HNEIGEFAB;QHNEIGEFAB;HNEIGEFDAT;NBHNEIGEF;NBJNEIG;NBJHNEIGEF1;NBJHNEIGEF5;NBJHNEIGEF10;NBJSOLNG;NEIGETOTM;QNEIGETOTM;NEIGETOTAB;QNEIGETOTAB;NEIGETOTABDAT;NBJNEIGETOT1;NBJNEIGETOT10;NBJNEIGETOT30;NBJGREL;NBJORAG;NBJBROU',
                 '01014002;ARBENT;46.278167;5.669000;534;202301;1;60.8;1;10;17.8;1;8;6;5;3;0;0;0;;;0;;;;10.8;1;10;17.7;1;1;5.0;1;9;0;0;0;0;10;10;0;5.3;1;10;1.0;1;4;11.6;1;1;0;0;9;10;10;0;0;0;5.5;1;9.0;1;3;10;8.1;1;10;8.1;1;10;0;3.3;1;9;14.7;1;1;38;1;2;10;100;1;6;10;82;1;10;8.7;9;10;18.0;1;170;9;7;5;2;0;10;16.1;9;;0;7;5;1;0;10;7.6;1;180;9;7;0;0;0;10;2.3;1;10;;;0;;;;;;0;;;0;;;0;;;;;;0;;;;;;0;9;0;9;;0;0;0;0;;',
                 '01014002;ARBENT;46.278167;5.669000;534;202301;2;51.2;1;10;11.6;1;15;8;5;1;0;0;0;;;0;;;;6.7;1;10;11.6;1;14;0.7;1;18;0;0;0;0;10;10;0;-1.8;1;10;-15.7;1;20;3.6;1;13;2;2;10;10;10;0;0;4;8.5;1;20.2;1;20;10;2.5;1;10;2.1;1;10;0;-5.6;1;20;6.6;1;13;35;1;14;10;100;1;20;10;88;1;10;6.4;9;10;18.2;1;150;1;16;5;2;0;10;16.7;9;;0;16;5;1;0;10;10.2;1;150;1;16;1;1;0;10;1.9;1;10;;;0;;;;;;0;;;0;;;0;;;;;;0;;;;;;4;9;12;9;19;4;2;0;0;;',
@@ -27,7 +22,7 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;202302;1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const mensuellesLines = Array.from(parseCSV(csvLines));
+            const mensuellesLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
             expect(mensuellesLines).toEqual<DecadaireLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),

@@ -6,19 +6,14 @@ import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
+import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
-export function* arrayGenerator<T>(array: T[]): Generator<T> {
-    for (const item of array) {
-        yield item;
-    }
-}
-
 describe('parseCSV', () => {
     describe('parseCSV', () => {
-        it('should parse the CSV', () => {
-            const csvLines = arrayGenerator([
+        it('should parse the CSV', async () => {
+            const csvLines = getAsyncGeneratorFromArray([
                 'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJ;DHUMEC;QDHUMEC;PMERM;QPMERM;PMERMIN;QPMERMIN;INST;QINST;GLOT;QGLOT;DIFT;QDIFT;DIRT;QDIRT;INFRART;QINFRART;UV;QUV;UV_INDICEX;QUV_INDICEX;SIGMA;QSIGMA;UN;QUN;HUN;QHUN;UX;QUX;HUX;QHUX;UM;QUM;DHUMI40;QDHUMI40;DHUMI80;QDHUMI80;TSVM;QTSVM;ETPMON;QETPMON;ETPGRILLE;QETPGRILLE;ECOULEMENTM;QECOULEMENTM;HNEIGEF;QHNEIGEF;NEIGETOTX;QNEIGETOTX;NEIGETOT06;QNEIGETOT06;NEIG;QNEIG;BROU;QBROU;ORAG;QORAG;GRESIL;QGRESIL;GRELE;QGRELE;ROSEE;QROSEE;VERGLAS;QVERGLAS;SOLNEIGE;QSOLNEIGE;GELEE;QGELEE;FUMEE;QFUMEE;BRUME;QBRUME;ECLAIR;QECLAIR;NB300;QNB300;BA300;QBA300;TMERMIN;QTMERMIN;TMERMAX;QTMERMAX',
                 '01089001;AMBERIEU;45.976500;5.329333;250;19350112;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1;1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '01014002;ARBENT;46.278167;5.669000;534;20230101;;;;;;;;;;;;;;;;;;;;;;;43;1;1944;9;75;1;27;9;55;1;0;9;0;9;8.9;9;;;3.1;9;;;;;0;9;0;9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
@@ -26,7 +21,7 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;20230103;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const infrahoraireLines = Array.from(parseCSV(csvLines));
+            const infrahoraireLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
             expect(infrahoraireLines).toEqual<QuotidienneLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01089001'),

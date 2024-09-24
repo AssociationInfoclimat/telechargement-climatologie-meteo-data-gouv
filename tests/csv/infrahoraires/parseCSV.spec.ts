@@ -2,26 +2,21 @@ import { InfrahoraireLine, parseCSV } from '@/csv/infrahoraires/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
-export function* arrayGenerator<T>(array: T[]): Generator<T> {
-    for (const item of array) {
-        yield item;
-    }
-}
-
 describe('parseCSV', () => {
     describe('parseCSV', () => {
-        it('should parse the CSV', () => {
-            const csvLines = arrayGenerator([
+        it('should parse the CSV', async () => {
+            const csvLines = getAsyncGeneratorFromArray([
                 'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJHHMN;RR;QRR',
                 ' 01014002;ARBENT;46.278167;5.669000;534;200507010000;0.200;9',
                 ' 01014002;ARBENT;46.278167;5.669000;534;200507010006;2.600;9',
                 ' 01014002;ARBENT;46.278167;5.669000;534;200507010012;;',
                 '',
             ]);
-            const infrahoraireLines = Array.from(parseCSV(csvLines));
+            const infrahoraireLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
             expect(infrahoraireLines).toEqual<InfrahoraireLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),

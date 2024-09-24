@@ -3,19 +3,14 @@ import { AngstromCodeCalcul, CodeCalcul } from '@/csv/decadaires-agro/value-obje
 import { Decade } from '@/data/value-objects/Decade.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
-export function* arrayGenerator<T>(array: T[]): Generator<T> {
-    for (const item of array) {
-        yield item;
-    }
-}
-
 describe('parseCSV', () => {
     describe('parseCSV', () => {
-        it('should parse the CSV', () => {
-            const csvLines = arrayGenerator([
+        it('should parse the CSV', async () => {
+            const csvLines = getAsyncGeneratorFromArray([
                 'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMM;NUM_DECADE;RR;CRR;TN;CTN;TX;CTX;FFM;CFFM;TSVM;CTSVM;INST;CINST;GLOT;CGLOT;ETP',
                 '01014002;ARBENT;46.278167;5.669000;534;202301;1;60.8;0;5.3;0;10.8;0;2.3;0;8.7;0;;;;;',
                 '01014002;ARBENT;46.278167;5.669000;534;202301;2;51.2;0;-1.8;0;6.7;0;1.9;0;6.4;0;;;;;',
@@ -23,7 +18,7 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;202302;1;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const decadairesAgroLines = Array.from(parseCSV(csvLines));
+            const decadairesAgroLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
             expect(decadairesAgroLines).toEqual<DecadaireAgroLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),
