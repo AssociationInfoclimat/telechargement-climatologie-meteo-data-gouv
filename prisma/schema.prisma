@@ -258,3 +258,30 @@ model Decadaire {
 
     @@id([NUM_POSTE, AAAAMM, NUM_DECADE])
 }
+
+model DecadaireAgro {
+    NUM_POSTE  String   @db.Char(8)
+    NOM_USUEL  String   @db.VarChar(255)
+    LAT        Float
+    LON        Float
+    ALTI       Float
+    AAAAMM     DateTime
+    NUM_DECADE Int
+    RR         Float?
+    CRR        Int?
+    TN         Float?
+    CTN        Int?
+    TX         Float?
+    CTX        Int?
+    FFM        Float?
+    CFFM       Int?
+    TSVM       Float?
+    CTSVM      Int?
+    INST       Int?
+    CINST      Int?
+    GLOT       Int?
+    CGLOT      Int?
+    ETP        Float?
+
+    @@id([NUM_POSTE, AAAAMM, NUM_DECADE])
+}
