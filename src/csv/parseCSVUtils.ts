@@ -1,4 +1,5 @@
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
+import { Decade } from '@/data/value-objects/Decade.js';
 import { Jour } from '@/data/value-objects/Jour.js';
 import { NbJours } from '@/data/value-objects/NbJours.js';
 import { Octa } from '@/data/value-objects/Octa.js';
@@ -68,4 +69,8 @@ export function parseNbJours(nbJours: string): NbJours {
 
 export function parseJour(jour: string): Jour {
     return Jour.of(parsePositiveInteger(jour));
+}
+
+export function parseDecade(decade: string): Decade {
+    return Decade.of(parsePositiveInteger(decade));
 }

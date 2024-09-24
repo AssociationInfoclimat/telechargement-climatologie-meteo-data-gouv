@@ -1,5 +1,6 @@
-import { DecadaireLine, Decade, parseCSV } from '@/csv/decadaires/parseCSV.js';
+import { DecadaireLine, parseCSV } from '@/csv/decadaires/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
+import { Decade } from '@/data/value-objects/Decade.js';
 import { Jour } from '@/data/value-objects/Jour.js';
 import { NbJours } from '@/data/value-objects/NbJours.js';
 import { Percentage } from '@/data/value-objects/Percentage.js';
