@@ -15,7 +15,7 @@ export class Decade {
 
     static of(decade: PositiveInteger): Decade {
         const value = decade.value();
-        if (value !== null && !(1 <= value && value <= 3)) {
+        if (value === null || !(1 <= value && value <= 3)) {
             throw new InvalidDecadeError(decade);
         }
         return new Decade(decade);
