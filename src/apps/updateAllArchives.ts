@@ -1,7 +1,7 @@
 import { download } from '@/archives/download/download.real.js';
 import { fetchMetadata } from '@/archives/url/metadata/fetchMetadata.meteo-data.js';
 import { downloadArchives } from '@/archives/use-cases/download/downloadArchives.js';
-import { fileExists } from '@/lib/fs/fileExists.node.js';
+import { fileExists } from '@/lib/fs/file-exists/fileExists.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 
 async function main(): Promise<void> {

@@ -1,5 +1,5 @@
 import { Downloader } from '@/archives/download/Downloader.js';
-import { InMemoryFileSystem } from '@/lib/fs/fileExists.in-memory.js';
+import { InMemoryFileSystem } from '@/lib/fs/file-exists/fileExists.in-memory.js';
 
 export function createInMemoryDownloader(spy: DownloaderSpy): Downloader {
     return function (url, { directory }: { directory?: string }): Promise<void> {

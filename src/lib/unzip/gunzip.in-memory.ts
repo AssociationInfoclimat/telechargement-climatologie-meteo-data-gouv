@@ -1,4 +1,4 @@
-import { InMemoryFileSystem } from '@/lib/fs/fileExists.in-memory.js';
+import { InMemoryFileSystem } from '@/lib/fs/file-exists/fileExists.in-memory.js';
 import { Unzipper } from '@/lib/unzip/Unzipper.js';
 
 export class UnzipperSpy {

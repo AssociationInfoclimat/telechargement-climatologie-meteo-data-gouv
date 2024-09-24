@@ -2,7 +2,7 @@ import { createInMemoryDownloader, DownloaderSpy } from '@/archives/download/dow
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
 import { createInMemoryMetadataFetcher } from '@/archives/url/metadata/fetchMetadata.in-memory.js';
 import { downloadArchives } from '@/archives/use-cases/download/downloadArchives.js';
-import { InMemoryFileSystem } from '@/lib/fs/fileExists.in-memory.js';
+import { InMemoryFileSystem } from '@/lib/fs/file-exists/fileExists.in-memory.js';
 
 import { describe, expect, it } from 'vitest';
 

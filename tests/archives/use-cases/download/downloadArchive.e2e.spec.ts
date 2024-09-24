@@ -1,6 +1,6 @@
 import { download } from '@/archives/download/download.real.js';
 import { downloadArchive } from '@/archives/use-cases/download/downloadArchive.js';
-import { fileExists } from '@/lib/fs/fileExists.node.js';
+import { fileExists } from '@/lib/fs/file-exists/fileExists.node.js';
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 

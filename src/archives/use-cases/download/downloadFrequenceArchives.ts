@@ -4,7 +4,7 @@ import { DatasetId } from '@/archives/url/DATASETS_IDS.js';
 import { getURLs } from '@/archives/url/getURLs.js';
 import { MetadataFetcher } from '@/archives/url/metadata/MetadataFetcher.js';
 import { downloadArchive } from '@/archives/use-cases/download/downloadArchive.js';
-import { FileExistenceChecker } from '@/lib/fs/FileExistenceChecker.js';
+import { FileExistenceChecker } from '@/lib/fs/file-exists/FileExistenceChecker.js';
 
 export async function downloadFrequenceArchives({
     datasetId,

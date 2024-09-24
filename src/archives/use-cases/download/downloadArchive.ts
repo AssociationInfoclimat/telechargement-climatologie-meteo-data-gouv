@@ -1,5 +1,5 @@
 import { Downloader } from '@/archives/download/Downloader.js';
-import { FileExistenceChecker } from '@/lib/fs/FileExistenceChecker.js';
+import { FileExistenceChecker } from '@/lib/fs/file-exists/FileExistenceChecker.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 
 export async function downloadArchive({

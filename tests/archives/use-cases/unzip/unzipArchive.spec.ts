@@ -1,5 +1,5 @@
 import { unzipArchive } from '@/archives/use-cases/unzip/unzipArchive.js';
-import { InMemoryFileSystem } from '@/lib/fs/fileExists.in-memory.js';
+import { InMemoryFileSystem } from '@/lib/fs/file-exists/fileExists.in-memory.js';
 import { createInMemoryUnzipper, UnzipperSpy } from '@/lib/unzip/gunzip.in-memory.js';
 import { describe, expect, it } from 'vitest';
 

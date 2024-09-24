@@ -1,4 +1,4 @@
-import { FileExistenceChecker } from '@/lib/fs/FileExistenceChecker.js';
+import { FileExistenceChecker } from '@/lib/fs/file-exists/FileExistenceChecker.js';
 
 export class InMemoryFileSystem {
     files: Set<string>;

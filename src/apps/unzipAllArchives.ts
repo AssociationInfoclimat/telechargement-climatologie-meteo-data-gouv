@@ -1,5 +1,5 @@
 import { unzipArchives } from '@/archives/use-cases/unzip/unzipArchives.js';
-import { fileExists } from '@/lib/fs/fileExists.node.js';
+import { fileExists } from '@/lib/fs/file-exists/fileExists.node.js';
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { gunzip } from '@/lib/unzip/gunzip.node.js';

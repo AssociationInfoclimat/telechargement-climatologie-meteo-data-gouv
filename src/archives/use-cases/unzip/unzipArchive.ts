@@ -1,4 +1,4 @@
-import { FileExistenceChecker } from '@/lib/fs/FileExistenceChecker.js';
+import { FileExistenceChecker } from '@/lib/fs/file-exists/FileExistenceChecker.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { Unzipper } from '@/lib/unzip/Unzipper.js';
 

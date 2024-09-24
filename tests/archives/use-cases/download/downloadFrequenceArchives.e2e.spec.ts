@@ -3,7 +3,7 @@ import { download } from '@/archives/download/download.real.js';
 import { DATASETS_IDS } from '@/archives/url/DATASETS_IDS.js';
 import { fetchMetadata } from '@/archives/url/metadata/fetchMetadata.meteo-data.js';
 import { downloadFrequenceArchives } from '@/archives/use-cases/download/downloadFrequenceArchives.js';
-import { fileExists } from '@/lib/fs/fileExists.node.js';
+import { fileExists } from '@/lib/fs/file-exists/fileExists.node.js';
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 
