@@ -338,9 +338,14 @@ const headersSchema = z.object(
 );
 export type DecadaireHeaders = ReturnType<typeof headersSchema.parse>;
 
+// Remove once the csv headers are fixed
+function tmpFixNBJGREL(value: string): string {
+    return value === 'NBGREL' ? 'NBJGREL' : value;
+}
+
 export function parseHeaders(line: string): DecadaireHeaders {
     const headers = line.split(';').map(header => header.trim());
-    const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [header, index]));
+    const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [tmpFixNBJGREL(header), index]));
     return headersSchema.parse(headersNameToIndex);
 }
 
