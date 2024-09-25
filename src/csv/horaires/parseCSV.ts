@@ -181,11 +181,11 @@ const horaireLineSchema = z.object({
     QVV: z.string().transform(parseCodeQualite), // 2
     DVV200: z.string().transform(parsePositiveInteger), // 4
     QDVV200: z.string().transform(parseCodeQualite), // 9
-    WW: z.string().transform(parseCodeTemps), // 99
+    WW: z.string().transform(parseCodeTemps), // 00
     QWW: z.string().transform(parseCodeQualite), // 0
-    W1: z.string().transform(parseCodeTemps), // 99
+    W1: z.string().transform(parseCodeTemps), // 00
     QW1: z.string().transform(parseCodeQualite), // 1
-    W2: z.string().transform(parseCodeTemps), // 99
+    W2: z.string().transform(parseCodeTemps), // 00
     QW2: z.string().transform(parseCodeQualite), // 2
     SOL: z.string().transform(parseEtat), // 7
     QSOL: z.string().transform(parseCodeQualite), // 9
