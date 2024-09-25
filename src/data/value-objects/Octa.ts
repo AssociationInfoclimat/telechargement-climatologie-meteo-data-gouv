@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidOctaError extends Error {
+export class InvalidOctaError extends ValidationError {
     constructor(octa: PositiveInteger) {
         super(`Invalid octa: '${octa}'. Must be an integer between 0 and 9.`);
     }

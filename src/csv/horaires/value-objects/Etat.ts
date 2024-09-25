@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidEtatError extends Error {
+export class InvalidEtatError extends ValidationError {
     constructor(etat: PositiveInteger) {
         super(`Invalid etat: '${etat}'. Must be an integer between 0 and 9.`);
     }

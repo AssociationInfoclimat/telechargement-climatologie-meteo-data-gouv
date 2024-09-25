@@ -1,6 +1,7 @@
 import { parseInteger } from '@/csv/parseCSVUtils.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidTimeError extends Error {
+export class InvalidTimeError extends ValidationError {
     constructor(hhmm: string) {
         super(`Invalid time: '${hhmm}'. Must be a string of 4 characters 'hhmm', between '0000' and '2359'.`);
     }

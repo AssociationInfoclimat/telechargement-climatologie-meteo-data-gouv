@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidPercentageError extends Error {
+export class InvalidPercentageError extends ValidationError {
     constructor(percentage: PositiveInteger) {
         super(`Invalid percentage: '${percentage}'. Must be an integer between 0 and 100.`);
     }

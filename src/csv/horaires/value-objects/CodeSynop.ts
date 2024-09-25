@@ -1,7 +1,8 @@
 import { parseInteger } from '@/csv/parseCSVUtils.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidCodeSynopError extends Error {
+export class InvalidCodeSynopError extends ValidationError {
     constructor(code: string | number) {
         super(`Invalid code synop: '${code}'. Must be an integer between 0 and 9, or /.`);
     }

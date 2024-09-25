@@ -1,4 +1,6 @@
-export class InvalidNumeroPosteError extends Error {
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
+
+export class InvalidNumeroPosteError extends ValidationError {
     constructor(numero: string) {
         super(`'${numero}' n'est pas une chaîne de 8 caractères`);
     }

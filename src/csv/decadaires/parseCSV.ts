@@ -13,6 +13,7 @@ import {
     parsePositiveInteger,
     parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 import { ko, ok, Result } from '@/lib/resultUtils.js';
 import { z, ZodError } from 'zod';
 
@@ -203,7 +204,7 @@ const decadaireLineSchema = z.object({
     // QFXIAB          : code qualité de FXIAB
     QFXIAB: z.string().transform(parseCodeQualite), // 9
     // DXIAB           : direction du FXIAB (en rose de 360)
-    DXIAB: z.string().transform(parseWindDirection), // 359
+    DXIAB: z.string().transform(parseWindDirection), // 360
     // QDXIAB          : code qualité de DXIAB
     QDXIAB: z.string().transform(parseCodeQualite), // 9
     // FXIDAT          : jour du FXIAB
@@ -221,7 +222,7 @@ const decadaireLineSchema = z.object({
     // QFXI3SAB        : code qualité de FXI3SAB
     QFXI3SAB: z.string().transform(parseCodeQualite), // 9
     // DXI3SAB         : direction associée à FXI3SAB (en rose de 360)
-    DXI3SAB: z.string().transform(parseWindDirection), // 359
+    DXI3SAB: z.string().transform(parseWindDirection), // 360
     // QDXI3SAB        : code qualité de DXI3SAB
     QDXI3SAB: z.string().transform(parseCodeQualite), // 9
     // FXI3SDAT        : jour du FXI3SAB
@@ -239,7 +240,7 @@ const decadaireLineSchema = z.object({
     // QFXYAB          : code qualité du FXYAB
     QFXYAB: z.string().transform(parseCodeQualite), // 9
     // DXYAB           : direction associée à FXYAB (en rose de 360)
-    DXYAB: z.string().transform(parseWindDirection), // 359
+    DXYAB: z.string().transform(parseWindDirection), // 360
     // QDXYAB          : code qualité de DXYAB
     QDXYAB: z.string().transform(parseCodeQualite), // 9
     // FXYABDAT        : jour du FXYAB
@@ -368,7 +369,7 @@ export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<R
         try {
             yield ok(parseLine(line, headersNameToIndex));
         } catch (e) {
-            if (!(e instanceof ZodError)) {
+            if (!(e instanceof ZodError || e instanceof ValidationError)) {
                 throw e;
             }
             yield ko(

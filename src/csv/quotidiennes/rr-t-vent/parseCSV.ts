@@ -11,6 +11,7 @@ import {
     parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
 import { parseDate } from '@/csv/quotidiennes/parseCSVUtils.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 import { ko, ok, Result } from '@/lib/resultUtils.js';
 import { z, ZodError } from 'zod';
 
@@ -79,7 +80,7 @@ const quotidienneLineSchema = z.object({
     QFXY: z.string().transform(parseCodeQualite), // 9
 
     // DXY         : direction de FXY (en rose de 360)
-    DXY: z.string().transform(parseWindDirection), // 359
+    DXY: z.string().transform(parseWindDirection), // 360
     QDXY: z.string().transform(parseCodeQualite), // 9
 
     // HXY         : heure de FXY (hhmm)
@@ -91,7 +92,7 @@ const quotidienneLineSchema = z.object({
     QFXI: z.string().transform(parseCodeQualite), // 9
 
     // DXI         : direction de FXI (en rose de 360)
-    DXI: z.string().transform(parseWindDirection), // 359
+    DXI: z.string().transform(parseWindDirection), // 360
     QDXI: z.string().transform(parseCodeQualite), // 9
 
     // HXI         : heure de FXI (hhmm)
@@ -103,7 +104,7 @@ const quotidienneLineSchema = z.object({
     QFXI2: z.string().transform(parseCodeQualite), // 9
 
     // DXI2        : direction de FXI2 (en rose de 360)
-    DXI2: z.string().transform(parseWindDirection), // 359
+    DXI2: z.string().transform(parseWindDirection), // 360
     QDXI2: z.string().transform(parseCodeQualite), // 9
 
     // HXI2        : heure de FXI2 (hhmm)
@@ -115,7 +116,7 @@ const quotidienneLineSchema = z.object({
     QFXI3S: z.string().transform(parseCodeQualite), // 9
 
     // DXI3S       : direction de FXI3S (en rose de 360)
-    DXI3S: z.string().transform(parseWindDirection), // 359
+    DXI3S: z.string().transform(parseWindDirection), // 360
     QDXI3S: z.string().transform(parseCodeQualite), // 9
 
     // HXI3S       : heure de FXI3S (hhmm)
@@ -156,7 +157,7 @@ export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<R
         try {
             yield ok(parseLine(line, headersNameToIndex));
         } catch (e) {
-            if (!(e instanceof ZodError)) {
+            if (!(e instanceof ZodError || e instanceof ValidationError)) {
                 throw e;
             }
             yield ko(

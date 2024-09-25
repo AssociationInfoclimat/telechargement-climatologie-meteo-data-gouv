@@ -1,4 +1,6 @@
-export class InvalidDepartementError extends Error {
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
+
+export class InvalidDepartementError extends ValidationError {
     constructor(numero: number) {
         super(`Invalid departement: '${numero}'. Must be between 1 and 95, 971 and 975, or 984 and 988.`);
     }

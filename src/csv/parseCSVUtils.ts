@@ -10,7 +10,6 @@ import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
 import { WindDirection } from '@/data/value-objects/WindDirection.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
-import { ZodError } from 'zod';
 
 export function parseNumeroPoste(numero: string): NumeroPoste {
     return NumeroPoste.of(numero);
@@ -79,9 +78,9 @@ export function parseDecade(decade: string): Decade {
 export class ParseError extends Error {
     public readonly headers: string;
     public readonly line: string;
-    public readonly error: ZodError;
+    public readonly error: Error;
 
-    constructor({ headers, line, error }: { headers: string; line: string; error: ZodError }) {
+    constructor({ headers, line, error }: { headers: string; line: string; error: Error }) {
         super(`Error parsing line:
 Headers : ${headers}
 CSV     : ${line}

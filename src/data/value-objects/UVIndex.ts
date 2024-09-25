@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidUVIndexError extends Error {
+export class InvalidUVIndexError extends ValidationError {
     constructor(index: PositiveInteger) {
         super(`Invalid idnex: '${index}'. Must be an integer between 0 and 12.`);
     }

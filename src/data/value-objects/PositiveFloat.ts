@@ -1,6 +1,7 @@
 import { PositiveNumber } from '@/data/value-objects/PositiveNumber.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidPositiveFloatError extends Error {
+export class InvalidPositiveFloatError extends ValidationError {
     constructor(value: number) {
         super(`Invalid positive float: '${value}'. Must be greater than or equal to 0.`);
     }

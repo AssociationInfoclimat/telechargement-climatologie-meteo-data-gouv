@@ -16,6 +16,7 @@ import {
     parseUVIndex,
     parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 import { ko, ok, Result } from '@/lib/resultUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { z, ZodError } from 'zod';
@@ -61,33 +62,33 @@ const horaireLineSchema = z.object({
     QDRR1: z.string().transform(parseCodeQualite), // 1
     FF: z.string().transform(parsePositiveFloat), // 3.3
     QFF: z.string().transform(parseCodeQualite), // 2
-    DD: z.string().transform(parseWindDirection), // 359
+    DD: z.string().transform(parseWindDirection), // 360
     QDD: z.string().transform(parseCodeQualite), // 9
     FXY: z.string().transform(parsePositiveFloat), // 3.3
     QFXY: z.string().transform(parseCodeQualite), // 0
-    DXY: z.string().transform(parseWindDirection), // 359
+    DXY: z.string().transform(parseWindDirection), // 360
     QDXY: z.string().transform(parseCodeQualite), // 1
     HXY: z.string().transform(parseTime), // 1230
     QHXY: z.string().transform(parseCodeQualite), // 2
     FXI: z.string().transform(parsePositiveFloat), // 3.3
     QFXI: z.string().transform(parseCodeQualite), // 9
-    DXI: z.string().transform(parseWindDirection), // 359
+    DXI: z.string().transform(parseWindDirection), // 360
     QDXI: z.string().transform(parseCodeQualite), // 0
     HXI: z.string().transform(parseTime), // 1230
     QHXI: z.string().transform(parseCodeQualite), // 1
     FF2: z.string().transform(parsePositiveFloat), // 3.3
     QFF2: z.string().transform(parseCodeQualite), // 2
-    DD2: z.string().transform(parseWindDirection), // 359
+    DD2: z.string().transform(parseWindDirection), // 360
     QDD2: z.string().transform(parseCodeQualite), // 9
     FXI2: z.string().transform(parsePositiveFloat), // 3.3
     QFXI2: z.string().transform(parseCodeQualite), // 0
-    DXI2: z.string().transform(parseWindDirection), // 359
+    DXI2: z.string().transform(parseWindDirection), // 360
     QDXI2: z.string().transform(parseCodeQualite), // 1
     HXI2: z.string().transform(parseTime), // 1230
     QHXI2: z.string().transform(parseCodeQualite), // 2
     FXI3S: z.string().transform(parsePositiveFloat), // 3.3
     QFXI3S: z.string().transform(parseCodeQualite), // 9
-    DXI3S: z.string().transform(parseWindDirection), // 359
+    DXI3S: z.string().transform(parseWindDirection), // 360
     QDXI3S: z.string().transform(parseCodeQualite), // 0
     HFXI3S: z.string().transform(parseTime), // 1230
     QHFXI3S: z.string().transform(parseCodeQualite), // 1
@@ -282,7 +283,7 @@ export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<R
         try {
             yield ok(parseLine(line, headersNameToIndex));
         } catch (e) {
-            if (!(e instanceof ZodError)) {
+            if (!(e instanceof ZodError || e instanceof ValidationError)) {
                 throw e;
             }
             yield ko(

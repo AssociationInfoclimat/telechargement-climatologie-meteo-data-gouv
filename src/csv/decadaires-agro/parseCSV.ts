@@ -9,6 +9,7 @@ import {
     parsePositiveFloat,
     parsePositiveInteger,
 } from '@/csv/parseCSVUtils.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 import { ko, ok, Result } from '@/lib/resultUtils.js';
 import { z, ZodError } from 'zod';
 
@@ -95,7 +96,7 @@ export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<R
         try {
             yield ok(parseLine(line, headersNameToIndex));
         } catch (e) {
-            if (!(e instanceof ZodError)) {
+            if (!(e instanceof ZodError || e instanceof ValidationError)) {
                 throw e;
             }
             yield ko(

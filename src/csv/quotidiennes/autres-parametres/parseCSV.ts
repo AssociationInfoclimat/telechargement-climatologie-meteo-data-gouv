@@ -13,6 +13,7 @@ import {
     parseUVIndex,
 } from '@/csv/parseCSVUtils.js';
 import { parseDate } from '@/csv/quotidiennes/parseCSVUtils.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 import { ko, ok, Result } from '@/lib/resultUtils.js';
 import { z, ZodError } from 'zod';
 
@@ -195,7 +196,7 @@ export async function* parseCSV(
         try {
             yield ok(parseLine(line, headersNameToIndex));
         } catch (e) {
-            if (!(e instanceof ZodError)) {
+            if (!(e instanceof ZodError || e instanceof ValidationError)) {
                 throw e;
             }
             yield ko(

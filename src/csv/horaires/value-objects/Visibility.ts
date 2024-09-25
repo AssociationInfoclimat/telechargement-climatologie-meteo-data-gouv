@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidVisibilityError extends Error {
+export class InvalidVisibilityError extends ValidationError {
     constructor(visibility: PositiveInteger) {
         super(`Invalid visibility: '${visibility}'. Must be an integer between 0 and 9.`);
     }

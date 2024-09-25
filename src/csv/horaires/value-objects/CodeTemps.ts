@@ -1,6 +1,7 @@
 import { parseInteger } from '@/csv/parseCSVUtils.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidCodeTempsError extends Error {
+export class InvalidCodeTempsError extends ValidationError {
     constructor(code: string) {
         super(`Invalid code temps: '${code}'. Must be a string of 2 characters between 00 and 99.`);
     }

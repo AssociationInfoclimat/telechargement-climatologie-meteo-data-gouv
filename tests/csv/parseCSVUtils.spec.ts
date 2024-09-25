@@ -139,7 +139,7 @@ describe('parseCSVUtils', () => {
 
     describe('parseWindDirection', () => {
         it('should parse a wind direction value object from a string', () => {
-            expect(parseWindDirection('359').value()).toEqual(359);
+            expect(parseWindDirection('360').value()).toEqual(360);
         });
         it('should return a null wind direction value object if the string is empty', () => {
             expect(parseWindDirection('').value()).toEqual(null);

@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidDecadeError extends Error {
+export class InvalidDecadeError extends ValidationError {
     constructor(decade: PositiveInteger) {
         super(`Invalid decade : '${decade}'. Must be an integer between 1 and 3.`);
     }

@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidCodeQualiteError extends Error {
+export class InvalidCodeQualiteError extends ValidationError {
     constructor(code: PositiveInteger) {
         super(`Invalid code qualité: '${code}'. Must be 0, 1, 2 or 9.`);
     }

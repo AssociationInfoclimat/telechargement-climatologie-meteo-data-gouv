@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidNbJoursError extends Error {
+export class InvalidNbJoursError extends ValidationError {
     constructor(nbJours: PositiveInteger) {
         super(`Invalid nbJours: ${nbJours}. Must be an integer between 0 and 31.`);
     }

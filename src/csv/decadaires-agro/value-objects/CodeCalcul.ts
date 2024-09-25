@@ -1,6 +1,7 @@
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
-export class InvalidCodeCalculError extends Error {
+export class InvalidCodeCalculError extends ValidationError {
     constructor(code: PositiveInteger) {
         super(`Invalid code calcul: '${code}'. Must be 0 or 1.`);
     }
@@ -30,7 +31,7 @@ export class CodeCalcul {
     }
 }
 
-export class InvalidAngstromCodeCalculError extends Error {
+export class InvalidAngstromCodeCalculError extends ValidationError {
     constructor(code: PositiveInteger) {
         super(`Invalid Angstrom code calcul: '${code}'. Must be 0, 1 or 2.`);
     }
