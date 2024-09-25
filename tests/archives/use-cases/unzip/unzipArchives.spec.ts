@@ -13,6 +13,7 @@ describe('unzipArchives', () => {
             globber: createInMemoryGlobber([
                 './data/MN_01_2000-2009.csv.gz',
                 './data/H_01_1850-1859.csv.gz',
+                './data/Q_01_1852-1949_RR-T-Vent.csv.gz',
                 './data/Q_01_1852-1949_autres-parametres.csv.gz',
                 './data/MENSQ_01_1852-1949.csv.gz',
                 './data/DECADQ_01_1852-1949.csv.gz',
@@ -31,6 +32,10 @@ describe('unzipArchives', () => {
             {
                 gzpath: './data/H_01_1850-1859.csv.gz',
                 outpath: './data/H_01_1850-1859.csv',
+            },
+            {
+                gzpath: './data/Q_01_1852-1949_RR-T-Vent.csv.gz',
+                outpath: './data/Q_01_1852-1949_RR-T-Vent.csv',
             },
             {
                 gzpath: './data/Q_01_1852-1949_autres-parametres.csv.gz',

@@ -448,6 +448,95 @@ model DecadaireAgro {
 }
 
 model Quotidienne {
+    NUM_POSTE String   @db.Char(8)
+    NOM_USUEL String   @db.VarChar(255)
+    LAT       Float
+    LON       Float
+    ALTI      Float
+    AAAAMMJJ  DateTime
+
+    RR  Float?
+    QRR Int?
+
+    TN  Float?
+    QTN Int?
+
+    HTN  String? @db.Char(4)
+    QHTN Int?
+
+    TX  Float?
+    QTX Int?
+
+    HTX  String? @db.Char(4)
+    QHTX Int?
+
+    TM  Float?
+    QTM Int?
+
+    TNTXM  Float?
+    QTNTXM Int?
+
+    TAMPLI  Float?
+    QTAMPLI Int?
+
+    TNSOL  Float?
+    QTNSOL Int?
+
+    TN50  Float?
+    QTN50 Int?
+
+    DG  Int?
+    QDG Int?
+
+    FFM  Float?
+    QFFM Int?
+
+    FF2M  Float?
+    QFF2M Int?
+
+    FXY  Float?
+    QFXY Int?
+
+    DXY  Int?
+    QDXY Int?
+
+    HXY  String? @db.Char(4)
+    QHXY Int?
+
+    FXI  Float?
+    QFXI Int?
+
+    DXI  Int?
+    QDXI Int?
+
+    HXI  String? @db.Char(4)
+    QHXI Int?
+
+    FXI2  Float?
+    QFXI2 Int?
+
+    DXI2  Int?
+    QDXI2 Int?
+
+    HXI2  String? @db.Char(4)
+    QHXI2 Int?
+
+    FXI3S  Float?
+    QFXI3S Int?
+
+    DXI3S  Int?
+    QDXI3S Int?
+
+    HXI3S  String? @db.Char(4)
+    QHXI3S Int?
+
+    DRR  Int?
+    QDRR Int?
+
+    @@id([NUM_POSTE, AAAAMMJJ])
+}
+
+model QuotidienneAutresParametres {
     NUM_POSTE    String   @db.Char(8)
     NOM_USUEL    String   @db.VarChar(255)
     LAT          Float

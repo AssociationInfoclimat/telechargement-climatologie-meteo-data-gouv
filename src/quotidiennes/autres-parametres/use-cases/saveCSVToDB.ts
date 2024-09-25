@@ -1,6 +1,6 @@
-import { parseCSV } from '@/csv/quotidiennes/parseCSV.js';
-import { QuotidiennesRepository } from '@/db/quotidiennes/Repository.js';
-import { toDTO } from '@/db/quotidiennes/toDTO.js';
+import { parseCSV } from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
+import { QuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/Repository.js';
+import { toDTO } from '@/db/quotidiennes/autres-parametres/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 
@@ -11,7 +11,7 @@ export async function saveCSVToDB({
 }: {
     csv: string;
     readLines: LineReader;
-    repository: QuotidiennesRepository;
+    repository: QuotidiennesAutresParametresRepository;
 }): Promise<void> {
     const csvLines = readLines(csv);
     const infrahorairesLines = parseCSV(csvLines);

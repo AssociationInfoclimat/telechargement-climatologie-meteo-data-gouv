@@ -1,7 +1,7 @@
-import { QuotidienneLine } from '@/csv/quotidiennes/parseCSV.js';
-import { QuotidienneDTO } from '@/db/quotidiennes/DTO.js';
+import { QuotidienneAutresParametresLine } from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
+import { QuotidienneAutresParametresDTO } from '@/db/quotidiennes/autres-parametres/DTO.js';
 
-export function toDTO(line: QuotidienneLine): QuotidienneDTO {
+export function toDTO(line: QuotidienneAutresParametresLine): QuotidienneAutresParametresDTO {
     return {
         NUM_POSTE: line.NUM_POSTE.value(),
         NOM_USUEL: line.NOM_USUEL,

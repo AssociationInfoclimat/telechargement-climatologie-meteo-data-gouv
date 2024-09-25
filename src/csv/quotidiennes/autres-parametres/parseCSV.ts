@@ -11,14 +11,8 @@ import {
     parseTime,
     parseUVIndex,
 } from '@/csv/parseCSVUtils.js';
+import { parseDate } from '@/csv/quotidiennes/parseCSVUtils.js';
 import { z } from 'zod';
-
-export function parseDate(date: string): Date {
-    const yyyy = date.slice(''.length, 'YYYY'.length);
-    const mm = date.slice('YYYY'.length, 'YYYYMM'.length);
-    const dd = date.slice('YYYYMM'.length, 'YYYYMMDD'.length);
-    return new Date(`${yyyy}-${mm}-${dd}T00:00:00Z`);
-}
 
 export function parseBooleanOrNull(value: string): boolean | null {
     switch (value) {
@@ -164,27 +158,30 @@ const quotidienneLineSchema = z.object({
     TMERMAX: z.string().transform(parseFloatOrNull), // -3.3
     QTMERMAX: z.string().transform(parseCodeQualite), // 9
 });
-export type QuotidienneLine = ReturnType<typeof quotidienneLineSchema.parse>;
+export type QuotidienneAutresParametresLine = ReturnType<typeof quotidienneLineSchema.parse>;
 
 const headersSchema = z.object(
     Object.fromEntries(Object.keys(quotidienneLineSchema.shape).map(key => [key, z.number()]))
 );
-export type QuotidienneHeaders = ReturnType<typeof headersSchema.parse>;
+export type QuotidienneAutresParametresHeaders = z.infer<typeof headersSchema>;
 
-export function parseHeaders(line: string): QuotidienneHeaders {
+export function parseHeaders(line: string): QuotidienneAutresParametresHeaders {
     const headers = line.split(';').map(header => header.trim());
     const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [header, index]));
     return headersSchema.parse(headersNameToIndex);
 }
 
-export function parseLine(line: string, headersNameToIndex: QuotidienneHeaders): QuotidienneLine {
+export function parseLine(
+    line: string,
+    headersNameToIndex: QuotidienneAutresParametresHeaders
+): QuotidienneAutresParametresLine {
     const values = line.split(';').map(value => value.trim());
     return quotidienneLineSchema.parse(
         Object.fromEntries(Object.entries(headersNameToIndex).map(([key, index]) => [key, values[index]]))
     );
 }
 
-export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<QuotidienneLine> {
+export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<QuotidienneAutresParametresLine> {
     const headers = await lines.next();
     const headersNameToIndex = parseHeaders(headers.value as string);
     for await (const line of lines) {

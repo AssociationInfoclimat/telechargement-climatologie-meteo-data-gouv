@@ -1,9 +1,9 @@
-import { QuotidienneDTO } from '@/db/quotidiennes/DTO.js';
-import { InMemoryQuotidiennesRepository } from '@/db/quotidiennes/InMemoryRepository.js';
+import { QuotidienneAutresParametresDTO } from '@/db/quotidiennes/autres-parametres/DTO.js';
+import { InMemoryQuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/InMemoryRepository.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
 import { describe, expect, it } from 'vitest';
 
-export const dto1: QuotidienneDTO = {
+export const dto1: QuotidienneAutresParametresDTO = {
     NUM_POSTE: '01014002',
     NOM_USUEL: 'ARBENT',
     LAT: 46.278167,
@@ -94,7 +94,7 @@ export const dto1: QuotidienneDTO = {
     QTMERMAX: 9,
 };
 
-export const dto2: QuotidienneDTO = {
+export const dto2: QuotidienneAutresParametresDTO = {
     NUM_POSTE: '01014002',
     NOM_USUEL: 'ARBENT',
     LAT: 46.278167,
@@ -188,14 +188,14 @@ export const dto2: QuotidienneDTO = {
 describe('InMemoryQuotidiennesRepository', () => {
     describe('upsert', () => {
         it('should upsert', async () => {
-            const repository = new InMemoryQuotidiennesRepository({ dtos: [] });
+            const repository = new InMemoryQuotidiennesAutresParametresRepository({ dtos: [] });
 
             await repository.upsert(dto1);
             await repository.upsert(dto2);
             const dtos1 = await getArrayFromAsyncGenerator(repository.getAll());
             expect(dtos1).toEqual([dto1, dto2]);
 
-            const modifiedDto1: QuotidienneDTO = {
+            const modifiedDto1: QuotidienneAutresParametresDTO = {
                 ...dto1,
                 QTMERMAX: 1,
             };

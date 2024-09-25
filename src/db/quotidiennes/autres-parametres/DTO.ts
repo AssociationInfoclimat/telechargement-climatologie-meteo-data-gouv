@@ -1,4 +1,4 @@
-export interface QuotidienneDTO {
+export interface QuotidienneAutresParametresDTO {
     NUM_POSTE: string;
     NOM_USUEL: string;
     LAT: number;

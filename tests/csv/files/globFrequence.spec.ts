@@ -14,9 +14,12 @@ describe('globFrequence', () => {
             '/my/directory/H_01_blabla.csv',
             '/my/directory/H_76_blabla.csv',
             '/my/directory/H_76_blabla.gz',
-            '/my/directory/Q_01_blabla.csv',
-            '/my/directory/Q_76_blabla.csv',
-            '/my/directory/Q_76_blabla.gz',
+            '/my/directory/Q_01_blabla_RR-T-Vent.csv',
+            '/my/directory/Q_76_blabla_RR-T-Vent.csv',
+            '/my/directory/Q_76_blabla_RR-T-Vent.gz',
+            '/my/directory/Q_01_blabla_autres-parametres.csv',
+            '/my/directory/Q_76_blabla_autres-parametres.csv',
+            '/my/directory/Q_76_blabla_autres-parametres.gz',
             '/my/directory/MENSQ_01_blabla.csv',
             '/my/directory/MENSQ_76_blabla.csv',
             '/my/directory/MENSQ_76_blabla.gz',
@@ -34,6 +37,16 @@ describe('globFrequence', () => {
         expect(await globFrequence({ frequence: FREQUENCES.decadaireAgro, directory, glob: globber })).toEqual([
             '/my/directory/DECADAGRO_01_blabla.csv',
             '/my/directory/DECADAGRO_76_blabla.csv',
+        ]);
+        expect(await globFrequence({ frequence: FREQUENCES.quotidienne, directory, glob: globber })).toEqual([
+            '/my/directory/Q_01_blabla_RR-T-Vent.csv',
+            '/my/directory/Q_76_blabla_RR-T-Vent.csv',
+        ]);
+        expect(
+            await globFrequence({ frequence: FREQUENCES.quotidienneAutresParametres, directory, glob: globber })
+        ).toEqual([
+            '/my/directory/Q_01_blabla_autres-parametres.csv',
+            '/my/directory/Q_76_blabla_autres-parametres.csv',
         ]);
         expect(
             await globFrequence({

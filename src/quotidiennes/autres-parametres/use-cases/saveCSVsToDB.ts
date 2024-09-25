@@ -1,11 +1,11 @@
 import { Departement } from '@/archives/departements/Departement.js';
 import { globFrequence } from '@/csv/files/globFrequence.js';
-import { QuotidiennesRepository } from '@/db/quotidiennes/Repository.js';
+import { QuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/Repository.js';
 import { FREQUENCES } from '@/files/Frequence.js';
 import { Globber } from '@/lib/fs/glob/Globber.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
-import { saveCSVToDB } from '@/quotidiennes/use-cases/saveCSVToDB.js';
+import { saveCSVToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVToDB.js';
 
 export async function saveCSVsToDB({
     directory,
@@ -17,11 +17,11 @@ export async function saveCSVsToDB({
     directory: string;
     globber: Globber;
     lineReader: LineReader;
-    repository: QuotidiennesRepository;
+    repository: QuotidiennesAutresParametresRepository;
     departement?: Departement;
 }): Promise<void> {
     const csvs = await globFrequence({
-        frequence: FREQUENCES.quotidienne,
+        frequence: FREQUENCES.quotidienneAutresParametres,
         directory,
         glob: globber,
         departement,

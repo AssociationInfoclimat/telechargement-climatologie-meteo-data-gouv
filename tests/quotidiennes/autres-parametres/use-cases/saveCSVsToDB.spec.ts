@@ -1,27 +1,27 @@
-import { InMemoryQuotidiennesRepository } from '@/db/quotidiennes/InMemoryRepository.js';
+import { InMemoryQuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/InMemoryRepository.js';
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
-import { saveCSVsToDB } from '@/quotidiennes/use-cases/saveCSVsToDB.js';
+import { saveCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
 import { assert, describe, it } from 'vitest';
 
 describe('saveCSVsToDB', () => {
     it('should work', async () => {
-        const repository = new InMemoryQuotidiennesRepository();
+        const repository = new InMemoryQuotidiennesAutresParametresRepository();
         await saveCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
-                '/my/directory/Q_01_previous-1950-2022.csv',
-                '/my/directory/Q_01_latest-2023-2024.csv',
+                '/my/directory/Q_01_previous-1950-2022_autres-parametres.csv',
+                '/my/directory/Q_01_latest-2023-2024_autres-parametres.csv',
             ]),
             lineReader: createInMemoryLineReader({
-                '/my/directory/Q_01_previous-1950-2022.csv': [
+                '/my/directory/Q_01_previous-1950-2022_autres-parametres.csv': [
                     'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJ;DHUMEC;QDHUMEC;PMERM;QPMERM;PMERMIN;QPMERMIN;INST;QINST;GLOT;QGLOT;DIFT;QDIFT;DIRT;QDIRT;INFRART;QINFRART;UV;QUV;UV_INDICEX;QUV_INDICEX;SIGMA;QSIGMA;UN;QUN;HUN;QHUN;UX;QUX;HUX;QHUX;UM;QUM;DHUMI40;QDHUMI40;DHUMI80;QDHUMI80;TSVM;QTSVM;ETPMON;QETPMON;ETPGRILLE;QETPGRILLE;ECOULEMENTM;QECOULEMENTM;HNEIGEF;QHNEIGEF;NEIGETOTX;QNEIGETOTX;NEIGETOT06;QNEIGETOT06;NEIG;QNEIG;BROU;QBROU;ORAG;QORAG;GRESIL;QGRESIL;GRELE;QGRELE;ROSEE;QROSEE;VERGLAS;QVERGLAS;SOLNEIGE;QSOLNEIGE;GELEE;QGELEE;FUMEE;QFUMEE;BRUME;QBRUME;ECLAIR;QECLAIR;NB300;QNB300;BA300;QBA300;TMERMIN;QTMERMIN;TMERMAX;QTMERMAX',
                     '01089001;AMBERIEU;45.976500;5.329333;250;19350112;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1;1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                     '01014002;ARBENT;46.278167;5.669000;534;20230101;;;;;;;;;;;;;;;;;;;;;;;43;1;1944;9;75;1;27;9;55;1;0;9;0;9;8.9;9;;;3.1;9;;;;;0;9;0;9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                     '',
                 ],
-                '/my/directory/Q_01_latest-2023-2024.csv': [
+                '/my/directory/Q_01_latest-2023-2024_autres-parametres.csv': [
                     'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJ;DHUMEC;QDHUMEC;PMERM;QPMERM;PMERMIN;QPMERMIN;INST;QINST;GLOT;QGLOT;DIFT;QDIFT;DIRT;QDIRT;INFRART;QINFRART;UV;QUV;UV_INDICEX;QUV_INDICEX;SIGMA;QSIGMA;UN;QUN;HUN;QHUN;UX;QUX;HUX;QHUX;UM;QUM;DHUMI40;QDHUMI40;DHUMI80;QDHUMI80;TSVM;QTSVM;ETPMON;QETPMON;ETPGRILLE;QETPGRILLE;ECOULEMENTM;QECOULEMENTM;HNEIGEF;QHNEIGEF;NEIGETOTX;QNEIGETOTX;NEIGETOT06;QNEIGETOT06;NEIG;QNEIG;BROU;QBROU;ORAG;QORAG;GRESIL;QGRESIL;GRELE;QGRELE;ROSEE;QROSEE;VERGLAS;QVERGLAS;SOLNEIGE;QSOLNEIGE;GELEE;QGELEE;FUMEE;QFUMEE;BRUME;QBRUME;ECLAIR;QECLAIR;NB300;QNB300;BA300;QBA300;TMERMIN;QTMERMIN;TMERMAX;QTMERMAX',
                     '01014002;ARBENT;46.278167;5.669000;534;20230102;1;9;2.2;9;2.2;9;1;9;1;9;1;9;1;9;1;9;12;9;12;9;100;9;100;9;1230;9;100;9;1230;9;100;9;1;9;1;9;2.2;9;2.2;9;2.2;9;2.2;9;1;9;1;9;1;9;0;9;0;9;0;9;0;9;0;9;0;9;0;9;0;9;0;9;0;9;0;9;0;9;8;9;1;9;-3.3;9;-3.3;9',
                     '01014002;ARBENT;46.278167;5.669000;534;20230103;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',

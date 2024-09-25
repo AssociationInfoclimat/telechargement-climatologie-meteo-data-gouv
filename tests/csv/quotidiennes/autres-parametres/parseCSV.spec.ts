@@ -1,4 +1,4 @@
-import { parseCSV, QuotidienneLine } from '@/csv/quotidiennes/parseCSV.js';
+import { parseCSV, QuotidienneAutresParametresLine } from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { Octa } from '@/data/value-objects/Octa.js';
 import { Percentage } from '@/data/value-objects/Percentage.js';
@@ -22,7 +22,7 @@ describe('parseCSV', () => {
                 '',
             ]);
             const infrahoraireLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
-            expect(infrahoraireLines).toEqual<QuotidienneLine[]>([
+            expect(infrahoraireLines).toEqual<QuotidienneAutresParametresLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01089001'),
                     NOM_USUEL: 'AMBERIEU',
