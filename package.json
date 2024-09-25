@@ -28,7 +28,8 @@
         "update-all-archives": "tsx src/apps/updateAllArchives.ts",
         "download-missing-archives": "tsx src/apps/downloadMissingArchives.ts",
         "unzip-all-archives": "tsx src/apps/unzipAllArchives.ts",
-        "unzip-remaining-archives": "tsx src/apps/unzipRemainingArchives.ts"
+        "unzip-remaining-archives": "tsx src/apps/unzipRemainingArchives.ts",
+        "save-all-csvs-to-db": "tsx src/apps/saveAllCSVsToDB.ts"
     },
     "lint-staged": {
         "*.html": "prettier --write --ignore-unknown",
