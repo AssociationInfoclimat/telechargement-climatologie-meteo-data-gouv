@@ -1,5 +1,5 @@
-import { FREQUENCES } from '@/archives/files/Frequence.js';
 import { unzipFrequenceArchives } from '@/archives/use-cases/unzip/unzipFrequenceArchives.js';
+import { FREQUENCES } from '@/files/Frequence.js';
 import { InMemoryFileSystem } from '@/lib/fs/file-exists/fileExists.in-memory.js';
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryUnzipper, UnzipperSpy } from '@/lib/unzip/gunzip.in-memory.js';

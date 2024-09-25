@@ -1,6 +1,6 @@
-import { Frequence } from '@/archives/files/Frequence.js';
 import { globFrequence } from '@/archives/files/globFrequence.js';
 import { unzipArchive } from '@/archives/use-cases/unzip/unzipArchive.js';
+import { Frequence } from '@/files/Frequence.js';
 import { FileExistenceChecker } from '@/lib/fs/file-exists/FileExistenceChecker.js';
 import { Globber } from '@/lib/fs/glob/Globber.js';
 import { Unzipper } from '@/lib/unzip/Unzipper.js';
