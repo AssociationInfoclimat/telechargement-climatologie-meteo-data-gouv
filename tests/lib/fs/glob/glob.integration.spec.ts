@@ -1,9 +1,6 @@
-import { Globber } from '@/lib/fs/glob/Globber.js';
-import { glob as globbyGlobGlob } from 'glob';
+import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { assert, beforeEach, describe, it } from 'vitest';
-
-export const glob: Globber = globbyGlobGlob;
 
 describe('glob', () => {
     beforeEach(async () => {
