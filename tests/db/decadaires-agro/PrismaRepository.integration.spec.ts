@@ -8,7 +8,7 @@ import { dto1, dto2 } from './InMemoryRepository.spec.js';
 describe('PrismaDecadairesAgroRepository', () => {
     const prisma = new PrismaClient();
     beforeEach(async () => {
-        prisma.decadaire.deleteMany();
+        await prisma.decadaireAgro.deleteMany();
     });
     describe('upsert', () => {
         it('should upsert', async () => {

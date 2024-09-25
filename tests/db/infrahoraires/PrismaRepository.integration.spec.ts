@@ -8,7 +8,7 @@ import { dto1, dto2 } from './InMemoryRepository.spec.js';
 describe('PrismaInfrahorairesRepository', () => {
     const prisma = new PrismaClient();
     beforeEach(async () => {
-        prisma.decadaire.deleteMany();
+        await prisma.infrahoraire.deleteMany();
     });
     describe('upsert', () => {
         it('should upsert', async () => {
