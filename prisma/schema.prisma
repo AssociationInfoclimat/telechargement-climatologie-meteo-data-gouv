@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
     provider = "prisma-client-js"
 }
@@ -451,6 +445,99 @@ model DecadaireAgro {
     ETP        Float?
 
     @@id([NUM_POSTE, AAAAMM, NUM_DECADE])
+}
+
+model Quotidienne {
+    NUM_POSTE    String   @db.Char(8)
+    NOM_USUEL    String   @db.VarChar(255)
+    LAT          Float
+    LON          Float
+    ALTI         Float
+    AAAAMMJJ     DateTime
+    DHUMEC       Int?
+    QDHUMEC      Int?
+    PMERM        Float?
+    QPMERM       Int?
+    PMERMIN      Float?
+    QPMERMIN     Int?
+    INST         Int?
+    QINST        Int?
+    GLOT         Int?
+    QGLOT        Int?
+    DIFT         Int?
+    QDIFT        Int?
+    DIRT         Int?
+    QDIRT        Int?
+    INFRART      Int?
+    QINFRART     Int?
+    UV           Int?
+    QUV          Int?
+    UV_INDICEX   Int?
+    QUV_INDICEX  Int?
+    SIGMA        Int?
+    QSIGMA       Int?
+    UN           Int?
+    QUN          Int?
+    HUN          String?  @db.Char(4)
+    QHUN         Int?
+    UX           Int?
+    QUX          Int?
+    HUX          String?  @db.Char(4)
+    QHUX         Int?
+    UM           Int?
+    QUM          Int?
+    DHUMI40      Int?
+    QDHUMI40     Int?
+    DHUMI80      Int?
+    QDHUMI80     Int?
+    TSVM         Float?
+    QTSVM        Int?
+    ETPMON       Float?
+    QETPMON      Int?
+    ETPGRILLE    Float?
+    QETPGRILLE   Int?
+    ECOULEMENTM  Float?
+    QECOULEMENTM Int?
+    HNEIGEF      Int?
+    QHNEIGEF     Int?
+    NEIGETOTX    Int?
+    QNEIGETOTX   Int?
+    NEIGETOT06   Int?
+    QNEIGETOT06  Int?
+    NEIG         Boolean?
+    QNEIG        Int?
+    BROU         Boolean?
+    QBROU        Int?
+    ORAG         Boolean?
+    QORAG        Int?
+    GRESIL       Boolean?
+    QGRESIL      Int?
+    GRELE        Boolean?
+    QGRELE       Int?
+    ROSEE        Boolean?
+    QROSEE       Int?
+    VERGLAS      Boolean?
+    QVERGLAS     Int?
+    SOLNEIGE     Boolean?
+    QSOLNEIGE    Int?
+    GELEE        Boolean?
+    QGELEE       Int?
+    FUMEE        Boolean?
+    QFUMEE       Int?
+    BRUME        Boolean?
+    QBRUME       Int?
+    ECLAIR       Boolean?
+    QECLAIR      Int?
+    NB300        Int?
+    QNB300       Int?
+    BA300        Int?
+    QBA300       Int?
+    TMERMIN      Float?
+    QTMERMIN     Int?
+    TMERMAX      Float?
+    QTMERMAX     Int?
+
+    @@id([NUM_POSTE, AAAAMMJJ])
 }
 
 model Horaire {
