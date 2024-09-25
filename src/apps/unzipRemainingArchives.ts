@@ -13,6 +13,7 @@ async function main(): Promise<void> {
         fileExistenceChecker: fileExists,
         unzipper: gunzip,
         overwrite: false,
+        // departement: Departement.of('974'),
     });
     LoggerSingleton.getSingleton().info({ message: 'Done' });
 }

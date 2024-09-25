@@ -1,3 +1,4 @@
+import { Departement } from '@/archives/departements/Departement.js';
 import { globFrequence } from '@/archives/files/globFrequence.js';
 import { unzipArchive } from '@/archives/use-cases/unzip/unzipArchive.js';
 import { Frequence } from '@/files/Frequence.js';
@@ -12,6 +13,7 @@ export async function unzipFrequenceArchives({
     fileExistenceChecker,
     unzipper,
     overwrite,
+    departement,
 }: {
     frequence: Frequence;
     directory: string;
@@ -19,8 +21,9 @@ export async function unzipFrequenceArchives({
     fileExistenceChecker: FileExistenceChecker;
     unzipper: Unzipper;
     overwrite: boolean;
+    departement?: Departement;
 }): Promise<void> {
-    const paths = await globFrequence({ frequence, directory, glob: globber });
+    const paths = await globFrequence({ frequence, directory, glob: globber, departement });
     for (const path of paths) {
         await unzipArchive({
             gzpath: path,
