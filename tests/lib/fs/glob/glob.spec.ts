@@ -1,12 +1,5 @@
-import { Globber } from '@/lib/fs/glob/Globber.js';
+import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { describe, expect, it } from 'vitest';
-
-export function createInMemoryGlobber(files: string[] = []): Globber {
-    return function (pattern: string): Promise<string[]> {
-        pattern = pattern.replaceAll('*', '.*');
-        return Promise.resolve(files.filter(file => file.match(pattern)));
-    };
-}
 
 describe('Globber', () => {
     it('should return the matching files', async () => {
