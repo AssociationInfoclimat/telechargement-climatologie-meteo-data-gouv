@@ -1,5 +1,6 @@
 import {
     parseCodeQualite,
+    ParseError,
     parseFloatOrNull,
     parseInteger,
     parseNomUsuel,
@@ -10,7 +11,8 @@ import {
     parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
 import { parseDate } from '@/csv/quotidiennes/parseCSVUtils.js';
-import { z } from 'zod';
+import { ko, ok, Result } from '@/lib/resultUtils.js';
+import { z, ZodError } from 'zod';
 
 const quotidienneLineSchema = z.object({
     NUM_POSTE: z.string().transform(parseNumeroPoste),
@@ -144,12 +146,26 @@ export function parseLine(line: string, headersNameToIndex: QuotidienneHeaders):
     );
 }
 
-export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<QuotidienneLine> {
+export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<Result<QuotidienneLine, ParseError>> {
     const headers = await lines.next();
     const headersNameToIndex = parseHeaders(headers.value as string);
     for await (const line of lines) {
-        if (line.trim()) {
-            yield parseLine(line, headersNameToIndex);
+        if (!line.trim()) {
+            continue;
+        }
+        try {
+            yield ok(parseLine(line, headersNameToIndex));
+        } catch (e) {
+            if (!(e instanceof ZodError)) {
+                throw e;
+            }
+            yield ko(
+                new ParseError({
+                    headers: headers.value as string,
+                    line,
+                    error: e,
+                })
+            );
         }
     }
 }

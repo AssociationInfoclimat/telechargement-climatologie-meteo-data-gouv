@@ -2,7 +2,10 @@ import { InfrahoraireLine, parseCSV } from '@/csv/infrahoraires/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
-import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
+import {
+    getAsyncGeneratorFromArray,
+    getResultsArraysFromAsyncResultGenerator,
+} from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
@@ -16,8 +19,8 @@ describe('parseCSV', () => {
                 ' 01014002;ARBENT;46.278167;5.669000;534;200507010012;;',
                 '',
             ]);
-            const infrahoraireLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
-            expect(infrahoraireLines).toEqual<InfrahoraireLine[]>([
+            const infrahoraireLines = await getResultsArraysFromAsyncResultGenerator(parseCSV(csvLines));
+            expect(infrahoraireLines.ok).toEqual<InfrahoraireLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),
                     NOM_USUEL: 'ARBENT',

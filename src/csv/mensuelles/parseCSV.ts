@@ -1,5 +1,6 @@
 import {
     parseCodeQualite,
+    ParseError,
     parseFloatOrNull,
     parseInteger,
     parseJour,
@@ -11,7 +12,8 @@ import {
     parsePositiveInteger,
     parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
-import { z } from 'zod';
+import { ko, ok, Result } from '@/lib/resultUtils.js';
+import { z, ZodError } from 'zod';
 
 export function parseDate(date: string): Date {
     const yyyy = date.slice(''.length, 'YYYY'.length);
@@ -359,12 +361,26 @@ export function parseLine(line: string, headersNameToIndex: MensuelleHeaders): M
     );
 }
 
-export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<MensuelleLine> {
+export async function* parseCSV(lines: AsyncGenerator<string>): AsyncGenerator<Result<MensuelleLine, ParseError>> {
     const headers = await lines.next();
     const headersNameToIndex = parseHeaders(headers.value as string);
     for await (const line of lines) {
-        if (line.trim()) {
-            yield parseLine(line, headersNameToIndex);
+        if (!line.trim()) {
+            continue;
+        }
+        try {
+            yield ok(parseLine(line, headersNameToIndex));
+        } catch (e) {
+            if (!(e instanceof ZodError)) {
+                throw e;
+            }
+            yield ko(
+                new ParseError({
+                    headers: headers.value as string,
+                    line,
+                    error: e,
+                })
+            );
         }
     }
 }

@@ -6,7 +6,10 @@ import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
-import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
+import {
+    getAsyncGeneratorFromArray,
+    getResultsArraysFromAsyncResultGenerator,
+} from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
@@ -21,8 +24,8 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;20230103;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const infrahoraireLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
-            expect(infrahoraireLines).toEqual<QuotidienneAutresParametresLine[]>([
+            const infrahoraireLines = await getResultsArraysFromAsyncResultGenerator(parseCSV(csvLines));
+            expect(infrahoraireLines.ok).toEqual<QuotidienneAutresParametresLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01089001'),
                     NOM_USUEL: 'AMBERIEU',

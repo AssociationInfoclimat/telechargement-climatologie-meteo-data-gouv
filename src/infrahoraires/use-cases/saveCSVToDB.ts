@@ -14,10 +14,18 @@ export async function saveCSVToDB({
     repository: InfrahorairesRepository;
 }): Promise<void> {
     const csvLines = readLines(csv);
-    const infrahorairesLines = parseCSV(csvLines);
-    for await (const line of infrahorairesLines) {
-        LoggerSingleton.getSingleton().info({
-            message: `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJHHMN}`,
+    const results = parseCSV(csvLines);
+    for await (const result of results) {
+        if (!result.ok) {
+            LoggerSingleton.getSingleton().error({
+                message: `An error occured while parsing a line in ${csv}`,
+                data: result.error,
+            });
+            continue;
+        }
+        const line = result.data;
+        LoggerSingleton.getSingleton().debug({
+            message: `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJHHMN.toISOString()}`,
         });
         await repository.upsert(toDTO(line));
     }

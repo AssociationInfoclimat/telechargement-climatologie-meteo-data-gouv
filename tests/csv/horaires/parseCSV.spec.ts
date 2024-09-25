@@ -12,7 +12,10 @@ import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
 import { WindDirection } from '@/data/value-objects/WindDirection.js';
-import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
+import {
+    getAsyncGeneratorFromArray,
+    getResultsArraysFromAsyncResultGenerator,
+} from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
@@ -27,8 +30,8 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;2023010103;3.3;0;4;1;3.3;2;359;9;3.3;0;359;1;1230;2;3.3;9;359;0;1230;1;3.3;2;359;9;3.3;0;359;1;1230;2;3.3;9;359;0;1230;1;-5.5;2;-5.5;9;-5.5;0;1230;1;-5.5;2;1230;9;4;0;-5.5;1;-5.5;2;-5.5;9;-5.5;0;-5.5;1;-5.5;2;-5.5;9;4;0;100;1;100;2;1230;9;100;0;1230;1;4;2;4;9;3.3;0;3.3;1;3.3;2;3.3;9;4;0;8;1;8;2;/;9;/;0;/;1;8;2;/;9;4;0;8;1;/;2;4;9;8;0;/;1;4;2;8;9;/;0;4;1;4;2;4;9;99;0;99;1;99;2;7;9;7;0;-5.5;1;6;2;7;9;999;0;3.3;1;3.3;2;4;9;4;0;3.3;1;4;2;4;9;4;0;7;1;4;2;4;9;4;0;4;1;4;2;4;9;4;0;4;1;4;2;12;9;4;0;4;1;4;2;4;9;-5.5;0;-5.5;1;-5.5;2',
                 '',
             ]);
-            const horaireLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
-            expect(horaireLines).toEqual<HoraireLine[]>([
+            const horaireLines = await getResultsArraysFromAsyncResultGenerator(parseCSV(csvLines));
+            expect(horaireLines.ok).toEqual<HoraireLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),
                     NOM_USUEL: 'ARBENT',

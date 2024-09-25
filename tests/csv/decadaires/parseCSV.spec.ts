@@ -7,7 +7,10 @@ import { Percentage } from '@/data/value-objects/Percentage.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { WindDirection } from '@/data/value-objects/WindDirection.js';
-import { getArrayFromAsyncGenerator, getAsyncGeneratorFromArray } from '@/lib/generator/generatorUtils.js';
+import {
+    getAsyncGeneratorFromArray,
+    getResultsArraysFromAsyncResultGenerator,
+} from '@/lib/generator/generatorUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
 
@@ -22,8 +25,8 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;202302;1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const mensuellesLines = await getArrayFromAsyncGenerator(parseCSV(csvLines));
-            expect(mensuellesLines).toEqual<DecadaireLine[]>([
+            const mensuellesLines = await getResultsArraysFromAsyncResultGenerator(parseCSV(csvLines));
+            expect(mensuellesLines.ok).toEqual<DecadaireLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),
                     NOM_USUEL: 'ARBENT',
