@@ -1,9 +1,10 @@
+import { Integer } from '@/data/value-objects/Integer.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
 export class InvalidCodeQualiteError extends ValidationError {
-    constructor(code: PositiveInteger) {
-        super(`Invalid code qualité: '${code}'. Must be 0, 1, 2 or 9.`);
+    constructor(code: Integer) {
+        super(`Invalid code qualité: '${code}'. Must be -1, 0, 1, 2 or 9.`);
     }
 }
 
@@ -14,12 +15,12 @@ export class CodeQualite {
         this.code = code;
     }
 
-    static of(code: PositiveInteger): CodeQualite {
+    static of(code: Integer): CodeQualite {
         const value = code.value();
-        if (value !== null && ![0, 1, 2, 9].includes(value)) {
+        if (value !== null && ![-1, 0, 1, 2, 9].includes(value)) {
             throw new InvalidCodeQualiteError(code);
         }
-        return new CodeQualite(code);
+        return new CodeQualite(PositiveInteger.of(code.value() === -1 ? null : code.value()));
     }
 
     value(): number | null {
