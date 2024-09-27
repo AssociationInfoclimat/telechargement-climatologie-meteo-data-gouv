@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 describe('HouleDirection', () => {
     describe('of', () => {
-        it('should accept between 1 and 360, 999, and null', () => {
+        it('should accept between 0 and 360, 999, and null', () => {
             expect(HouleDirection.of(PositiveInteger.of(0)).value()).toEqual(0);
             expect(HouleDirection.of(PositiveInteger.of(360)).value()).toEqual(0);
             expect(HouleDirection.of(PositiveInteger.of(999)).value()).toEqual(999);
