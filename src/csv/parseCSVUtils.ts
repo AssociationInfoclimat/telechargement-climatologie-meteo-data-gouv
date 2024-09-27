@@ -86,12 +86,13 @@ export function parseDecade(decade: string): Decade {
     return Decade.of(parsePositiveInteger(decade));
 }
 
-export class ParseError extends Error {
+export class ParseError<T, E extends Error = Error> extends Error {
     public readonly headers: string;
     public readonly line: string;
-    public readonly error: Error;
+    public readonly error: E;
+    public readonly data?: T;
 
-    constructor({ headers, line, error }: { headers: string; line: string; error: Error }) {
+    constructor({ headers, line, error, data }: { headers: string; line: string; error: E; data?: T }) {
         super(`Error parsing line:
 Headers : ${headers}
 CSV     : ${line}
@@ -99,5 +100,6 @@ CSV     : ${line}
         this.headers = headers;
         this.line = line;
         this.error = error;
+        this.data = data;
     }
 }

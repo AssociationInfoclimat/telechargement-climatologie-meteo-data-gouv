@@ -18,8 +18,14 @@ export async function saveCSVToDB({
     for await (const result of results) {
         if (!result.ok) {
             LoggerSingleton.getSingleton().error({
-                message: `An error occured while parsing a line in ${csv}`,
-                data: result.error,
+                message: `An error occured while reading '${csv}'
+${result.error.message}`,
+                data: {
+                    headers: result.error.headers,
+                    line: result.error.line,
+                    error: result.error.error.message,
+                    data: result.error.data,
+                },
             });
             continue;
         }

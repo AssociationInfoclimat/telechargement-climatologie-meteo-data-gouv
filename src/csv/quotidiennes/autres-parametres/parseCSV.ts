@@ -187,7 +187,7 @@ export function parseLine(
 
 export async function* parseCSV(
     lines: AsyncGenerator<string>
-): AsyncGenerator<Result<QuotidienneAutresParametresLine, ParseError>> {
+): AsyncGenerator<Result<QuotidienneAutresParametresLine, ParseError<unknown>>> {
     const headers = await lines.next();
     const headersNameToIndex = parseHeaders(headers.value as string);
     for await (const line of lines) {
@@ -197,16 +197,26 @@ export async function* parseCSV(
         try {
             yield ok(parseLine(line, headersNameToIndex));
         } catch (e) {
-            if (!(e instanceof ZodError || e instanceof ValidationError)) {
+            if (e instanceof ZodError) {
+                yield ko(
+                    new ParseError({
+                        headers: headers.value as string,
+                        line,
+                        error: e,
+                        data: e.issues,
+                    })
+                );
+            } else if (e instanceof ValidationError) {
+                yield ko(
+                    new ParseError({
+                        headers: headers.value as string,
+                        line,
+                        error: e,
+                    })
+                );
+            } else {
                 throw e;
             }
-            yield ko(
-                new ParseError({
-                    headers: headers.value as string,
-                    line,
-                    error: e,
-                })
-            );
         }
     }
 }
