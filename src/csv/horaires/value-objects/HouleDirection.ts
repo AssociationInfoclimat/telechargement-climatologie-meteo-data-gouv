@@ -3,7 +3,7 @@ import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
 export class InvalidHouleDirectionError extends ValidationError {
     constructor(degrees: PositiveInteger) {
-        super(`Invalid houle direction: '${degrees}'. Must be an integer between 1 and 360, or 999.`);
+        super(`Invalid houle direction: '${degrees}'. Must be an integer between 0 and 360, or 999.`);
     }
 }
 
@@ -16,10 +16,10 @@ export class HouleDirection {
 
     static of(degrees: PositiveInteger): HouleDirection {
         const value = degrees.value();
-        if (value !== null && !(0 < value && value <= 360) && value !== 999) {
+        if (value !== null && !(0 <= value && value <= 360) && value !== 999) {
             throw new InvalidHouleDirectionError(degrees);
         }
-        return new HouleDirection(degrees);
+        return new HouleDirection(degrees.value() === 360 ? PositiveInteger.of(0) : degrees);
     }
 
     value(): number | null {
