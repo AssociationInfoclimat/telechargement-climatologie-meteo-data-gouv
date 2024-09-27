@@ -1,17 +1,21 @@
+import { getCSVName } from '@/csv/getCSVName.js';
 import { parseCSV } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
 import { QuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/Repository.js';
 import { toDTO } from '@/db/quotidiennes/rr-t-vent/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
+import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
 
 export async function saveCSVToDB({
     csv,
     readLines,
-    repository,
+    quotidiennesRepository,
+    saveProgressRepository,
 }: {
     csv: string;
     readLines: LineReader;
-    repository: QuotidiennesRepository;
+    quotidiennesRepository: QuotidiennesRepository;
+    saveProgressRepository: SaveProgressRepository;
 }): Promise<void> {
     const csvLines = readLines(csv);
     const results = parseCSV(csvLines);
@@ -33,6 +37,7 @@ ${result.error.message}`,
         LoggerSingleton.getSingleton().debug({
             message: `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`,
         });
-        await repository.upsert(toDTO(line));
+        await quotidiennesRepository.upsert(toDTO(line));
+        await saveProgressRepository.markAsSaved(getCSVName(csv));
     }
 }

@@ -4,12 +4,11 @@ import { saveCSVsToDB as saveHorairesCSVsToDB } from '@/horaires/use-cases/saveC
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
+import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
 
 async function main() {
     LoggerSingleton.getSingleton().setLogLevel('info');
-
-    LoggerSingleton.getSingleton().info({ message: 'Reading infrahoraires CSVs :' });
 
     const prisma = new PrismaClient();
 
@@ -21,7 +20,8 @@ async function main() {
         directory,
         globber: glob,
         lineReader: readLines,
-        repository: new PrismaHorairesRepository({ prisma }),
+        horairesRepository: new PrismaHorairesRepository({ prisma }),
+        saveProgressRepository: new PrismaSaveProgressRepository(prisma),
         departement,
     });
 

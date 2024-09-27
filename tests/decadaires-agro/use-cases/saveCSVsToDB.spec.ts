@@ -3,11 +3,13 @@ import { saveCSVsToDB } from '@/decadaires-agro/use-cases/saveCSVsToDB.js';
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
+import { InMemorySaveProgressRepository } from '@/save-progress/db/InMemorySaveProgressRepository.js';
 import { assert, describe, it } from 'vitest';
 
 describe('saveCSVsToDB', () => {
     it('should work', async () => {
-        const repository = new InMemoryDecadairesAgroRepository();
+        const decadairesAgroRepository = new InMemoryDecadairesAgroRepository();
+        const saveProgressRepository = new InMemorySaveProgressRepository(['DECADAGRO_01_1940-1949']);
         await saveCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
@@ -15,6 +17,12 @@ describe('saveCSVsToDB', () => {
                 '/my/directory/DECADAGRO_01_latest-2023-2024.csv',
             ]),
             lineReader: createInMemoryLineReader({
+                '/my/directory/DECADAGRO_01_1940-1949.csv': [
+                    'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMM;NUM_DECADE;RR;CRR;TN;CTN;TX;CTX;FFM;CFFM;TSVM;CTSVM;INST;CINST;GLOT;CGLOT;ETP',
+                    '01014002;ARBENT;46.278167;5.669000;534;194001;3;1.1;0;-3.3;0;-3.3;0;1.1;0;1.1;0;4;2;4;2;1.1',
+                    '01014002;ARBENT;46.278167;5.669000;534;194002;1;;;;;;;;;;;;;;;',
+                    '',
+                ],
                 '/my/directory/DECADAGRO_01_previous-1950-2022.csv': [
                     'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMM;NUM_DECADE;RR;CRR;TN;CTN;TX;CTX;FFM;CFFM;TSVM;CTSVM;INST;CINST;GLOT;CGLOT;ETP',
                     '01014002;ARBENT;46.278167;5.669000;534;202301;1;60.8;0;5.3;0;10.8;0;2.3;0;8.7;0;;;;;',
@@ -28,9 +36,15 @@ describe('saveCSVsToDB', () => {
                     '',
                 ],
             }),
-            repository,
+            decadairesAgroRepository,
+            saveProgressRepository,
         });
-        assert.sameDeepMembers(await getArrayFromAsyncGenerator(repository.getAll()), [
+        assert.sameDeepMembers(await saveProgressRepository.getAlreadySaved(), [
+            'DECADAGRO_01_1940-1949',
+            'DECADAGRO_01_previous-1950-2022',
+            'DECADAGRO_01_latest-2023-2024',
+        ]);
+        assert.sameDeepMembers(await getArrayFromAsyncGenerator(decadairesAgroRepository.getAll()), [
             {
                 NUM_POSTE: '01014002',
                 NOM_USUEL: 'ARBENT',

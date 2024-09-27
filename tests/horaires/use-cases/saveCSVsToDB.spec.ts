@@ -3,18 +3,27 @@ import { saveCSVsToDB } from '@/horaires/use-cases/saveCSVsToDB.js';
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
+import { InMemorySaveProgressRepository } from '@/save-progress/db/InMemorySaveProgressRepository.js';
 import { assert, describe, it } from 'vitest';
 
 describe('saveCSVsToDB', () => {
     it('should work', async () => {
-        const repository = new InMemoryHorairesRepository();
+        const horairesRepository = new InMemoryHorairesRepository();
+        const saveProgressRepository = new InMemorySaveProgressRepository(['H_01_1940-1949']);
         await saveCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
+                '/my/directory/H_01_1940-1949.csv',
                 '/my/directory/H_01_previous-1950-2022.csv',
                 '/my/directory/H_01_latest-2023-2024.csv',
             ]),
             lineReader: createInMemoryLineReader({
+                '/my/directory/H_01_1940-1949.csv': [
+                    'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJHH;RR1;QRR1;DRR1;QDRR1;FF;QFF;DD;QDD;FXY;QFXY;DXY;QDXY;HXY;QHXY;FXI;QFXI;DXI;QDXI;HXI;QHXI;FF2;QFF2;DD2;QDD2;FXI2;QFXI2;DXI2;QDXI2;HXI2;QHXI2;FXI3S;QFXI3S;DXI3S;QDXI3S;HFXI3S;QHFXI3S;T;QT;TD;QTD;TN;QTN;HTN;QHTN;TX;QTX;HTX;QHTX;DG;QDG;T10;QT10;T20;QT20;T50;QT50;T100;QT100;TNSOL;QTNSOL;TN50;QTN50;TCHAUSSEE;QTCHAUSSEE;DHUMEC;QDHUMEC;U;QU;UN;QUN;HUN;QHUN;UX;QUX;HUX;QHUX;DHUMI40;QDHUMI40;DHUMI80;QDHUMI80;TSV;QTSV;PMER;QPMER;PSTAT;QPSTAT;PMERMIN;QPERMIN;GEOP;QGEOP;N;QN;NBAS;QNBAS;CL;QCL;CM;QCM;CH;QCH;N1;QN1;C1;QC1;B1;QB1;N2;QN2;C2;QC2;B2;QCB2;N3;QN3;C3;QC3;B3;QB3;N4;QN4;C4;QC4;B4;QB4;VV;QVV;DVV200;QDVV200;WW;QWW;W1;QW1;W2;QW2;SOL;QSOL;SOLNG;QSOLNG;TMER;QTMER;VVMER;QVVMER;ETATMER;QETATMER;DIRHOULE;QDIRHOULE;HVAGUE;QHVAGUE;PVAGUE;QPVAGUE;HNEIGEF;QHNEIGEF;NEIGETOT;QNEIGETOT;TSNEIGE;QTSNEIGE;TUBENEIGE;QTUBENEIGE;HNEIGEFI3;QHNEIGEFI3;HNEIGEFI1;QHNEIGEFI1;ESNEIGE;QESNEIGE;CHARGENEIGE;QCHARGENEIGE;GLO;QGLO;GLO2;QGLO2;DIR;QDIR;DIR2;QDIR2;DIF;QDIF;DIF2;QDIF2;UV;QUV;UV2;QUV2;UV_INDICE;QUV_INDICE;INFRAR;QINFRAR;INFRAR2;QINFRAR2;INS;QINS;INS2;QINS2;TLAGON;QTLAGON;TVEGETAUX;QTVEGETAUX;ECOULEMENT;QECOULEMENT',
+                    '01014002;ARBENT;46.278167;5.669000;534;1940010102;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
+                    '01014002;ARBENT;46.278167;5.669000;534;1940010103;3.3;0;4;1;3.3;2;360;9;3.3;0;360;1;1230;2;3.3;9;360;0;1230;1;3.3;2;360;9;3.3;0;360;1;1230;2;3.3;9;360;0;1230;1;-5.5;2;-5.5;9;-5.5;0;1230;1;-5.5;2;1230;9;4;0;-5.5;1;-5.5;2;-5.5;9;-5.5;0;-5.5;1;-5.5;2;-5.5;9;4;0;100;1;100;2;1230;9;100;0;1230;1;4;2;4;9;3.3;0;3.3;1;3.3;2;3.3;9;4;0;8;1;8;2;/;9;/;0;/;1;8;2;/;9;4;0;8;1;/;2;4;9;8;0;/;1;4;2;8;9;/;0;4;1;4;2;4;9;99;0;99;1;99;2;7;9;7;0;-5.5;1;6;2;7;9;999;0;3.3;1;3.3;2;4;9;4;0;3.3;1;4;2;4;9;4;0;7;1;4;2;4;9;4;0;4;1;4;2;4;9;4;0;4;1;4;2;12;9;4;0;4;1;4;2;4;9;-5.5;0;-5.5;1;-5.5;2',
+                    '',
+                ],
                 '/my/directory/H_01_previous-1950-2022.csv': [
                     'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJHH;RR1;QRR1;DRR1;QDRR1;FF;QFF;DD;QDD;FXY;QFXY;DXY;QDXY;HXY;QHXY;FXI;QFXI;DXI;QDXI;HXI;QHXI;FF2;QFF2;DD2;QDD2;FXI2;QFXI2;DXI2;QDXI2;HXI2;QHXI2;FXI3S;QFXI3S;DXI3S;QDXI3S;HFXI3S;QHFXI3S;T;QT;TD;QTD;TN;QTN;HTN;QHTN;TX;QTX;HTX;QHTX;DG;QDG;T10;QT10;T20;QT20;T50;QT50;T100;QT100;TNSOL;QTNSOL;TN50;QTN50;TCHAUSSEE;QTCHAUSSEE;DHUMEC;QDHUMEC;U;QU;UN;QUN;HUN;QHUN;UX;QUX;HUX;QHUX;DHUMI40;QDHUMI40;DHUMI80;QDHUMI80;TSV;QTSV;PMER;QPMER;PSTAT;QPSTAT;PMERMIN;QPERMIN;GEOP;QGEOP;N;QN;NBAS;QNBAS;CL;QCL;CM;QCM;CH;QCH;N1;QN1;C1;QC1;B1;QB1;N2;QN2;C2;QC2;B2;QCB2;N3;QN3;C3;QC3;B3;QB3;N4;QN4;C4;QC4;B4;QB4;VV;QVV;DVV200;QDVV200;WW;QWW;W1;QW1;W2;QW2;SOL;QSOL;SOLNG;QSOLNG;TMER;QTMER;VVMER;QVVMER;ETATMER;QETATMER;DIRHOULE;QDIRHOULE;HVAGUE;QHVAGUE;PVAGUE;QPVAGUE;HNEIGEF;QHNEIGEF;NEIGETOT;QNEIGETOT;TSNEIGE;QTSNEIGE;TUBENEIGE;QTUBENEIGE;HNEIGEFI3;QHNEIGEFI3;HNEIGEFI1;QHNEIGEFI1;ESNEIGE;QESNEIGE;CHARGENEIGE;QCHARGENEIGE;GLO;QGLO;GLO2;QGLO2;DIR;QDIR;DIR2;QDIR2;DIF;QDIF;DIF2;QDIF2;UV;QUV;UV2;QUV2;UV_INDICE;QUV_INDICE;INFRAR;QINFRAR;INFRAR2;QINFRAR2;INS;QINS;INS2;QINS2;TLAGON;QTLAGON;TVEGETAUX;QTVEGETAUX;ECOULEMENT;QECOULEMENT',
                     '01014002;ARBENT;46.278167;5.669000;534;2023010100;0.0;1;;;2.6;1;200;1;4.1;1;170;1;2313;9;8.8;1;160;1;2317;9;;;;;;;;;;;7.7;9;;;2317;9;12.3;1;7.6;1;11.9;1;2345;9;12.9;1;2308;9;0;9;;;;;;;;;;;;;;;;;73;1;71;1;2312;9;75;1;2345;9;0;9;0;9;10.4;1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;0;9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
@@ -28,9 +37,15 @@ describe('saveCSVsToDB', () => {
                     '',
                 ],
             }),
-            repository,
+            horairesRepository,
+            saveProgressRepository,
         });
-        assert.sameDeepMembers(await getArrayFromAsyncGenerator(repository.getAll()), [
+        assert.sameDeepMembers(await saveProgressRepository.getAlreadySaved(), [
+            'H_01_1940-1949',
+            'H_01_previous-1950-2022',
+            'H_01_latest-2023-2024',
+        ]);
+        assert.sameDeepMembers(await getArrayFromAsyncGenerator(horairesRepository.getAll()), [
             {
                 NUM_POSTE: '01014002',
                 NOM_USUEL: 'ARBENT',

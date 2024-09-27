@@ -3,18 +3,27 @@ import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
 import { saveCSVsToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveCSVsToDB.js';
+import { InMemorySaveProgressRepository } from '@/save-progress/db/InMemorySaveProgressRepository.js';
 import { assert, describe, it } from 'vitest';
 
 describe('saveCSVsToDB', () => {
     it('should work', async () => {
-        const repository = new InMemoryQuotidiennesRepository();
+        const quotidiennesRepository = new InMemoryQuotidiennesRepository();
+        const saveProgressRepository = new InMemorySaveProgressRepository(['Q_01_1940-1949_RR-T-Vent']);
         await saveCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
+                '/my/directory/Q_01_1940-1949_RR-T-Vent.csv',
                 '/my/directory/Q_01_previous-1950-2022_RR-T-Vent.csv',
                 '/my/directory/Q_01_latest-2023-2024_RR-T-Vent.csv',
             ]),
             lineReader: createInMemoryLineReader({
+                '/my/directory/Q_01_1940-1949_RR-T-Vent.csv': [
+                    'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJ;RR;QRR;TN;QTN;HTN;QHTN;TX;QTX;HTX;QHTX;TM;QTM;TNTXM;QTNTXM;TAMPLI;QTAMPLI;TNSOL;QTNSOL;TN50;QTN50;DG;QDG;FFM;QFFM;FF2M;QFF2M;FXY;QFXY;DXY;QDXY;HXY;QHXY;FXI;QFXI;DXI;QDXI;HXI;QHXI;FXI2;QFXI2;DXI2;QDXI2;HXI2;QHXI2;FXI3S;QFXI3S;DXI3S;QDXI3S;HXI3S;QHXI3S;DRR;QDRR',
+                    '01014002;ARBENT;46.278167;5.669000;534;19400103;1.1;9;-2.2;9;1230;9;-2.2;9;1230;9;-2.2;9;-2.2;9;1.1;9;-2.2;9;-2.2;9;3;9;1.1;9;1.1;9;1.1;9;360;9;1230;9;1.1;9;360;9;1230;9;1.1;9;360;9;1230;9;1.1;9;360;9;1230;9;3;9',
+                    '01014002;ARBENT;46.278167;5.669000;534;19400104;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
+                    '',
+                ],
                 '/my/directory/Q_01_previous-1950-2022_RR-T-Vent.csv': [
                     'NUM_POSTE;NOM_USUEL;LAT;LON;ALTI;AAAAMMJJ;RR;QRR;TN;QTN;HTN;QHTN;TX;QTX;HTX;QHTX;TM;QTM;TNTXM;QTNTXM;TAMPLI;QTAMPLI;TNSOL;QTNSOL;TN50;QTN50;DG;QDG;FFM;QFFM;FF2M;QFF2M;FXY;QFXY;DXY;QDXY;HXY;QHXY;FXI;QFXI;DXI;QDXI;HXI;QHXI;FXI2;QFXI2;DXI2;QDXI2;HXI2;QHXI2;FXI3S;QFXI3S;DXI3S;QDXI3S;HXI3S;QHXI3S;DRR;QDRR',
                     '01014002;ARBENT;46.278167;5.669000;534;20230101;0.0;1;11.6;1;115;9;17.7;1;1123;9;14.3;1;14.7;1;6.1;1;;;;;0;9;4.8;1;;;6.8;1;160;1;947;9;14.8;1;200;9;1943;9;;;;;;;13.6;9;;;1135;9;;',
@@ -28,9 +37,15 @@ describe('saveCSVsToDB', () => {
                     '',
                 ],
             }),
-            repository,
+            quotidiennesRepository,
+            saveProgressRepository,
         });
-        assert.sameDeepMembers(await getArrayFromAsyncGenerator(repository.getAll()), [
+        assert.sameDeepMembers(await saveProgressRepository.getAlreadySaved(), [
+            'Q_01_1940-1949_RR-T-Vent',
+            'Q_01_previous-1950-2022_RR-T-Vent',
+            'Q_01_latest-2023-2024_RR-T-Vent',
+        ]);
+        assert.sameDeepMembers(await getArrayFromAsyncGenerator(quotidiennesRepository.getAll()), [
             {
                 NUM_POSTE: '01014002',
                 NOM_USUEL: 'ARBENT',

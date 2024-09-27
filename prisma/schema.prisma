@@ -850,3 +850,8 @@ model Infrahoraire {
 
     @@id([NUM_POSTE, AAAAMMJJHHMN])
 }
+
+model SaveProgress {
+    name      String   @id @db.VarChar(255)
+    updatedAt DateTime @updatedAt
+}

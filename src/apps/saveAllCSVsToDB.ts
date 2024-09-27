@@ -16,23 +16,26 @@ import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { saveCSVsToDB as saveMensuellesCSVsToDB } from '@/mensuelles/use-cases/saveCSVsToDB.js';
 import { saveCSVsToDB as saveQuotidiennesAutresParametresCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
 import { saveCSVsToDB as saveQuotidiennesRRTVentCSVsToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveCSVsToDB.js';
+import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
 
 async function main() {
     LoggerSingleton.getSingleton().setLogLevel('info');
-
-    LoggerSingleton.getSingleton().info({ message: 'Reading infrahoraires CSVs :' });
 
     const prisma = new PrismaClient();
 
     const directory: string = `${process.cwd()}/data`;
     const departement: Departement | undefined = Departement.of(974);
 
+    const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading infrahoraires CSVs :' });
     await saveInfrahorairesCSVsToDB({
         directory,
         globber: glob,
         lineReader: readLines,
-        repository: new PrismaInfrahorairesRepository({ prisma }),
+        infrahorairesRepository: new PrismaInfrahorairesRepository({ prisma }),
+        saveProgressRepository,
         departement,
     });
 
@@ -41,7 +44,8 @@ async function main() {
         directory,
         globber: glob,
         lineReader: readLines,
-        repository: new PrismaHorairesRepository({ prisma }),
+        horairesRepository: new PrismaHorairesRepository({ prisma }),
+        saveProgressRepository,
         departement,
     });
 
@@ -50,16 +54,18 @@ async function main() {
         directory,
         globber: glob,
         lineReader: readLines,
-        repository: new PrismaQuotidiennesRepository({ prisma }),
+        quotidiennesRepository: new PrismaQuotidiennesRepository({ prisma }),
+        saveProgressRepository,
         departement,
     });
 
-    LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (autres paremètres) CSVs :' });
+    LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (autres paramètres) CSVs :' });
     await saveQuotidiennesAutresParametresCSVsToDB({
         directory,
         globber: glob,
         lineReader: readLines,
-        repository: new PrismaQuotidiennesAutresParametresRepository({ prisma }),
+        quotidiennesAutresParametresRepository: new PrismaQuotidiennesAutresParametresRepository({ prisma }),
+        saveProgressRepository,
         departement,
     });
 
@@ -68,7 +74,8 @@ async function main() {
         directory,
         globber: glob,
         lineReader: readLines,
-        repository: new PrismaMensuellesRepository({ prisma }),
+        mensuellesRepository: new PrismaMensuellesRepository({ prisma }),
+        saveProgressRepository,
         departement,
     });
 
@@ -77,7 +84,8 @@ async function main() {
         directory,
         globber: glob,
         lineReader: readLines,
-        repository: new PrismaDecadairesRepository({ prisma }),
+        decadairesRepository: new PrismaDecadairesRepository({ prisma }),
+        saveProgressRepository,
         departement,
     });
 
@@ -86,7 +94,8 @@ async function main() {
         directory,
         globber: glob,
         lineReader: readLines,
-        repository: new PrismaDecadairesAgroRepository({ prisma }),
+        decadairesAgroRepository: new PrismaDecadairesAgroRepository({ prisma }),
+        saveProgressRepository,
         departement,
     });
 

@@ -1,17 +1,21 @@
 import { parseCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import { getCSVName } from '@/csv/getCSVName.js';
 import { DecadairesAgroRepository } from '@/db/decadaires-agro/Repository.js';
 import { toDTO } from '@/db/decadaires-agro/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
+import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
 
 export async function saveCSVToDB({
     csv,
     readLines,
-    repository,
+    decadairesAgroRepository,
+    saveProgressRepository,
 }: {
     csv: string;
     readLines: LineReader;
-    repository: DecadairesAgroRepository;
+    decadairesAgroRepository: DecadairesAgroRepository;
+    saveProgressRepository: SaveProgressRepository;
 }): Promise<void> {
     const csvLines = readLines(csv);
     const results = parseCSV(csvLines);
@@ -33,6 +37,7 @@ ${result.error.message}`,
         LoggerSingleton.getSingleton().debug({
             message: `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMM.toISOString()}-${line.NUM_DECADE}`,
         });
-        await repository.upsert(toDTO(line));
+        await decadairesAgroRepository.upsert(toDTO(line));
+        await saveProgressRepository.markAsSaved(getCSVName(csv));
     }
 }
