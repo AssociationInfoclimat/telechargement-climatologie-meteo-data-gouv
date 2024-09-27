@@ -2,13 +2,14 @@ import {
     parseCodeQualite,
     ParseError,
     parseFloatOrNull,
+    parseHumiditeRelative,
     parseInteger,
     parseNomUsuel,
     parseNumeroPoste,
     parseOcta,
-    parsePercentage,
     parsePositiveFloat,
     parsePositiveInteger,
+    parseRelativePercentage,
     parseTime,
     parseUVIndex,
 } from '@/csv/parseCSVUtils.js';
@@ -68,22 +69,22 @@ const quotidienneLineSchema = z.object({
     UV_INDICEX: z.string().transform(parseUVIndex), // 12
     QUV_INDICEX: z.string().transform(parseCodeQualite), // 9
     // SIGMA       : fraction d’insolation par rapport à la durée du jour (en %)
-    SIGMA: z.string().transform(parsePercentage), // 100
+    SIGMA: z.string().transform(parseRelativePercentage), // 100
     QSIGMA: z.string().transform(parseCodeQualite), // 9
     // UN          : minimum quotidien des humidités relatives minimales horaires (en %)
-    UN: z.string().transform(parsePercentage), // 100
+    UN: z.string().transform(parseHumiditeRelative), // 100
     QUN: z.string().transform(parseCodeQualite), // 9
     // HUN         : heure de UN (hhmm)
     HUN: z.string().transform(parseTime), // 1230
     QHUN: z.string().transform(parseCodeQualite), // 9
     // UX          : maximum quotidien des humidités relatives maximales horaires (en %)
-    UX: z.string().transform(parsePercentage), // 100
+    UX: z.string().transform(parseHumiditeRelative), // 100
     QUX: z.string().transform(parseCodeQualite), // 9
     // HUX         : heure de UX (hhmm)
     HUX: z.string().transform(parseTime), // 1230
     QHUX: z.string().transform(parseCodeQualite), // 9
     // UM          : moyenne quotidienne des humidités relatives horaires (en %)
-    UM: z.string().transform(parsePercentage), // 100
+    UM: z.string().transform(parseHumiditeRelative), // 100
     QUM: z.string().transform(parseCodeQualite), // 9
     // DHUMI40     : durée humidité avec U ≤ 40 % (en mn)
     DHUMI40: z.string().transform(parsePositiveInteger), // 1

@@ -7,9 +7,9 @@ import {
     parseCodeQualite,
     ParseError,
     parseFloatOrNull,
+    parseHumiditeRelative,
     parseInteger,
     parseOcta,
-    parsePercentage,
     parsePositiveFloat,
     parsePositiveInteger,
     parseTime,
@@ -122,13 +122,13 @@ const horaireLineSchema = z.object({
     QTCHAUSSEE: z.string().transform(parseCodeQualite), // 9
     DHUMEC: z.string().transform(parsePositiveInteger), // 4
     QDHUMEC: z.string().transform(parseCodeQualite), // 0
-    U: z.string().transform(parsePercentage), // 100
+    U: z.string().transform(parseHumiditeRelative), // 100
     QU: z.string().transform(parseCodeQualite), // 1
-    UN: z.string().transform(parsePercentage), // 100
+    UN: z.string().transform(parseHumiditeRelative), // 100
     QUN: z.string().transform(parseCodeQualite), // 2
     HUN: z.string().transform(parseTime), // 1230
     QHUN: z.string().transform(parseCodeQualite), // 9
-    UX: z.string().transform(parsePercentage), // 100
+    UX: z.string().transform(parseHumiditeRelative), // 100
     QUX: z.string().transform(parseCodeQualite), // 0
     HUX: z.string().transform(parseTime), // 1230
     QHUX: z.string().transform(parseCodeQualite), // 1

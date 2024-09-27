@@ -1,11 +1,14 @@
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { Decade } from '@/data/value-objects/Decade.js';
+import { HumiditeRelative } from '@/data/value-objects/HumiditeRelative.js';
+import { Integer } from '@/data/value-objects/Integer.js';
 import { Jour } from '@/data/value-objects/Jour.js';
 import { NbJours } from '@/data/value-objects/NbJours.js';
 import { Octa } from '@/data/value-objects/Octa.js';
 import { Percentage } from '@/data/value-objects/Percentage.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
+import { RelativePercentage } from '@/data/value-objects/RelativePercentage.js';
 import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
 import { WindDirection } from '@/data/value-objects/WindDirection.js';
@@ -40,7 +43,7 @@ export function parsePositiveFloat(value: string): PositiveFloat {
 }
 
 export function parseCodeQualite(value: string): CodeQualite {
-    return CodeQualite.of(parsePositiveInteger(value));
+    return CodeQualite.of(Integer.of(parseFloatOrNull(value)));
 }
 
 export function parseTime(value: string): Time {
@@ -49,6 +52,14 @@ export function parseTime(value: string): Time {
 
 export function parsePercentage(value: string): Percentage {
     return Percentage.of(parsePositiveInteger(value));
+}
+
+export function parseRelativePercentage(value: string): RelativePercentage {
+    return RelativePercentage.of(parseFloatOrNull(value));
+}
+
+export function parseHumiditeRelative(value: string): HumiditeRelative {
+    return HumiditeRelative.of(parseFloatOrNull(value));
 }
 
 export function parseOcta(value: string): Octa {
