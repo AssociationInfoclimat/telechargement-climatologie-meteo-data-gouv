@@ -44,10 +44,15 @@ export class ConsoleLogger implements Logger {
             let log = `[${level.toUpperCase()}] ${message}`;
             if (data) {
                 if (data instanceof Error) {
-                    log += `\n${{ d: data.message }}`;
-                } else {
-                    log += `\n${JSON.stringify(data)}`;
+                    data = {
+                        message: data.message,
+                        name: data.name,
+                        cause: data.cause,
+                        stack: data.stack,
+                        error: data.toString(),
+                    };
                 }
+                log += `\n${JSON.stringify(data, null, 4)}`;
             }
             console.log(log);
         }
