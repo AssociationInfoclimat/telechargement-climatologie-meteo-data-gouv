@@ -3,7 +3,7 @@ import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
 export class InvalidWindDirectionError extends ValidationError {
     constructor(degrees: PositiveInteger) {
-        super(`Invalid wind direction: '${degrees}'. Must be an integer between 1 and 360.`);
+        super(`Invalid wind direction: '${degrees}'. Must be an integer between 0 and 360.`);
     }
 }
 
@@ -16,10 +16,10 @@ export class WindDirection {
 
     static of(degrees: PositiveInteger): WindDirection {
         const value = degrees.value();
-        if (value !== null && !(0 < value && value <= 360)) {
+        if (value !== null && !(0 <= value && value <= 360)) {
             throw new InvalidWindDirectionError(degrees);
         }
-        return new WindDirection(degrees);
+        return new WindDirection(degrees.value() === 360 ? PositiveInteger.of(0) : degrees);
     }
 
     value(): number | null {
