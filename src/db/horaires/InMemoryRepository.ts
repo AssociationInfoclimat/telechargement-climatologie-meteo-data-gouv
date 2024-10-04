@@ -17,6 +17,12 @@ export class InMemoryHorairesRepository implements HorairesRepository {
         }
     }
 
+    async upsertMany(dtos: HoraireDTO[]): Promise<void> {
+        for (const dto of dtos) {
+            await this.upsert(dto);
+        }
+    }
+
     async *getAll(): AsyncGenerator<HoraireDTO> {
         for (const dto of this.dtos) {
             yield dto;

@@ -1,5 +1,6 @@
 import { DecadaireAgroDTO } from '@/db/decadaires-agro/DTO.js';
 import { DecadairesAgroRepository } from '@/db/decadaires-agro/Repository.js';
+import { buildPrismaUpsertSQL } from '@/lib/sql/buildPrismaUpsertSQL.js';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaDecadairesAgroRepository implements DecadairesAgroRepository {
@@ -23,6 +24,14 @@ export class PrismaDecadairesAgroRepository implements DecadairesAgroRepository 
                 },
             },
         });
+    }
+
+    async upsertMany(dtos: DecadaireAgroDTO[]): Promise<void> {
+        if (dtos.length <= 0) {
+            return;
+        }
+        const upsertSQL = buildPrismaUpsertSQL(dtos, 'DecadaireAgro', ['NUM_POSTE', 'AAAAMM', 'NUM_DECADE']);
+        await this.prisma.$queryRaw(upsertSQL);
     }
 
     async *getAll(): AsyncGenerator<DecadaireAgroDTO> {

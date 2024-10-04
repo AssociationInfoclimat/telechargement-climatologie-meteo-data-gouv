@@ -1,5 +1,6 @@
 import { MensuelleDTO } from '@/db/mensuelles/DTO.js';
 import { MensuellesRepository } from '@/db/mensuelles/Repository.js';
+import { buildPrismaUpsertSQL } from '@/lib/sql/buildPrismaUpsertSQL.js';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaMensuellesRepository implements MensuellesRepository {
@@ -22,6 +23,14 @@ export class PrismaMensuellesRepository implements MensuellesRepository {
                 },
             },
         });
+    }
+
+    async upsertMany(dtos: MensuelleDTO[]): Promise<void> {
+        if (dtos.length <= 0) {
+            return;
+        }
+        const upsertSQL = buildPrismaUpsertSQL(dtos, 'Mensuelle', ['NUM_POSTE', 'AAAAMM']);
+        await this.prisma.$queryRaw(upsertSQL);
     }
 
     async *getAll(): AsyncGenerator<MensuelleDTO> {

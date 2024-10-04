@@ -19,6 +19,12 @@ export class InMemoryDecadairesAgroRepository implements DecadairesAgroRepositor
         }
     }
 
+    async upsertMany(dtos: DecadaireAgroDTO[]): Promise<void> {
+        for (const dto of dtos) {
+            await this.upsert(dto);
+        }
+    }
+
     async *getAll(): AsyncGenerator<DecadaireAgroDTO> {
         for (const dto of this.dtos) {
             yield dto;

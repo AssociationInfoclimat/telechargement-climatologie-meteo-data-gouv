@@ -1,5 +1,6 @@
 import { DecadaireDTO } from '@/db/decadaires/DTO.js';
 import { DecadairesRepository } from '@/db/decadaires/Repository.js';
+import { buildPrismaUpsertSQL } from '@/lib/sql/buildPrismaUpsertSQL.js';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaDecadairesRepository implements DecadairesRepository {
@@ -23,6 +24,14 @@ export class PrismaDecadairesRepository implements DecadairesRepository {
                 },
             },
         });
+    }
+
+    async upsertMany(dtos: DecadaireDTO[]): Promise<void> {
+        if (dtos.length <= 0) {
+            return;
+        }
+        const upsertSQL = buildPrismaUpsertSQL(dtos, 'Decadaire', ['NUM_POSTE', 'AAAAMM', 'NUM_DECADE']);
+        await this.prisma.$queryRaw(upsertSQL);
     }
 
     async *getAll(): AsyncGenerator<DecadaireDTO> {

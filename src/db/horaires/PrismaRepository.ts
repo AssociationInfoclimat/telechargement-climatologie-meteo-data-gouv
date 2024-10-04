@@ -1,5 +1,6 @@
 import { HoraireDTO } from '@/db/horaires/DTO.js';
 import { HorairesRepository } from '@/db/horaires/Repository.js';
+import { buildPrismaUpsertSQL } from '@/lib/sql/buildPrismaUpsertSQL.js';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaHorairesRepository implements HorairesRepository {
@@ -22,6 +23,14 @@ export class PrismaHorairesRepository implements HorairesRepository {
                 },
             },
         });
+    }
+
+    async upsertMany(dtos: HoraireDTO[]): Promise<void> {
+        if (dtos.length <= 0) {
+            return;
+        }
+        const upsertSQL = buildPrismaUpsertSQL(dtos, 'Horaire', ['NUM_POSTE', 'AAAAMMJJHH']);
+        await this.prisma.$queryRaw(upsertSQL);
     }
 
     async *getAll(): AsyncGenerator<HoraireDTO> {

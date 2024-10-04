@@ -17,6 +17,12 @@ export class InMemoryInfrahorairesRepository implements InfrahorairesRepository 
         }
     }
 
+    async upsertMany(dtos: InfrahoraireDTO[]): Promise<void> {
+        for (const dto of dtos) {
+            await this.upsert(dto);
+        }
+    }
+
     async *getAll(): AsyncGenerator<InfrahoraireDTO> {
         for (const dto of this.dtos) {
             yield dto;

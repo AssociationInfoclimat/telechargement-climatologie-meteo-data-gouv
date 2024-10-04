@@ -1,5 +1,6 @@
 import { QuotidienneAutresParametresDTO } from '@/db/quotidiennes/autres-parametres/DTO.js';
 import { QuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/Repository.js';
+import { buildPrismaUpsertSQL } from '@/lib/sql/buildPrismaUpsertSQL.js';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaQuotidiennesAutresParametresRepository implements QuotidiennesAutresParametresRepository {
@@ -22,6 +23,14 @@ export class PrismaQuotidiennesAutresParametresRepository implements Quotidienne
                 },
             },
         });
+    }
+
+    async upsertMany(dtos: QuotidienneAutresParametresDTO[]): Promise<void> {
+        if (dtos.length <= 0) {
+            return;
+        }
+        const upsertSQL = buildPrismaUpsertSQL(dtos, 'QuotidienneAutresParametres', ['NUM_POSTE', 'AAAAMMJJ']);
+        await this.prisma.$queryRaw(upsertSQL);
     }
 
     async *getAll(): AsyncGenerator<QuotidienneAutresParametresDTO> {

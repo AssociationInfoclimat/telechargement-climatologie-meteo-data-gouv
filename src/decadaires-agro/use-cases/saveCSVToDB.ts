@@ -1,7 +1,8 @@
-import { parseCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import { DecadaireAgroLine, parseCSV } from '@/csv/decadaires-agro/parseCSV.js';
 import { getCSVName } from '@/csv/getCSVName.js';
 import { DecadairesAgroRepository } from '@/db/decadaires-agro/Repository.js';
 import { toDTO } from '@/db/decadaires-agro/toDTO.js';
+import { Buffer } from '@/lib/Buffer.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
@@ -19,6 +20,11 @@ export async function saveCSVToDB({
 }): Promise<void> {
     const csvLines = readLines(csv);
     const results = parseCSV(csvLines);
+
+    const upserts$: Promise<void>[] = [];
+    const buffer = new Buffer<DecadaireAgroLine>({
+        onChunk: lines => upserts$.push(decadairesAgroRepository.upsertMany(lines.map(toDTO))),
+    });
     for await (const result of results) {
         if (!result.ok) {
             LoggerSingleton.getSingleton().error({
@@ -37,7 +43,10 @@ ${result.error.message}`,
         LoggerSingleton.getSingleton().debug({
             message: `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMM.toISOString()}-${line.NUM_DECADE}`,
         });
-        await decadairesAgroRepository.upsert(toDTO(line));
-        await saveProgressRepository.markAsSaved(getCSVName(csv));
+        buffer.add(line);
     }
+    buffer.flush();
+
+    await Promise.all(upserts$);
+    await saveProgressRepository.markAsSaved(getCSVName(csv));
 }

@@ -19,6 +19,12 @@ export class InMemoryDecadairesRepository implements DecadairesRepository {
         }
     }
 
+    async upsertMany(dtos: DecadaireDTO[]): Promise<void> {
+        for (const dto of dtos) {
+            await this.upsert(dto);
+        }
+    }
+
     async *getAll(): AsyncGenerator<DecadaireDTO> {
         for (const dto of this.dtos) {
             yield dto;

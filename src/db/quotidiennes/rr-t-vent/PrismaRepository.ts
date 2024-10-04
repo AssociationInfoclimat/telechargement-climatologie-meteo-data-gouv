@@ -1,5 +1,6 @@
 import { QuotidienneDTO } from '@/db/quotidiennes/rr-t-vent/DTO.js';
 import { QuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/Repository.js';
+import { buildPrismaUpsertSQL } from '@/lib/sql/buildPrismaUpsertSQL.js';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaQuotidiennesRepository implements QuotidiennesRepository {
@@ -22,6 +23,14 @@ export class PrismaQuotidiennesRepository implements QuotidiennesRepository {
                 },
             },
         });
+    }
+
+    async upsertMany(dtos: QuotidienneDTO[]): Promise<void> {
+        if (dtos.length <= 0) {
+            return;
+        }
+        const upsertSQL = buildPrismaUpsertSQL(dtos, 'Quotidienne', ['NUM_POSTE', 'AAAAMMJJ']);
+        await this.prisma.$queryRaw(upsertSQL);
     }
 
     async *getAll(): AsyncGenerator<QuotidienneDTO> {

@@ -1,5 +1,6 @@
 import { InfrahoraireDTO } from '@/db/infrahoraires/DTO.js';
 import { InfrahorairesRepository } from '@/db/infrahoraires/Repository.js';
+import { buildPrismaUpsertSQL } from '@/lib/sql/buildPrismaUpsertSQL.js';
 import { PrismaClient } from '@prisma/client';
 
 export class PrismaInfrahorairesRepository implements InfrahorairesRepository {
@@ -22,6 +23,14 @@ export class PrismaInfrahorairesRepository implements InfrahorairesRepository {
                 },
             },
         });
+    }
+
+    async upsertMany(dtos: InfrahoraireDTO[]): Promise<void> {
+        if (dtos.length <= 0) {
+            return;
+        }
+        const upsertSQL = buildPrismaUpsertSQL(dtos, 'Infrahoraire', ['NUM_POSTE', 'AAAAMMJJHHMN']);
+        await this.prisma.$queryRaw(upsertSQL);
     }
 
     async *getAll(): AsyncGenerator<InfrahoraireDTO> {

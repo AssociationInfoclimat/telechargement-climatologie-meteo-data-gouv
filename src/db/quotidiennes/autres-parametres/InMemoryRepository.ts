@@ -17,6 +17,12 @@ export class InMemoryQuotidiennesAutresParametresRepository implements Quotidien
         }
     }
 
+    async upsertMany(dtos: QuotidienneAutresParametresDTO[]): Promise<void> {
+        for (const dto of dtos) {
+            await this.upsert(dto);
+        }
+    }
+
     async *getAll(): AsyncGenerator<QuotidienneAutresParametresDTO> {
         for (const dto of this.dtos) {
             yield dto;

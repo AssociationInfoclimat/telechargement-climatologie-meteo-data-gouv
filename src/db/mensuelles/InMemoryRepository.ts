@@ -17,6 +17,12 @@ export class InMemoryMensuellesRepository implements MensuellesRepository {
         }
     }
 
+    async upsertMany(dtos: MensuelleDTO[]): Promise<void> {
+        for (const dto of dtos) {
+            await this.upsert(dto);
+        }
+    }
+
     async *getAll(): AsyncGenerator<MensuelleDTO> {
         for (const dto of this.dtos) {
             yield dto;
