@@ -8,6 +8,7 @@ import { saveCSVsToDB as saveQuotidiennesAutresParametresCSVsToDB } from '@/quot
 import { saveCSVsToDB as saveQuotidiennesRRTVentCSVsToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveCSVsToDB.js';
 import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
+import PQueue from 'p-queue';
 
 async function main() {
     LoggerSingleton.getSingleton().setLogLevel('info');
@@ -27,6 +28,7 @@ async function main() {
         quotidiennesRepository: new PrismaQuotidiennesRepository({ prisma }),
         saveProgressRepository,
         departement,
+        queue: new PQueue({ concurrency: 10 }),
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (autres paramètres) CSVs :' });
@@ -37,6 +39,7 @@ async function main() {
         quotidiennesAutresParametresRepository: new PrismaQuotidiennesAutresParametresRepository({ prisma }),
         saveProgressRepository,
         departement,
+        queue: new PQueue({ concurrency: 10 }),
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Done' });

@@ -6,6 +6,7 @@ import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
+import PQueue from 'p-queue';
 
 async function main() {
     LoggerSingleton.getSingleton().setLogLevel('info');
@@ -23,6 +24,7 @@ async function main() {
         infrahorairesRepository: new PrismaInfrahorairesRepository({ prisma }),
         saveProgressRepository: new PrismaSaveProgressRepository(prisma),
         departement,
+        queue: new PQueue({ concurrency: 10 }),
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Done' });

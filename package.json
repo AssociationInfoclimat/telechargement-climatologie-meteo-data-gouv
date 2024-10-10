@@ -30,7 +30,9 @@
         "unzip-all-archives": "tsx src/apps/unzipAllArchives.ts",
         "unzip-remaining-archives": "tsx src/apps/unzipRemainingArchives.ts",
         "save-all-csvs-to-db-sequentially": "tsx src/apps/saveAllCSVsToDB.ts",
-        "save-all-csvs-to-db-in-parallel": "bash scripts/save-all-csvs-to-db-in-parallel.sh"
+        "save-all-csvs-to-db-sequentially:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/saveAllCSVsToDB.ts",
+        "save-all-csvs-to-db-in-parallel": "bash scripts/save-all-csvs-to-db-in-parallel.sh",
+        "save-all-csvs-to-db-in-parallel:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- bash scripts/save-all-csvs-to-db-in-parallel.sh"
     },
     "lint-staged": {
         "*.html": "prettier --write --ignore-unknown",
@@ -49,6 +51,7 @@
         "dotenv": "^16.4.5",
         "download": "^8.0.0",
         "glob": "^11.0.0",
+        "p-queue": "^8.0.1",
         "pino": "^9.4.0",
         "typescript": "^5.5.4",
         "zod": "^3.23.8"

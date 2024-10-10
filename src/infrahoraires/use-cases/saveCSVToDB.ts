@@ -6,24 +6,27 @@ import { Buffer } from '@/lib/Buffer.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
+import PQueue from 'p-queue';
 
 export async function saveCSVToDB({
     csv,
     readLines,
     infrahorairesRepository,
     saveProgressRepository,
+    queue,
 }: {
     csv: string;
     readLines: LineReader;
     infrahorairesRepository: InfrahorairesRepository;
     saveProgressRepository: SaveProgressRepository;
+    queue?: PQueue;
 }): Promise<void> {
+    queue = queue ?? new PQueue({ concurrency: 50 });
     const csvLines = readLines(csv);
     const results = parseCSV(csvLines);
 
-    const upserts$: Promise<void>[] = [];
     const buffer = new Buffer<InfrahoraireLine>({
-        onChunk: lines => upserts$.push(infrahorairesRepository.upsertMany(lines.map(toDTO))),
+        onChunk: lines => queue.add(() => infrahorairesRepository.upsertMany(lines.map(toDTO))),
     });
     for await (const result of results) {
         if (!result.ok) {
@@ -47,6 +50,6 @@ ${result.error.message}`,
     }
     buffer.flush();
 
-    await Promise.all(upserts$);
+    await queue.onIdle();
     await saveProgressRepository.markAsSaved(getCSVName(csv));
 }

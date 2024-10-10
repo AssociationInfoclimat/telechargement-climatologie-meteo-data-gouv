@@ -8,6 +8,7 @@ import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { saveCSVToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveCSVToDB.js';
 import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
+import PQueue from 'p-queue';
 
 export async function saveCSVsToDB({
     directory,
@@ -16,6 +17,7 @@ export async function saveCSVsToDB({
     quotidiennesRepository,
     saveProgressRepository,
     departement,
+    queue,
 }: {
     directory: string;
     globber: Globber;
@@ -23,6 +25,7 @@ export async function saveCSVsToDB({
     quotidiennesRepository: QuotidiennesRepository;
     saveProgressRepository: SaveProgressRepository;
     departement?: Departement;
+    queue?: PQueue;
 }): Promise<void> {
     const csvs = await globFrequence({
         frequence: FREQUENCES.quotidienne,
@@ -46,6 +49,7 @@ export async function saveCSVsToDB({
             readLines: lineReader,
             quotidiennesRepository,
             saveProgressRepository,
+            queue,
         });
     }
 }

@@ -8,6 +8,7 @@ import { Globber } from '@/lib/fs/glob/Globber.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
+import PQueue from 'p-queue';
 
 export async function saveCSVsToDB({
     directory,
@@ -16,6 +17,7 @@ export async function saveCSVsToDB({
     infrahorairesRepository,
     saveProgressRepository,
     departement,
+    queue,
 }: {
     directory: string;
     globber: Globber;
@@ -23,6 +25,7 @@ export async function saveCSVsToDB({
     infrahorairesRepository: InfrahorairesRepository;
     saveProgressRepository: SaveProgressRepository;
     departement?: Departement;
+    queue?: PQueue;
 }): Promise<void> {
     const csvs = await globFrequence({
         frequence: FREQUENCES.infrahoraire,
@@ -46,6 +49,7 @@ export async function saveCSVsToDB({
             readLines: lineReader,
             infrahorairesRepository,
             saveProgressRepository,
+            queue,
         });
     }
 }

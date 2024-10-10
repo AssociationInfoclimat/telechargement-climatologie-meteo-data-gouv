@@ -6,6 +6,7 @@ import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { saveCSVsToDB as saveMensuellesCSVsToDB } from '@/mensuelles/use-cases/saveCSVsToDB.js';
 import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
+import PQueue from 'p-queue';
 
 async function main() {
     LoggerSingleton.getSingleton().setLogLevel('info');
@@ -23,6 +24,7 @@ async function main() {
         mensuellesRepository: new PrismaMensuellesRepository({ prisma }),
         saveProgressRepository: new PrismaSaveProgressRepository(prisma),
         departement,
+        queue: new PQueue({ concurrency: 10 }),
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Done' });
