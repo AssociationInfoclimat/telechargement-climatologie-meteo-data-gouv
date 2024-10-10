@@ -4,8 +4,8 @@ import { PrismaQuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/Prisma
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
-import { saveCSVsToDB as saveQuotidiennesAutresParametresCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
-import { saveCSVsToDB as saveQuotidiennesRRTVentCSVsToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveCSVsToDB.js';
+import { saveQuotidiennesAutresParametresCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
+import { saveQuotidiennesCSVsToDB as saveQuotidiennesRRTVentCSVsToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveCSVsToDB.js';
 import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
 import PQueue from 'p-queue';

@@ -2,7 +2,7 @@ import { PrismaMensuellesRepository } from '@/db/mensuelles/PrismaRepository.js'
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
-import { saveCSVsToDB } from '@/mensuelles/use-cases/saveCSVsToDB.js';
+import { saveMensuellesCSVsToDB } from '@/mensuelles/use-cases/saveCSVsToDB.js';
 import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
 import { resolve } from 'node:path';
@@ -17,7 +17,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const mensuellesRepository = new PrismaMensuellesRepository({ prisma });
         const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
-        await saveCSVsToDB({
+        await saveMensuellesCSVsToDB({
             directory: resolve(`${import.meta.dirname}/../../data-samples`),
             globber: glob,
             lineReader: readLines,

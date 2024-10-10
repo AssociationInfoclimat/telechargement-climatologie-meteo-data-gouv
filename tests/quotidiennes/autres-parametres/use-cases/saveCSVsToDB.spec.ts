@@ -2,7 +2,7 @@ import { InMemoryQuotidiennesAutresParametresRepository } from '@/db/quotidienne
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
-import { saveCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
+import { saveQuotidiennesAutresParametresCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
 import { InMemorySaveProgressRepository } from '@/save-progress/db/InMemorySaveProgressRepository.js';
 import { assert, describe, it } from 'vitest';
 
@@ -10,7 +10,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const quotidiennesAutresParametresRepository = new InMemoryQuotidiennesAutresParametresRepository();
         const saveProgressRepository = new InMemorySaveProgressRepository(['Q_01_1950-2022_autres-parametres']);
-        await saveCSVsToDB({
+        await saveQuotidiennesAutresParametresCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
                 '/my/directory/Q_01_1950-2022_autres-parametres.csv',

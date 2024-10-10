@@ -1,16 +1,15 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { globFrequence } from '@/csv/files/globFrequence.js';
-import { getCSVName } from '@/csv/getCSVName.js';
+import { parseHoraireCSV } from '@/csv/horaires/parseCSV.js';
 import { HorairesRepository } from '@/db/horaires/Repository.js';
+import { toDTO } from '@/db/horaires/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
-import { saveCSVToDB } from '@/horaires/use-cases/saveCSVToDB.js';
 import { Globber } from '@/lib/fs/glob/Globber.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
-import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
+import { saveCSVsToDB } from '@/use-cases/saveCSVsToDB.js';
 import PQueue from 'p-queue';
 
-export async function saveCSVsToDB({
+export async function saveHorairesCSVsToDB({
     directory,
     globber,
     lineReader,
@@ -27,29 +26,18 @@ export async function saveCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    const csvs = await globFrequence({
+    await saveCSVsToDB({
         frequence: FREQUENCES.horaire,
         directory,
-        glob: globber,
+        globber,
+        lineReader,
+        lineReadingDebugMessageCreator: line =>
+            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJHH.toISOString()}`,
+        parseCSV: parseHoraireCSV,
+        toDTO,
+        frequencesRepository: horairesRepository,
+        saveProgressRepository,
         departement,
+        queue,
     });
-    const alreadySaved = await saveProgressRepository.getAlreadySaved();
-    for (const csv of csvs) {
-        if (alreadySaved.includes(getCSVName(csv))) {
-            LoggerSingleton.getSingleton().info({
-                message: `Skipping already saved : '${csv}'`,
-            });
-            continue;
-        }
-        LoggerSingleton.getSingleton().info({
-            message: `Reading file : '${csv}'`,
-        });
-        await saveCSVToDB({
-            csv,
-            readLines: lineReader,
-            horairesRepository,
-            saveProgressRepository,
-            queue,
-        });
-    }
 }

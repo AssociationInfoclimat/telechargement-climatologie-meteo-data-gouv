@@ -1,6 +1,6 @@
 import { Departement } from '@/archives/departements/Departement.js';
 import { PrismaDecadairesRepository } from '@/db/decadaires/PrismaRepository.js';
-import { saveCSVsToDB as saveDecadairesCSVsToDB } from '@/decadaires/use-cases/saveCSVsToDB.js';
+import { saveDecadairesCSVsToDB } from '@/decadaires/use-cases/saveCSVsToDB.js';
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';

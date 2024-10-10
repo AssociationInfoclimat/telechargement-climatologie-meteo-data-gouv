@@ -1,5 +1,5 @@
 import { InMemoryHorairesRepository } from '@/db/horaires/InMemoryRepository.js';
-import { saveCSVsToDB } from '@/horaires/use-cases/saveCSVsToDB.js';
+import { saveHorairesCSVsToDB } from '@/horaires/use-cases/saveCSVsToDB.js';
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
@@ -10,7 +10,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const horairesRepository = new InMemoryHorairesRepository();
         const saveProgressRepository = new InMemorySaveProgressRepository(['H_01_1940-1949']);
-        await saveCSVsToDB({
+        await saveHorairesCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
                 '/my/directory/H_01_1940-1949.csv',

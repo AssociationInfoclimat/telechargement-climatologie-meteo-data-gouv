@@ -2,7 +2,7 @@ import { PrismaQuotidiennesAutresParametresRepository } from '@/db/quotidiennes/
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
-import { saveCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
+import { saveQuotidiennesAutresParametresCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
 import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
 import { resolve } from 'node:path';
@@ -17,7 +17,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const quotidiennesAutresParametresRepository = new PrismaQuotidiennesAutresParametresRepository({ prisma });
         const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
-        await saveCSVsToDB({
+        await saveQuotidiennesAutresParametresCSVsToDB({
             directory: resolve(`${import.meta.dirname}/../../../data-samples`),
             globber: glob,
             lineReader: readLines,

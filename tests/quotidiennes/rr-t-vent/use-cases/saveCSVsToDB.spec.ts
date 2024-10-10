@@ -2,7 +2,7 @@ import { InMemoryQuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/InMe
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
-import { saveCSVsToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveCSVsToDB.js';
+import { saveQuotidiennesCSVsToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveCSVsToDB.js';
 import { InMemorySaveProgressRepository } from '@/save-progress/db/InMemorySaveProgressRepository.js';
 import { assert, describe, it } from 'vitest';
 
@@ -10,7 +10,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const quotidiennesRepository = new InMemoryQuotidiennesRepository();
         const saveProgressRepository = new InMemorySaveProgressRepository(['Q_01_1940-1949_RR-T-Vent']);
-        await saveCSVsToDB({
+        await saveQuotidiennesCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
                 '/my/directory/Q_01_1940-1949_RR-T-Vent.csv',

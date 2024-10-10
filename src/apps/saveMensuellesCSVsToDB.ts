@@ -3,7 +3,7 @@ import { PrismaMensuellesRepository } from '@/db/mensuelles/PrismaRepository.js'
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
-import { saveCSVsToDB as saveMensuellesCSVsToDB } from '@/mensuelles/use-cases/saveCSVsToDB.js';
+import { saveMensuellesCSVsToDB } from '@/mensuelles/use-cases/saveCSVsToDB.js';
 import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
 import PQueue from 'p-queue';

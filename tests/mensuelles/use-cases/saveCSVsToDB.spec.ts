@@ -2,7 +2,7 @@ import { InMemoryMensuellesRepository } from '@/db/mensuelles/InMemoryRepository
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
-import { saveCSVsToDB } from '@/mensuelles/use-cases/saveCSVsToDB.js';
+import { saveMensuellesCSVsToDB } from '@/mensuelles/use-cases/saveCSVsToDB.js';
 import { InMemorySaveProgressRepository } from '@/save-progress/db/InMemorySaveProgressRepository.js';
 import { assert, describe, it } from 'vitest';
 
@@ -10,7 +10,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const mensuellesRepository = new InMemoryMensuellesRepository();
         const saveProgressRepository = new InMemorySaveProgressRepository(['MENSQ_01_1940-1949']);
-        await saveCSVsToDB({
+        await saveMensuellesCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
                 '/my/directory/MENSQ_01_1940-1949.csv',

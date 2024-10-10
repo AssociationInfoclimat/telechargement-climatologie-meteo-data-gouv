@@ -1,6 +1,6 @@
 import { Departement } from '@/archives/departements/Departement.js';
 import { PrismaInfrahorairesRepository } from '@/db/infrahoraires/PrismaRepository.js';
-import { saveCSVsToDB as saveInfrahorairesCSVsToDB } from '@/infrahoraires/use-cases/saveCSVsToDB.js';
+import { saveInfrahorairesCSVsToDB } from '@/infrahoraires/use-cases/saveCSVsToDB.js';
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';

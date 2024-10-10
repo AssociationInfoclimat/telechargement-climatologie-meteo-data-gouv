@@ -3,6 +3,8 @@ import { ValidationError } from '@/data/value-objects/ValidationError.js';
 import { ko, ok, Result } from '@/lib/resultUtils.js';
 import { ZodError } from 'zod';
 
+export type CSVParser<T> = (lines: AsyncGenerator<string>) => AsyncGenerator<Result<T, ParseError<unknown>>>;
+
 export async function* parseCSV<H, T>(
     lines: AsyncGenerator<string>,
     {

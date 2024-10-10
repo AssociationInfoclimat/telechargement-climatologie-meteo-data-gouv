@@ -1,5 +1,5 @@
 import { InMemoryDecadairesRepository } from '@/db/decadaires/InMemoryRepository.js';
-import { saveCSVsToDB } from '@/decadaires/use-cases/saveCSVsToDB.js';
+import { saveDecadairesCSVsToDB } from '@/decadaires/use-cases/saveCSVsToDB.js';
 import { createInMemoryGlobber } from '@/lib/fs/glob/glob.in-memory.js';
 import { createInMemoryLineReader } from '@/lib/fs/read-lines/readLines.in-memory.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
@@ -10,7 +10,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const decadairesRepository = new InMemoryDecadairesRepository();
         const saveProgressRepository = new InMemorySaveProgressRepository(['DECADQ_01_1940-1949']);
-        await saveCSVsToDB({
+        await saveDecadairesCSVsToDB({
             directory: '/my/directory',
             globber: createInMemoryGlobber([
                 '/my/directory/DECADQ_01_1940-1949.csv',

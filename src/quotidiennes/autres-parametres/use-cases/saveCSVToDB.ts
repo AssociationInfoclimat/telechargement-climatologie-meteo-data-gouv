@@ -1,17 +1,12 @@
-import { getCSVName } from '@/csv/getCSVName.js';
-import {
-    parseQuotidienneAutresParametresCSV,
-    QuotidienneAutresParametresLine,
-} from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
+import { parseQuotidienneAutresParametresCSV } from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
 import { QuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/Repository.js';
 import { toDTO } from '@/db/quotidiennes/autres-parametres/toDTO.js';
-import { Buffer } from '@/lib/Buffer.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
-import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
+import { saveCSVToDB } from '@/use-cases/saveCSVToDB.js';
 import PQueue from 'p-queue';
 
-export async function saveCSVToDB({
+export async function saveQuotidiennesAutresParametresCSVToDB({
     csv,
     readLines,
     quotidiennesAutresParametresRepository,
@@ -24,35 +19,15 @@ export async function saveCSVToDB({
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
 }): Promise<void> {
-    queue = queue ?? new PQueue({ concurrency: 50 });
-    const csvLines = readLines(csv);
-    const results = parseQuotidienneAutresParametresCSV(csvLines);
-
-    const buffer = new Buffer<QuotidienneAutresParametresLine>({
-        onChunk: lines => queue.add(() => quotidiennesAutresParametresRepository.upsertMany(lines.map(toDTO))),
+    await saveCSVToDB({
+        csv,
+        readLines,
+        lineReadingDebugMessageCreator: line =>
+            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`,
+        parseCSV: parseQuotidienneAutresParametresCSV,
+        toDTO,
+        frequencesRepository: quotidiennesAutresParametresRepository,
+        saveProgressRepository,
+        queue,
     });
-    for await (const result of results) {
-        if (!result.ok) {
-            LoggerSingleton.getSingleton().error({
-                message: `An error occured while reading '${csv}'
-${result.error.message}`,
-                data: {
-                    headers: result.error.headers,
-                    line: result.error.line,
-                    error: result.error.error.message,
-                    data: result.error.data,
-                },
-            });
-            continue;
-        }
-        const line = result.data;
-        LoggerSingleton.getSingleton().debug({
-            message: `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`,
-        });
-        buffer.add(line);
-    }
-    buffer.flush();
-
-    await queue.onIdle();
-    await saveProgressRepository.markAsSaved(getCSVName(csv));
 }

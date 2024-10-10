@@ -1,5 +1,5 @@
 import { PrismaDecadairesRepository } from '@/db/decadaires/PrismaRepository.js';
-import { saveCSVsToDB } from '@/decadaires/use-cases/saveCSVsToDB.js';
+import { saveDecadairesCSVsToDB } from '@/decadaires/use-cases/saveCSVsToDB.js';
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
@@ -17,7 +17,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const decadairesRepository = new PrismaDecadairesRepository({ prisma });
         const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
-        await saveCSVsToDB({
+        await saveDecadairesCSVsToDB({
             directory: resolve(`${import.meta.dirname}/../../data-samples`),
             globber: glob,
             lineReader: readLines,

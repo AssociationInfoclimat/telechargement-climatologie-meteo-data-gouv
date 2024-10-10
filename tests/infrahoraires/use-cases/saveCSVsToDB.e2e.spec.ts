@@ -1,5 +1,5 @@
 import { PrismaInfrahorairesRepository } from '@/db/infrahoraires/PrismaRepository.js';
-import { saveCSVsToDB } from '@/infrahoraires/use-cases/saveCSVsToDB.js';
+import { saveInfrahorairesCSVsToDB } from '@/infrahoraires/use-cases/saveCSVsToDB.js';
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
@@ -17,7 +17,7 @@ describe('saveCSVsToDB', () => {
     it('should work', async () => {
         const infrahorairesRepository = new PrismaInfrahorairesRepository({ prisma });
         const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
-        await saveCSVsToDB({
+        await saveInfrahorairesCSVsToDB({
             directory: resolve(`${import.meta.dirname}/../../data-samples`),
             globber: glob,
             lineReader: readLines,

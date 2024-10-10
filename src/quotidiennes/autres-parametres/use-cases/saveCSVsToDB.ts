@@ -1,16 +1,15 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { globFrequence } from '@/csv/files/globFrequence.js';
-import { getCSVName } from '@/csv/getCSVName.js';
+import { parseQuotidienneAutresParametresCSV } from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
 import { QuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/Repository.js';
+import { toDTO } from '@/db/quotidiennes/autres-parametres/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
 import { Globber } from '@/lib/fs/glob/Globber.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
-import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
-import { saveCSVToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVToDB.js';
 import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
+import { saveCSVsToDB } from '@/use-cases/saveCSVsToDB.js';
 import PQueue from 'p-queue';
 
-export async function saveCSVsToDB({
+export async function saveQuotidiennesAutresParametresCSVsToDB({
     directory,
     globber,
     lineReader,
@@ -27,29 +26,18 @@ export async function saveCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    const csvs = await globFrequence({
+    await saveCSVsToDB({
         frequence: FREQUENCES.quotidienneAutresParametres,
         directory,
-        glob: globber,
+        globber,
+        lineReader,
+        lineReadingDebugMessageCreator: line =>
+            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`,
+        parseCSV: parseQuotidienneAutresParametresCSV,
+        toDTO,
+        frequencesRepository: quotidiennesAutresParametresRepository,
+        saveProgressRepository,
         departement,
+        queue,
     });
-    const alreadySaved = await saveProgressRepository.getAlreadySaved();
-    for (const csv of csvs) {
-        if (alreadySaved.includes(getCSVName(csv))) {
-            LoggerSingleton.getSingleton().info({
-                message: `Skipping already saved : '${csv}'`,
-            });
-            continue;
-        }
-        LoggerSingleton.getSingleton().info({
-            message: `Reading file : '${csv}'`,
-        });
-        await saveCSVToDB({
-            csv,
-            readLines: lineReader,
-            quotidiennesAutresParametresRepository,
-            saveProgressRepository,
-            queue,
-        });
-    }
 }

@@ -1,16 +1,15 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { globFrequence } from '@/csv/files/globFrequence.js';
-import { getCSVName } from '@/csv/getCSVName.js';
+import { parseDecadaireCSV } from '@/csv/decadaires/parseCSV.js';
 import { DecadairesRepository } from '@/db/decadaires/Repository.js';
-import { saveCSVToDB } from '@/decadaires/use-cases/saveCSVToDB.js';
+import { toDTO } from '@/db/decadaires/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
 import { Globber } from '@/lib/fs/glob/Globber.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
-import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { SaveProgressRepository } from '@/save-progress/db/SaveProgressRepository.js';
+import { saveCSVsToDB } from '@/use-cases/saveCSVsToDB.js';
 import PQueue from 'p-queue';
 
-export async function saveCSVsToDB({
+export async function saveDecadairesCSVsToDB({
     directory,
     globber,
     lineReader,
@@ -27,29 +26,18 @@ export async function saveCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    const csvs = await globFrequence({
+    await saveCSVsToDB({
         frequence: FREQUENCES.decadaire,
         directory,
-        glob: globber,
+        globber,
+        lineReader,
+        lineReadingDebugMessageCreator: line =>
+            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMM.toISOString()}-${line.NUM_DECADE}`,
+        parseCSV: parseDecadaireCSV,
+        toDTO,
+        frequencesRepository: decadairesRepository,
+        saveProgressRepository,
         departement,
+        queue,
     });
-    const alreadySaved = await saveProgressRepository.getAlreadySaved();
-    for (const csv of csvs) {
-        if (alreadySaved.includes(getCSVName(csv))) {
-            LoggerSingleton.getSingleton().info({
-                message: `Skipping already saved : '${csv}'`,
-            });
-            continue;
-        }
-        LoggerSingleton.getSingleton().info({
-            message: `Reading file : '${csv}'`,
-        });
-        await saveCSVToDB({
-            csv,
-            readLines: lineReader,
-            decadairesRepository,
-            saveProgressRepository,
-            queue,
-        });
-    }
 }
