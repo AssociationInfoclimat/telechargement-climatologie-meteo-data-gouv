@@ -1,9 +1,4 @@
+import { FrequenceRepository } from '@/db/Repository.js';
 import { DecadaireAgroDTO } from './DTO.js';
 
-export interface DecadairesAgroRepository {
-    upsert(dto: DecadaireAgroDTO): Promise<void>;
-
-    upsertMany(dtos: DecadaireAgroDTO[]): Promise<void>;
-
-    getAll(): AsyncGenerator<DecadaireAgroDTO>;
-}
+export type DecadairesAgroRepository = FrequenceRepository<DecadaireAgroDTO>;

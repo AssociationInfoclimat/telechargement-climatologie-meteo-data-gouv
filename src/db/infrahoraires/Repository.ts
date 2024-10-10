@@ -1,9 +1,4 @@
+import { FrequenceRepository } from '@/db/Repository.js';
 import { InfrahoraireDTO } from './DTO.js';
 
-export interface InfrahorairesRepository {
-    upsert(dto: InfrahoraireDTO): Promise<void>;
-
-    upsertMany(dtos: InfrahoraireDTO[]): Promise<void>;
-
-    getAll(): AsyncGenerator<InfrahoraireDTO>;
-}
+export type InfrahorairesRepository = FrequenceRepository<InfrahoraireDTO>;
