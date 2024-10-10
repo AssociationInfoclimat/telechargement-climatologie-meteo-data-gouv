@@ -1,4 +1,5 @@
-import { parseDecadaireAgroCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import { DecadaireAgroLine, parseDecadaireAgroCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import { DecadaireAgroDTO } from '@/db/decadaires-agro/DTO.js';
 import { DecadairesAgroRepository } from '@/db/decadaires-agro/Repository.js';
 import { toDTO } from '@/db/decadaires-agro/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
@@ -19,7 +20,7 @@ export async function saveDecadairesAgroCSVToDB({
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVToDB({
+    await saveCSVToDB<DecadaireAgroLine, DecadaireAgroDTO>({
         csv,
         readLines,
         lineReadingDebugMessageCreator: line =>

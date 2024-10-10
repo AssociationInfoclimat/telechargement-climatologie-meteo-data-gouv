@@ -1,5 +1,6 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
+import { MensuelleLine, parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
+import { MensuelleDTO } from '@/db/mensuelles/DTO.js';
 import { MensuellesRepository } from '@/db/mensuelles/Repository.js';
 import { toDTO } from '@/db/mensuelles/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
@@ -26,7 +27,7 @@ export async function saveMensuellesCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVsToDB({
+    await saveCSVsToDB<MensuelleLine, MensuelleDTO>({
         frequence: FREQUENCES.mensuelle,
         directory,
         globber,

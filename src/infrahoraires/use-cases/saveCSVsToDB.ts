@@ -1,5 +1,6 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { parseInfrahoraireCSV } from '@/csv/infrahoraires/parseCSV.js';
+import { InfrahoraireLine, parseInfrahoraireCSV } from '@/csv/infrahoraires/parseCSV.js';
+import { InfrahoraireDTO } from '@/db/infrahoraires/DTO.js';
 import { InfrahorairesRepository } from '@/db/infrahoraires/Repository.js';
 import { toDTO } from '@/db/infrahoraires/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
@@ -26,7 +27,7 @@ export async function saveInfrahorairesCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVsToDB({
+    await saveCSVsToDB<InfrahoraireLine, InfrahoraireDTO>({
         frequence: FREQUENCES.infrahoraire,
         directory,
         globber,

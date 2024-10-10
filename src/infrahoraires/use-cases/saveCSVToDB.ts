@@ -1,4 +1,5 @@
-import { parseInfrahoraireCSV } from '@/csv/infrahoraires/parseCSV.js';
+import { InfrahoraireLine, parseInfrahoraireCSV } from '@/csv/infrahoraires/parseCSV.js';
+import { InfrahoraireDTO } from '@/db/infrahoraires/DTO.js';
 import { InfrahorairesRepository } from '@/db/infrahoraires/Repository.js';
 import { toDTO } from '@/db/infrahoraires/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
@@ -19,7 +20,7 @@ export async function saveInfrahorairesCSVToDB({
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVToDB({
+    await saveCSVToDB<InfrahoraireLine, InfrahoraireDTO>({
         csv,
         readLines,
         lineReadingDebugMessageCreator: line =>

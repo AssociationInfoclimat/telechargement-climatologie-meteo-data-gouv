@@ -1,5 +1,6 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { parseQuotidienneCSV } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
+import { parseQuotidienneCSV, QuotidienneLine } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
+import { QuotidienneDTO } from '@/db/quotidiennes/rr-t-vent/DTO.js';
 import { QuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/Repository.js';
 import { toDTO } from '@/db/quotidiennes/rr-t-vent/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
@@ -26,7 +27,7 @@ export async function saveQuotidiennesCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVsToDB({
+    await saveCSVsToDB<QuotidienneLine, QuotidienneDTO>({
         frequence: FREQUENCES.quotidienne,
         directory,
         globber,

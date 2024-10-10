@@ -1,5 +1,6 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { parseHoraireCSV } from '@/csv/horaires/parseCSV.js';
+import { HoraireLine, parseHoraireCSV } from '@/csv/horaires/parseCSV.js';
+import { HoraireDTO } from '@/db/horaires/DTO.js';
 import { HorairesRepository } from '@/db/horaires/Repository.js';
 import { toDTO } from '@/db/horaires/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
@@ -26,7 +27,7 @@ export async function saveHorairesCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVsToDB({
+    await saveCSVsToDB<HoraireLine, HoraireDTO>({
         frequence: FREQUENCES.horaire,
         directory,
         globber,

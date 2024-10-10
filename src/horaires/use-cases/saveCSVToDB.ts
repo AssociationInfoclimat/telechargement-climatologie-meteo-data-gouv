@@ -1,4 +1,5 @@
-import { parseHoraireCSV } from '@/csv/horaires/parseCSV.js';
+import { HoraireLine, parseHoraireCSV } from '@/csv/horaires/parseCSV.js';
+import { HoraireDTO } from '@/db/horaires/DTO.js';
 import { HorairesRepository } from '@/db/horaires/Repository.js';
 import { toDTO } from '@/db/horaires/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
@@ -19,7 +20,7 @@ export async function saveHorairesCSVToDB({
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVToDB({
+    await saveCSVToDB<HoraireLine, HoraireDTO>({
         csv,
         readLines,
         lineReadingDebugMessageCreator: line =>

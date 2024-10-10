@@ -1,5 +1,6 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { parseDecadaireAgroCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import { DecadaireAgroLine, parseDecadaireAgroCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import { DecadaireAgroDTO } from '@/db/decadaires-agro/DTO.js';
 import { DecadairesAgroRepository } from '@/db/decadaires-agro/Repository.js';
 import { toDTO } from '@/db/decadaires-agro/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
@@ -26,7 +27,7 @@ export async function saveDecadairesAgroCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVsToDB({
+    await saveCSVsToDB<DecadaireAgroLine, DecadaireAgroDTO>({
         frequence: FREQUENCES.decadaireAgro,
         directory,
         globber,

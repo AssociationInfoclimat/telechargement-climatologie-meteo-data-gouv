@@ -1,4 +1,5 @@
-import { parseQuotidienneCSV } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
+import { parseQuotidienneCSV, QuotidienneLine } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
+import { QuotidienneDTO } from '@/db/quotidiennes/rr-t-vent/DTO.js';
 import { QuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/Repository.js';
 import { toDTO } from '@/db/quotidiennes/rr-t-vent/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
@@ -19,7 +20,7 @@ export async function saveQuotidiennesCSVToDB({
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVToDB({
+    await saveCSVToDB<QuotidienneLine, QuotidienneDTO>({
         csv,
         readLines,
         lineReadingDebugMessageCreator: line =>

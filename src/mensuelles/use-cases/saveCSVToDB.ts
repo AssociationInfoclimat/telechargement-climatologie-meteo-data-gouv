@@ -1,4 +1,5 @@
-import { parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
+import { MensuelleLine, parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
+import { MensuelleDTO } from '@/db/mensuelles/DTO.js';
 import { MensuellesRepository } from '@/db/mensuelles/Repository.js';
 import { toDTO } from '@/db/mensuelles/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
@@ -19,7 +20,7 @@ export async function saveMensuellesCSVToDB({
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVToDB({
+    await saveCSVToDB<MensuelleLine, MensuelleDTO>({
         csv,
         readLines,
         lineReadingDebugMessageCreator: line =>

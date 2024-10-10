@@ -1,4 +1,8 @@
-import { parseQuotidienneAutresParametresCSV } from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
+import {
+    parseQuotidienneAutresParametresCSV,
+    QuotidienneAutresParametresLine,
+} from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
+import { QuotidienneAutresParametresDTO } from '@/db/quotidiennes/autres-parametres/DTO.js';
 import { QuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/Repository.js';
 import { toDTO } from '@/db/quotidiennes/autres-parametres/toDTO.js';
 import { LineReader } from '@/lib/fs/read-lines/LineReader.js';
@@ -19,7 +23,7 @@ export async function saveQuotidiennesAutresParametresCSVToDB({
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVToDB({
+    await saveCSVToDB<QuotidienneAutresParametresLine, QuotidienneAutresParametresDTO>({
         csv,
         readLines,
         lineReadingDebugMessageCreator: line =>

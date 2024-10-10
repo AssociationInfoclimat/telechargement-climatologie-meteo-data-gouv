@@ -1,5 +1,9 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { parseQuotidienneAutresParametresCSV } from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
+import {
+    parseQuotidienneAutresParametresCSV,
+    QuotidienneAutresParametresLine,
+} from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
+import { QuotidienneAutresParametresDTO } from '@/db/quotidiennes/autres-parametres/DTO.js';
 import { QuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/Repository.js';
 import { toDTO } from '@/db/quotidiennes/autres-parametres/toDTO.js';
 import { FREQUENCES } from '@/files/Frequence.js';
@@ -26,7 +30,7 @@ export async function saveQuotidiennesAutresParametresCSVsToDB({
     departement?: Departement;
     queue?: PQueue;
 }): Promise<void> {
-    await saveCSVsToDB({
+    await saveCSVsToDB<QuotidienneAutresParametresLine, QuotidienneAutresParametresDTO>({
         frequence: FREQUENCES.quotidienneAutresParametres,
         directory,
         globber,
