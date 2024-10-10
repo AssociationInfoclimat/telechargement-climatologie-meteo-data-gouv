@@ -1,5 +1,5 @@
 import { getCSVName } from '@/csv/getCSVName.js';
-import { MensuelleLine, parseCSV } from '@/csv/mensuelles/parseCSV.js';
+import { MensuelleLine, parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
 import { MensuellesRepository } from '@/db/mensuelles/Repository.js';
 import { toDTO } from '@/db/mensuelles/toDTO.js';
 import { Buffer } from '@/lib/Buffer.js';
@@ -23,7 +23,7 @@ export async function saveCSVToDB({
 }): Promise<void> {
     queue = queue ?? new PQueue({ concurrency: 50 });
     const csvLines = readLines(csv);
-    const results = parseCSV(csvLines);
+    const results = parseMensuelleCSV(csvLines);
 
     const buffer = new Buffer<MensuelleLine>({
         onChunk: lines => queue.add(() => mensuellesRepository.upsertMany(lines.map(toDTO))),

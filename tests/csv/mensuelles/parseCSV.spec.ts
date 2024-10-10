@@ -1,4 +1,4 @@
-import { MensuelleLine, parseCSV } from '@/csv/mensuelles/parseCSV.js';
+import { MensuelleLine, parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { Integer } from '@/data/value-objects/Integer.js';
 import { Jour } from '@/data/value-objects/Jour.js';
@@ -25,7 +25,7 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;202304;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const mensuellesLines = await getResultsArraysFromAsyncResultGenerator(parseCSV(csvLines));
+            const mensuellesLines = await getResultsArraysFromAsyncResultGenerator(parseMensuelleCSV(csvLines));
             expect(mensuellesLines.ok).toEqual<MensuelleLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),

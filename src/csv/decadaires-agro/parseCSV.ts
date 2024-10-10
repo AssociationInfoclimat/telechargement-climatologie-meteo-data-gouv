@@ -1,4 +1,5 @@
 import { AngstromCodeCalcul, CodeCalcul } from '@/csv/decadaires-agro/value-objects/CodeCalcul.js';
+import { parseCSV } from '@/csv/parseCSV.js';
 import {
     parseDecade,
     ParseError,
@@ -9,9 +10,8 @@ import {
     parsePositiveFloat,
     parsePositiveInteger,
 } from '@/csv/parseCSVUtils.js';
-import { ValidationError } from '@/data/value-objects/ValidationError.js';
-import { ko, ok, Result } from '@/lib/resultUtils.js';
-import { z, ZodError } from 'zod';
+import { Result } from '@/lib/resultUtils.js';
+import { z } from 'zod';
 
 export function parseDate(date: string): Date {
     const yyyy = date.slice(''.length, 'YYYY'.length);
@@ -86,38 +86,8 @@ export function parseLine(line: string, headersNameToIndex: DecadaireAgroHeaders
     );
 }
 
-export async function* parseCSV(
+export function parseDecadaireAgroCSV(
     lines: AsyncGenerator<string>
 ): AsyncGenerator<Result<DecadaireAgroLine, ParseError<unknown>>> {
-    const headers = await lines.next();
-    const headersNameToIndex = parseHeaders(headers.value as string);
-    for await (const line of lines) {
-        if (!line.trim()) {
-            continue;
-        }
-        try {
-            yield ok(parseLine(line, headersNameToIndex));
-        } catch (e) {
-            if (e instanceof ZodError) {
-                yield ko(
-                    new ParseError({
-                        headers: headers.value as string,
-                        line,
-                        error: e,
-                        data: e.issues,
-                    })
-                );
-            } else if (e instanceof ValidationError) {
-                yield ko(
-                    new ParseError({
-                        headers: headers.value as string,
-                        line,
-                        error: e,
-                    })
-                );
-            } else {
-                throw e;
-            }
-        }
-    }
+    return parseCSV<DecadaireAgroHeaders, DecadaireAgroLine>(lines, { parseHeaders, parseLine });
 }

@@ -1,4 +1,4 @@
-import { DecadaireLine, parseCSV } from '@/csv/decadaires/parseCSV.js';
+import { DecadaireLine, parseDecadaireCSV } from '@/csv/decadaires/parseCSV.js';
 import { getCSVName } from '@/csv/getCSVName.js';
 import { DecadairesRepository } from '@/db/decadaires/Repository.js';
 import { toDTO } from '@/db/decadaires/toDTO.js';
@@ -23,7 +23,7 @@ export async function saveCSVToDB({
 }): Promise<void> {
     queue = queue ?? new PQueue({ concurrency: 50 });
     const csvLines = readLines(csv);
-    const results = parseCSV(csvLines);
+    const results = parseDecadaireCSV(csvLines);
 
     const buffer = new Buffer<DecadaireLine>({
         onChunk: lines => queue.add(() => decadairesRepository.upsertMany(lines.map(toDTO))),

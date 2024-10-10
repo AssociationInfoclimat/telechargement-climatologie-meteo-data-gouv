@@ -1,5 +1,5 @@
 import { getCSVName } from '@/csv/getCSVName.js';
-import { HoraireLine, parseCSV } from '@/csv/horaires/parseCSV.js';
+import { HoraireLine, parseHoraireCSV } from '@/csv/horaires/parseCSV.js';
 import { HorairesRepository } from '@/db/horaires/Repository.js';
 import { toDTO } from '@/db/horaires/toDTO.js';
 import { Buffer } from '@/lib/Buffer.js';
@@ -23,7 +23,7 @@ export async function saveCSVToDB({
 }): Promise<void> {
     queue = queue ?? new PQueue({ concurrency: 50 });
     const csvLines = readLines(csv);
-    const results = parseCSV(csvLines);
+    const results = parseHoraireCSV(csvLines);
 
     const buffer = new Buffer<HoraireLine>({
         onChunk: lines => queue.add(() => horairesRepository.upsertMany(lines.map(toDTO))),

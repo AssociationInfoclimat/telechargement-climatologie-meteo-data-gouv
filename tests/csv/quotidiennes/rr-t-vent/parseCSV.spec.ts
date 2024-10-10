@@ -1,4 +1,4 @@
-import { parseCSV, QuotidienneLine } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
+import { parseQuotidienneCSV, QuotidienneLine } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { Integer } from '@/data/value-objects/Integer.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
@@ -23,7 +23,7 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;20230104;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const infrahoraireLines = await getResultsArraysFromAsyncResultGenerator(parseCSV(csvLines));
+            const infrahoraireLines = await getResultsArraysFromAsyncResultGenerator(parseQuotidienneCSV(csvLines));
             expect(infrahoraireLines.ok).toEqual<QuotidienneLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),

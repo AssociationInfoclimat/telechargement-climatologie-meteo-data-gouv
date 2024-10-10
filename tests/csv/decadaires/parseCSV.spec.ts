@@ -1,4 +1,4 @@
-import { DecadaireLine, parseCSV } from '@/csv/decadaires/parseCSV.js';
+import { DecadaireLine, parseDecadaireCSV } from '@/csv/decadaires/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { Decade } from '@/data/value-objects/Decade.js';
 import { Integer } from '@/data/value-objects/Integer.js';
@@ -26,7 +26,7 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;202302;1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const mensuellesLines = await getResultsArraysFromAsyncResultGenerator(parseCSV(csvLines));
+            const mensuellesLines = await getResultsArraysFromAsyncResultGenerator(parseDecadaireCSV(csvLines));
             expect(mensuellesLines.ko).toEqual([]);
             expect(mensuellesLines.ok).toEqual<DecadaireLine[]>([
                 {

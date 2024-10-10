@@ -1,4 +1,4 @@
-import { DecadaireAgroLine, parseCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import { DecadaireAgroLine, parseDecadaireAgroCSV } from '@/csv/decadaires-agro/parseCSV.js';
 import { AngstromCodeCalcul, CodeCalcul } from '@/csv/decadaires-agro/value-objects/CodeCalcul.js';
 import { Decade } from '@/data/value-objects/Decade.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
@@ -21,7 +21,7 @@ describe('parseCSV', () => {
                 '01014002;ARBENT;46.278167;5.669000;534;202302;1;;;;;;;;;;;;;;;',
                 '',
             ]);
-            const decadairesAgroLines = await getResultsArraysFromAsyncResultGenerator(parseCSV(csvLines));
+            const decadairesAgroLines = await getResultsArraysFromAsyncResultGenerator(parseDecadaireAgroCSV(csvLines));
             expect(decadairesAgroLines.ok).toEqual<DecadaireAgroLine[]>([
                 {
                     NUM_POSTE: NumeroPoste.of('01014002'),

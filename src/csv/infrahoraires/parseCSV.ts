@@ -1,3 +1,4 @@
+import { parseCSV } from '@/csv/parseCSV.js';
 import {
     parseCodeQualite,
     ParseError,
@@ -6,9 +7,8 @@ import {
     parseNumeroPoste,
     parsePositiveFloat,
 } from '@/csv/parseCSVUtils.js';
-import { ValidationError } from '@/data/value-objects/ValidationError.js';
-import { ko, ok, Result } from '@/lib/resultUtils.js';
-import { z, ZodError } from 'zod';
+import { Result } from '@/lib/resultUtils.js';
+import { z } from 'zod';
 
 export function parseDate(date: string): Date {
     const yyyy = date.slice(''.length, 'YYYY'.length);
@@ -49,38 +49,8 @@ export function parseLine(line: string, headersNameToIndex: InfrahoraireHeaders)
     );
 }
 
-export async function* parseCSV(
+export function parseInfrahoraireCSV(
     lines: AsyncGenerator<string>
 ): AsyncGenerator<Result<InfrahoraireLine, ParseError<unknown>>> {
-    const headers = await lines.next();
-    const headersNameToIndex = parseHeaders(headers.value as string);
-    for await (const line of lines) {
-        if (!line.trim()) {
-            continue;
-        }
-        try {
-            yield ok(parseLine(line, headersNameToIndex));
-        } catch (e) {
-            if (e instanceof ZodError) {
-                yield ko(
-                    new ParseError({
-                        headers: headers.value as string,
-                        line,
-                        error: e,
-                        data: e.issues,
-                    })
-                );
-            } else if (e instanceof ValidationError) {
-                yield ko(
-                    new ParseError({
-                        headers: headers.value as string,
-                        line,
-                        error: e,
-                    })
-                );
-            } else {
-                throw e;
-            }
-        }
-    }
+    return parseCSV<InfrahoraireHeaders, InfrahoraireLine>(lines, { parseHeaders, parseLine });
 }

@@ -3,6 +3,7 @@ import { CodeTemps } from '@/csv/horaires/value-objects/CodeTemps.js';
 import { Etat } from '@/csv/horaires/value-objects/Etat.js';
 import { HouleDirection } from '@/csv/horaires/value-objects/HouleDirection.js';
 import { Visibility } from '@/csv/horaires/value-objects/Visibility.js';
+import { parseCSV } from '@/csv/parseCSV.js';
 import {
     parseCodeQualite,
     ParseError,
@@ -16,10 +17,9 @@ import {
     parseUVIndex,
     parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
-import { ValidationError } from '@/data/value-objects/ValidationError.js';
-import { ko, ok, Result } from '@/lib/resultUtils.js';
+import { Result } from '@/lib/resultUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
-import { z, ZodError } from 'zod';
+import { z } from 'zod';
 
 export function parseDate(date: string): Date {
     const yyyy = date.slice(''.length, 'YYYY'.length);
@@ -273,38 +273,8 @@ export function parseLine(line: string, headersNameToIndex: HoraireHeaders): Hor
     );
 }
 
-export async function* parseCSV(
+export function parseHoraireCSV(
     lines: AsyncGenerator<string>
 ): AsyncGenerator<Result<HoraireLine, ParseError<unknown>>> {
-    const headers = await lines.next();
-    const headersNameToIndex = parseHeaders(headers.value as string);
-    for await (const line of lines) {
-        if (!line.trim()) {
-            continue;
-        }
-        try {
-            yield ok(parseLine(line, headersNameToIndex));
-        } catch (e) {
-            if (e instanceof ZodError) {
-                yield ko(
-                    new ParseError({
-                        headers: headers.value as string,
-                        line,
-                        error: e,
-                        data: e.issues,
-                    })
-                );
-            } else if (e instanceof ValidationError) {
-                yield ko(
-                    new ParseError({
-                        headers: headers.value as string,
-                        line,
-                        error: e,
-                    })
-                );
-            } else {
-                throw e;
-            }
-        }
-    }
+    return parseCSV<HoraireHeaders, HoraireLine>(lines, { parseHeaders, parseLine });
 }

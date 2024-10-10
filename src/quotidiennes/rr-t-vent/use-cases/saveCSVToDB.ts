@@ -1,5 +1,5 @@
 import { getCSVName } from '@/csv/getCSVName.js';
-import { parseCSV, QuotidienneLine } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
+import { parseQuotidienneCSV, QuotidienneLine } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
 import { QuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/Repository.js';
 import { toDTO } from '@/db/quotidiennes/rr-t-vent/toDTO.js';
 import { Buffer } from '@/lib/Buffer.js';
@@ -23,7 +23,7 @@ export async function saveCSVToDB({
 }): Promise<void> {
     queue = queue ?? new PQueue({ concurrency: 50 });
     const csvLines = readLines(csv);
-    const results = parseCSV(csvLines);
+    const results = parseQuotidienneCSV(csvLines);
 
     const buffer = new Buffer<QuotidienneLine>({
         onChunk: lines => queue.add(() => quotidiennesRepository.upsertMany(lines.map(toDTO))),

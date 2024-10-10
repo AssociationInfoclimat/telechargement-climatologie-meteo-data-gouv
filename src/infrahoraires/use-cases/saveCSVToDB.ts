@@ -1,5 +1,5 @@
 import { getCSVName } from '@/csv/getCSVName.js';
-import { InfrahoraireLine, parseCSV } from '@/csv/infrahoraires/parseCSV.js';
+import { InfrahoraireLine, parseInfrahoraireCSV } from '@/csv/infrahoraires/parseCSV.js';
 import { InfrahorairesRepository } from '@/db/infrahoraires/Repository.js';
 import { toDTO } from '@/db/infrahoraires/toDTO.js';
 import { Buffer } from '@/lib/Buffer.js';
@@ -23,7 +23,7 @@ export async function saveCSVToDB({
 }): Promise<void> {
     queue = queue ?? new PQueue({ concurrency: 50 });
     const csvLines = readLines(csv);
-    const results = parseCSV(csvLines);
+    const results = parseInfrahoraireCSV(csvLines);
 
     const buffer = new Buffer<InfrahoraireLine>({
         onChunk: lines => queue.add(() => infrahorairesRepository.upsertMany(lines.map(toDTO))),

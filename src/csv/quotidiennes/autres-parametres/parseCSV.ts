@@ -1,3 +1,4 @@
+import { parseCSV } from '@/csv/parseCSV.js';
 import {
     parseCodeQualite,
     ParseError,
@@ -14,9 +15,8 @@ import {
     parseUVIndex,
 } from '@/csv/parseCSVUtils.js';
 import { parseDate } from '@/csv/quotidiennes/parseCSVUtils.js';
-import { ValidationError } from '@/data/value-objects/ValidationError.js';
-import { ko, ok, Result } from '@/lib/resultUtils.js';
-import { z, ZodError } from 'zod';
+import { Result } from '@/lib/resultUtils.js';
+import { z } from 'zod';
 
 export function parseBooleanOrNull(value: string): boolean | null {
     switch (value) {
@@ -185,38 +185,11 @@ export function parseLine(
     );
 }
 
-export async function* parseCSV(
+export function parseQuotidienneAutresParametresCSV(
     lines: AsyncGenerator<string>
 ): AsyncGenerator<Result<QuotidienneAutresParametresLine, ParseError<unknown>>> {
-    const headers = await lines.next();
-    const headersNameToIndex = parseHeaders(headers.value as string);
-    for await (const line of lines) {
-        if (!line.trim()) {
-            continue;
-        }
-        try {
-            yield ok(parseLine(line, headersNameToIndex));
-        } catch (e) {
-            if (e instanceof ZodError) {
-                yield ko(
-                    new ParseError({
-                        headers: headers.value as string,
-                        line,
-                        error: e,
-                        data: e.issues,
-                    })
-                );
-            } else if (e instanceof ValidationError) {
-                yield ko(
-                    new ParseError({
-                        headers: headers.value as string,
-                        line,
-                        error: e,
-                    })
-                );
-            } else {
-                throw e;
-            }
-        }
-    }
+    return parseCSV<QuotidienneAutresParametresHeaders, QuotidienneAutresParametresLine>(lines, {
+        parseHeaders,
+        parseLine,
+    });
 }

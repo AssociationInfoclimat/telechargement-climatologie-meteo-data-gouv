@@ -1,4 +1,4 @@
-import { DecadaireAgroLine, parseCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import { DecadaireAgroLine, parseDecadaireAgroCSV } from '@/csv/decadaires-agro/parseCSV.js';
 import { getCSVName } from '@/csv/getCSVName.js';
 import { DecadairesAgroRepository } from '@/db/decadaires-agro/Repository.js';
 import { toDTO } from '@/db/decadaires-agro/toDTO.js';
@@ -23,7 +23,7 @@ export async function saveCSVToDB({
 }): Promise<void> {
     queue = queue ?? new PQueue({ concurrency: 50 });
     const csvLines = readLines(csv);
-    const results = parseCSV(csvLines);
+    const results = parseDecadaireAgroCSV(csvLines);
 
     const buffer = new Buffer<DecadaireAgroLine>({
         onChunk: lines => queue.add(() => decadairesAgroRepository.upsertMany(lines.map(toDTO))),
