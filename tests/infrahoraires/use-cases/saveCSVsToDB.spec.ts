@@ -38,6 +38,7 @@ describe('saveCSVsToDB', () => {
             }),
             infrahorairesRepository,
             saveProgressRepository,
+            overwrite: false,
         });
         assert.sameDeepMembers(await saveProgressRepository.getAlreadySaved(), [
             'MN_01_1940-1949',

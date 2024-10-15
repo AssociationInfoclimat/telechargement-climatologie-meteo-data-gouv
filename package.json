@@ -25,14 +25,16 @@
         "deploy:preprod": "dotenv -e .env.preprod -- prisma migrate deploy",
         "prepare": "husky",
         "start-docker": "docker compose --file db/compose.yaml up -d",
-        "update-all-archives": "tsx src/apps/updateAllArchives.ts",
-        "download-missing-archives": "tsx src/apps/downloadMissingArchives.ts",
-        "unzip-all-archives": "tsx src/apps/unzipAllArchives.ts",
-        "unzip-remaining-archives": "tsx src/apps/unzipRemainingArchives.ts",
-        "save-all-csvs-to-db-sequentially": "tsx src/apps/saveAllCSVsToDB.ts",
-        "save-all-csvs-to-db-sequentially:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/saveAllCSVsToDB.ts",
+        "update-all-archives": "tsx src/apps/download/updateAllArchives.ts",
+        "download-missing-archives": "tsx src/apps/download/downloadMissingArchives.ts",
+        "unzip-all-archives": "tsx src/apps/unzip/unzipAllArchives.ts",
+        "unzip-remaining-archives": "tsx src/apps/unzip/unzipRemainingArchives.ts",
+        "save-all-csvs-to-db-sequentially": "tsx src/apps/save/saveAllCSVsToDB.ts",
+        "save-all-csvs-to-db-sequentially:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/save/saveAllCSVsToDB.ts",
         "save-all-csvs-to-db-in-parallel": "bash scripts/save-all-csvs-to-db-in-parallel.sh",
-        "save-all-csvs-to-db-in-parallel:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- bash scripts/save-all-csvs-to-db-in-parallel.sh"
+        "save-all-csvs-to-db-in-parallel:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- bash scripts/save-all-csvs-to-db-in-parallel.sh",
+        "unzip-save-delete-all-csvs-in-parallel": "bash scripts/unzip-save-delete-all-csvs-in-parallel.sh",
+        "unzip-save-delete-all-csvs-in-parallel:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- bash scripts/unzip-save-delete-all-csvs-in-parallel.sh"
     },
     "lint-staged": {
         "*.html": "prettier --write --ignore-unknown",

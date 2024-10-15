@@ -30,7 +30,11 @@ async function main() {
 
     const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
 
+    const overwrite = false;
+    const queue = new PQueue({ concurrency: 50 });
+
     LoggerSingleton.getSingleton().info({ message: 'Reading infrahoraires CSVs :' });
+
     await saveInfrahorairesCSVsToDB({
         directory,
         globber: glob,
@@ -38,7 +42,8 @@ async function main() {
         infrahorairesRepository: new PrismaInfrahorairesRepository({ prisma }),
         saveProgressRepository,
         departement,
-        queue: new PQueue({ concurrency: 10 }),
+        overwrite,
+        queue,
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Reading horaires CSVs :' });
@@ -49,7 +54,8 @@ async function main() {
         horairesRepository: new PrismaHorairesRepository({ prisma }),
         saveProgressRepository,
         departement,
-        queue: new PQueue({ concurrency: 10 }),
+        overwrite,
+        queue,
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (RR T Vent) CSVs :' });
@@ -60,7 +66,8 @@ async function main() {
         quotidiennesRepository: new PrismaQuotidiennesRepository({ prisma }),
         saveProgressRepository,
         departement,
-        queue: new PQueue({ concurrency: 10 }),
+        overwrite,
+        queue,
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (autres paramètres) CSVs :' });
@@ -71,7 +78,8 @@ async function main() {
         quotidiennesAutresParametresRepository: new PrismaQuotidiennesAutresParametresRepository({ prisma }),
         saveProgressRepository,
         departement,
-        queue: new PQueue({ concurrency: 10 }),
+        overwrite,
+        queue,
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Reading mensuelles CSVs :' });
@@ -82,7 +90,8 @@ async function main() {
         mensuellesRepository: new PrismaMensuellesRepository({ prisma }),
         saveProgressRepository,
         departement,
-        queue: new PQueue({ concurrency: 10 }),
+        overwrite,
+        queue,
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Reading decadaires CSVs :' });
@@ -93,7 +102,8 @@ async function main() {
         decadairesRepository: new PrismaDecadairesRepository({ prisma }),
         saveProgressRepository,
         departement,
-        queue: new PQueue({ concurrency: 10 }),
+        overwrite,
+        queue,
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Reading decadaires agro CSVs :' });
@@ -104,14 +114,17 @@ async function main() {
         decadairesAgroRepository: new PrismaDecadairesAgroRepository({ prisma }),
         saveProgressRepository,
         departement,
-        queue: new PQueue({ concurrency: 10 }),
+        overwrite,
+        queue,
     });
 
     LoggerSingleton.getSingleton().info({ message: 'Done' });
 }
 
 try {
+    console.time();
     await main();
+    console.timeEnd();
 } catch (e) {
     LoggerSingleton.getSingleton().error({ data: e });
 }

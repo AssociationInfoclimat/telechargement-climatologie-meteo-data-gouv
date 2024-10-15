@@ -23,6 +23,7 @@ describe('saveCSVsToDB', () => {
             lineReader: readLines,
             decadairesRepository,
             saveProgressRepository,
+            overwrite: false,
         });
         expect(await getArrayFromAsyncGenerator(decadairesRepository.getAll())).not.toHaveLength(0);
         expect(await saveProgressRepository.getAlreadySaved()).not.toHaveLength(0);

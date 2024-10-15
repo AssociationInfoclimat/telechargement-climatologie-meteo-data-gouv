@@ -364,3 +364,7 @@ export function parseDecadaireCSV(
 ): AsyncGenerator<Result<DecadaireLine, ParseError<unknown>>> {
     return parseCSV<DecadaireHeaders, DecadaireLine>(lines, { parseHeaders, parseLine });
 }
+
+export function createReadingLineDebugMessage(line: DecadaireLine): string {
+    return `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMM.toISOString()}-${line.NUM_DECADE}`;
+}

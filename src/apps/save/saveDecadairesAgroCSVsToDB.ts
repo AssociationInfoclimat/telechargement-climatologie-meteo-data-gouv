@@ -1,6 +1,6 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { PrismaDecadairesRepository } from '@/db/decadaires/PrismaRepository.js';
-import { saveDecadairesCSVsToDB } from '@/decadaires/use-cases/saveCSVsToDB.js';
+import { PrismaDecadairesAgroRepository } from '@/db/decadaires-agro/PrismaRepository.js';
+import { saveDecadairesAgroCSVsToDB } from '@/decadaires-agro/use-cases/saveCSVsToDB.js';
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
@@ -16,14 +16,15 @@ async function main() {
     const directory: string = `${process.cwd()}/data`;
     const departement: Departement | undefined = Departement.of(974);
 
-    LoggerSingleton.getSingleton().info({ message: 'Reading decadaires CSVs :' });
-    await saveDecadairesCSVsToDB({
+    LoggerSingleton.getSingleton().info({ message: 'Reading decadaires agro CSVs :' });
+    await saveDecadairesAgroCSVsToDB({
         directory,
         globber: glob,
         lineReader: readLines,
-        decadairesRepository: new PrismaDecadairesRepository({ prisma }),
+        decadairesAgroRepository: new PrismaDecadairesAgroRepository({ prisma }),
         saveProgressRepository: new PrismaSaveProgressRepository(prisma),
         departement,
+        overwrite: false,
         queue: new PQueue({ concurrency: 10 }),
     });
 

@@ -152,3 +152,7 @@ export function parseQuotidienneCSV(
 ): AsyncGenerator<Result<QuotidienneLine, ParseError<unknown>>> {
     return parseCSV<QuotidienneHeaders, QuotidienneLine>(lines, { parseHeaders, parseLine });
 }
+
+export function createReadingLineDebugMessage(line: QuotidienneLine): string {
+    return `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`;
+}

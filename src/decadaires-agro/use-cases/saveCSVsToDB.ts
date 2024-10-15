@@ -1,5 +1,9 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { DecadaireAgroLine, parseDecadaireAgroCSV } from '@/csv/decadaires-agro/parseCSV.js';
+import {
+    createReadingLineDebugMessage,
+    DecadaireAgroLine,
+    parseDecadaireAgroCSV,
+} from '@/csv/decadaires-agro/parseCSV.js';
 import { DecadaireAgroDTO } from '@/db/decadaires-agro/DTO.js';
 import { DecadairesAgroRepository } from '@/db/decadaires-agro/Repository.js';
 import { toDTO } from '@/db/decadaires-agro/toDTO.js';
@@ -17,7 +21,9 @@ export async function saveDecadairesAgroCSVsToDB({
     decadairesAgroRepository,
     saveProgressRepository,
     departement,
+    overwrite,
     queue,
+    deleteCSV,
 }: {
     directory: string;
     globber: Globber;
@@ -25,20 +31,23 @@ export async function saveDecadairesAgroCSVsToDB({
     decadairesAgroRepository: DecadairesAgroRepository;
     saveProgressRepository: SaveProgressRepository;
     departement?: Departement;
+    overwrite: boolean;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     await saveCSVsToDB<DecadaireAgroLine, DecadaireAgroDTO>({
         frequence: FREQUENCES.decadaireAgro,
         directory,
         globber,
         lineReader,
-        lineReadingDebugMessageCreator: line =>
-            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMM.toISOString()}-${line.NUM_DECADE}`,
+        lineReadingDebugMessageCreator: createReadingLineDebugMessage,
         parseCSV: parseDecadaireAgroCSV,
         toDTO,
         frequencesRepository: decadairesAgroRepository,
         saveProgressRepository,
         departement,
+        overwrite,
         queue,
+        deleteCSV,
     });
 }

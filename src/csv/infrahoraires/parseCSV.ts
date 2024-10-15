@@ -54,3 +54,7 @@ export function parseInfrahoraireCSV(
 ): AsyncGenerator<Result<InfrahoraireLine, ParseError<unknown>>> {
     return parseCSV<InfrahoraireHeaders, InfrahoraireLine>(lines, { parseHeaders, parseLine });
 }
+
+export function createReadingLineDebugMessage(line: InfrahoraireLine): string {
+    return `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJHHMN.toISOString()}`;
+}

@@ -1,4 +1,5 @@
 import {
+    createReadingLineDebugMessage,
     parseQuotidienneAutresParametresCSV,
     QuotidienneAutresParametresLine,
 } from '@/csv/quotidiennes/autres-parametres/parseCSV.js';
@@ -16,22 +17,24 @@ export async function saveQuotidiennesAutresParametresCSVToDB({
     quotidiennesAutresParametresRepository,
     saveProgressRepository,
     queue,
+    deleteCSV,
 }: {
     csv: string;
     readLines: LineReader;
     quotidiennesAutresParametresRepository: QuotidiennesAutresParametresRepository;
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     await saveCSVToDB<QuotidienneAutresParametresLine, QuotidienneAutresParametresDTO>({
         csv,
         readLines,
-        lineReadingDebugMessageCreator: line =>
-            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`,
+        lineReadingDebugMessageCreator: createReadingLineDebugMessage,
         parseCSV: parseQuotidienneAutresParametresCSV,
         toDTO,
         frequencesRepository: quotidiennesAutresParametresRepository,
         saveProgressRepository,
         queue,
+        deleteCSV,
     });
 }

@@ -39,6 +39,7 @@ describe('saveCSVsToDB', () => {
             }),
             quotidiennesAutresParametresRepository,
             saveProgressRepository,
+            overwrite: false,
         });
         assert.sameDeepMembers(await saveProgressRepository.getAlreadySaved(), [
             'Q_01_1950-2022_autres-parametres',

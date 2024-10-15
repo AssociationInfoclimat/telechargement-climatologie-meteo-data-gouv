@@ -1,5 +1,9 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { parseQuotidienneCSV, QuotidienneLine } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
+import {
+    createReadingLineDebugMessage,
+    parseQuotidienneCSV,
+    QuotidienneLine,
+} from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
 import { QuotidienneDTO } from '@/db/quotidiennes/rr-t-vent/DTO.js';
 import { QuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/Repository.js';
 import { toDTO } from '@/db/quotidiennes/rr-t-vent/toDTO.js';
@@ -17,7 +21,9 @@ export async function saveQuotidiennesCSVsToDB({
     quotidiennesRepository,
     saveProgressRepository,
     departement,
+    overwrite,
     queue,
+    deleteCSV,
 }: {
     directory: string;
     globber: Globber;
@@ -25,20 +31,23 @@ export async function saveQuotidiennesCSVsToDB({
     quotidiennesRepository: QuotidiennesRepository;
     saveProgressRepository: SaveProgressRepository;
     departement?: Departement;
+    overwrite: boolean;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     await saveCSVsToDB<QuotidienneLine, QuotidienneDTO>({
         frequence: FREQUENCES.quotidienne,
         directory,
         globber,
         lineReader,
-        lineReadingDebugMessageCreator: line =>
-            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`,
+        lineReadingDebugMessageCreator: createReadingLineDebugMessage,
         parseCSV: parseQuotidienneCSV,
         toDTO,
         frequencesRepository: quotidiennesRepository,
         saveProgressRepository,
         departement,
+        overwrite,
         queue,
+        deleteCSV,
     });
 }

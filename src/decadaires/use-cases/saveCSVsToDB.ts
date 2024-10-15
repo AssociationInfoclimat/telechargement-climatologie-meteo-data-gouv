@@ -17,7 +17,9 @@ export async function saveDecadairesCSVsToDB({
     decadairesRepository,
     saveProgressRepository,
     departement,
+    overwrite,
     queue,
+    deleteCSV,
 }: {
     directory: string;
     globber: Globber;
@@ -25,7 +27,9 @@ export async function saveDecadairesCSVsToDB({
     decadairesRepository: DecadairesRepository;
     saveProgressRepository: SaveProgressRepository;
     departement?: Departement;
+    overwrite: boolean;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     await saveCSVsToDB<DecadaireLine, DecadaireDTO>({
         frequence: FREQUENCES.decadaire,
@@ -39,6 +43,8 @@ export async function saveDecadairesCSVsToDB({
         frequencesRepository: decadairesRepository,
         saveProgressRepository,
         departement,
+        overwrite,
         queue,
+        deleteCSV,
     });
 }

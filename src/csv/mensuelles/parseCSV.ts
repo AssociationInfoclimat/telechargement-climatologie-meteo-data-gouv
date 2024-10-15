@@ -367,3 +367,7 @@ export function parseMensuelleCSV(
 ): AsyncGenerator<Result<MensuelleLine, ParseError<unknown>>> {
     return parseCSV<MensuelleHeaders, MensuelleLine>(lines, { parseHeaders, parseLine });
 }
+
+export function createReadingLineDebugMessage(line: MensuelleLine): string {
+    return `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMM.toISOString()}`;
+}

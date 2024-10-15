@@ -16,7 +16,8 @@ export async function saveCSVToDB<L, D>({
     toDTO,
     frequencesRepository,
     saveProgressRepository,
-    queue,
+    queue = new PQueue({ concurrency: 50 }),
+    deleteCSV,
 }: {
     csv: string;
     readLines: LineReader;
@@ -26,8 +27,8 @@ export async function saveCSVToDB<L, D>({
     frequencesRepository: FrequenceRepository<D>;
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
-    queue = queue ?? new PQueue({ concurrency: 50 });
     const csvLines = readLines(csv);
     const results = parseCSV(csvLines);
 
@@ -51,9 +52,14 @@ ${result.error.message}`,
         const line = result.data;
         LoggerSingleton.getSingleton().debug({ message: lineReadingDebugMessageCreator(line) });
         buffer.add(line);
+        await queue.onSizeLessThan(10 * queue.concurrency);
     }
     buffer.flush();
 
     await queue.onIdle();
     await saveProgressRepository.markAsSaved(getCSVName(csv));
+    if (deleteCSV) {
+        LoggerSingleton.getSingleton().info({ message: `Deleting file : '${csv}'` });
+        await deleteCSV(csv);
+    }
 }

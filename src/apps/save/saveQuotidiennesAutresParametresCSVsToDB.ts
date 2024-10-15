@@ -1,9 +1,9 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { PrismaInfrahorairesRepository } from '@/db/infrahoraires/PrismaRepository.js';
-import { saveInfrahorairesCSVsToDB } from '@/infrahoraires/use-cases/saveCSVsToDB.js';
+import { PrismaQuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/PrismaRepository.js';
 import { glob } from '@/lib/fs/glob/glob.glob.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
+import { saveQuotidiennesAutresParametresCSVsToDB } from '@/quotidiennes/autres-parametres/use-cases/saveCSVsToDB.js';
 import { PrismaSaveProgressRepository } from '@/save-progress/db/PrismaSaveProgressRepository.js';
 import { PrismaClient } from '@prisma/client';
 import PQueue from 'p-queue';
@@ -16,14 +16,15 @@ async function main() {
     const directory: string = `${process.cwd()}/data`;
     const departement: Departement | undefined = Departement.of(974);
 
-    LoggerSingleton.getSingleton().info({ message: 'Reading infrahoraires CSVs :' });
-    await saveInfrahorairesCSVsToDB({
+    LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (autres paramètres) CSVs :' });
+    await saveQuotidiennesAutresParametresCSVsToDB({
         directory,
         globber: glob,
         lineReader: readLines,
-        infrahorairesRepository: new PrismaInfrahorairesRepository({ prisma }),
+        quotidiennesAutresParametresRepository: new PrismaQuotidiennesAutresParametresRepository({ prisma }),
         saveProgressRepository: new PrismaSaveProgressRepository(prisma),
         departement,
+        overwrite: false,
         queue: new PQueue({ concurrency: 10 }),
     });
 

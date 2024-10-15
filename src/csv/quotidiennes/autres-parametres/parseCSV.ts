@@ -193,3 +193,7 @@ export function parseQuotidienneAutresParametresCSV(
         parseLine,
     });
 }
+
+export function createReadingLineDebugMessage(line: QuotidienneAutresParametresLine): string {
+    return `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`;
+}

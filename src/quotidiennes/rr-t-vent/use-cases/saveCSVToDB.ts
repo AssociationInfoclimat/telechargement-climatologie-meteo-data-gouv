@@ -1,4 +1,8 @@
-import { parseQuotidienneCSV, QuotidienneLine } from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
+import {
+    createReadingLineDebugMessage,
+    parseQuotidienneCSV,
+    QuotidienneLine,
+} from '@/csv/quotidiennes/rr-t-vent/parseCSV.js';
 import { QuotidienneDTO } from '@/db/quotidiennes/rr-t-vent/DTO.js';
 import { QuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/Repository.js';
 import { toDTO } from '@/db/quotidiennes/rr-t-vent/toDTO.js';
@@ -13,22 +17,24 @@ export async function saveQuotidiennesCSVToDB({
     quotidiennesRepository,
     saveProgressRepository,
     queue,
+    deleteCSV,
 }: {
     csv: string;
     readLines: LineReader;
     quotidiennesRepository: QuotidiennesRepository;
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     await saveCSVToDB<QuotidienneLine, QuotidienneDTO>({
         csv,
         readLines,
-        lineReadingDebugMessageCreator: line =>
-            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJ.toISOString()}`,
+        lineReadingDebugMessageCreator: createReadingLineDebugMessage,
         parseCSV: parseQuotidienneCSV,
         toDTO,
         frequencesRepository: quotidiennesRepository,
         saveProgressRepository,
         queue,
+        deleteCSV,
     });
 }

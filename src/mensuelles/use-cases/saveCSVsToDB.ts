@@ -1,5 +1,5 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { MensuelleLine, parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
+import { createReadingLineDebugMessage, MensuelleLine, parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
 import { MensuelleDTO } from '@/db/mensuelles/DTO.js';
 import { MensuellesRepository } from '@/db/mensuelles/Repository.js';
 import { toDTO } from '@/db/mensuelles/toDTO.js';
@@ -17,7 +17,9 @@ export async function saveMensuellesCSVsToDB({
     mensuellesRepository,
     saveProgressRepository,
     departement,
+    overwrite,
     queue,
+    deleteCSV,
 }: {
     directory: string;
     globber: Globber;
@@ -25,20 +27,23 @@ export async function saveMensuellesCSVsToDB({
     mensuellesRepository: MensuellesRepository;
     saveProgressRepository: SaveProgressRepository;
     departement?: Departement;
+    overwrite: boolean;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     await saveCSVsToDB<MensuelleLine, MensuelleDTO>({
         frequence: FREQUENCES.mensuelle,
         directory,
         globber,
         lineReader,
-        lineReadingDebugMessageCreator: line =>
-            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMM.toISOString()}`,
+        lineReadingDebugMessageCreator: createReadingLineDebugMessage,
         parseCSV: parseMensuelleCSV,
         toDTO,
         frequencesRepository: mensuellesRepository,
         saveProgressRepository,
         departement,
+        overwrite,
         queue,
+        deleteCSV,
     });
 }

@@ -278,3 +278,7 @@ export function parseHoraireCSV(
 ): AsyncGenerator<Result<HoraireLine, ParseError<unknown>>> {
     return parseCSV<HoraireHeaders, HoraireLine>(lines, { parseHeaders, parseLine });
 }
+
+export function createReadingLineDebugMessage(line: HoraireLine): string {
+    return `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJHH.toISOString()}`;
+}

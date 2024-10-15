@@ -13,12 +13,14 @@ export async function saveDecadairesCSVToDB({
     decadairesRepository,
     saveProgressRepository,
     queue,
+    deleteCSV,
 }: {
     csv: string;
     readLines: LineReader;
     decadairesRepository: DecadairesRepository;
     saveProgressRepository: SaveProgressRepository;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     await saveCSVToDB<DecadaireLine, DecadaireDTO>({
         csv,
@@ -30,5 +32,6 @@ export async function saveDecadairesCSVToDB({
         frequencesRepository: decadairesRepository,
         saveProgressRepository,
         queue,
+        deleteCSV,
     });
 }

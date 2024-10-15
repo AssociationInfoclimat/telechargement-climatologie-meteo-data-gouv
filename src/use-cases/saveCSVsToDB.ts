@@ -22,8 +22,10 @@ export async function saveCSVsToDB<L, D>({
     toDTO,
     frequencesRepository,
     saveProgressRepository,
+    overwrite,
     departement,
     queue,
+    deleteCSV,
 }: {
     frequence: Frequence;
     directory: string;
@@ -34,8 +36,10 @@ export async function saveCSVsToDB<L, D>({
     toDTO: DTOAdapter<L, D>;
     frequencesRepository: FrequenceRepository<D>;
     saveProgressRepository: SaveProgressRepository;
+    overwrite: boolean;
     departement?: Departement;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     const csvs = await globFrequence({
         frequence,
@@ -46,14 +50,14 @@ export async function saveCSVsToDB<L, D>({
     const alreadySaved = await saveProgressRepository.getAlreadySaved();
     for (const csv of csvs) {
         if (alreadySaved.includes(getCSVName(csv))) {
-            LoggerSingleton.getSingleton().info({
-                message: `Skipping already saved : '${csv}'`,
-            });
-            continue;
+            if (!overwrite) {
+                LoggerSingleton.getSingleton().info({ message: `Skipping already saved : '${csv}'` });
+                continue;
+            }
+            LoggerSingleton.getSingleton().info({ message: `Overwriting from : '${csv}'` });
+        } else {
+            LoggerSingleton.getSingleton().info({ message: `Reading file : '${csv}'` });
         }
-        LoggerSingleton.getSingleton().info({
-            message: `Reading file : '${csv}'`,
-        });
         await saveCSVToDB({
             csv,
             readLines: lineReader,
@@ -63,6 +67,7 @@ export async function saveCSVsToDB<L, D>({
             frequencesRepository,
             saveProgressRepository,
             queue,
+            deleteCSV,
         });
     }
 }

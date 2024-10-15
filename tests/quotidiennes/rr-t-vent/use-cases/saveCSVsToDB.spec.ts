@@ -39,6 +39,7 @@ describe('saveCSVsToDB', () => {
             }),
             quotidiennesRepository,
             saveProgressRepository,
+            overwrite: false,
         });
         assert.sameDeepMembers(await saveProgressRepository.getAlreadySaved(), [
             'Q_01_1940-1949_RR-T-Vent',

@@ -1,5 +1,5 @@
 import { Departement } from '@/archives/departements/Departement.js';
-import { HoraireLine, parseHoraireCSV } from '@/csv/horaires/parseCSV.js';
+import { createReadingLineDebugMessage, HoraireLine, parseHoraireCSV } from '@/csv/horaires/parseCSV.js';
 import { HoraireDTO } from '@/db/horaires/DTO.js';
 import { HorairesRepository } from '@/db/horaires/Repository.js';
 import { toDTO } from '@/db/horaires/toDTO.js';
@@ -17,7 +17,9 @@ export async function saveHorairesCSVsToDB({
     horairesRepository,
     saveProgressRepository,
     departement,
+    overwrite,
     queue,
+    deleteCSV,
 }: {
     directory: string;
     globber: Globber;
@@ -25,20 +27,23 @@ export async function saveHorairesCSVsToDB({
     horairesRepository: HorairesRepository;
     saveProgressRepository: SaveProgressRepository;
     departement?: Departement;
+    overwrite: boolean;
     queue?: PQueue;
+    deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
     await saveCSVsToDB<HoraireLine, HoraireDTO>({
         frequence: FREQUENCES.horaire,
         directory,
         globber,
         lineReader,
-        lineReadingDebugMessageCreator: line =>
-            `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMMJJHH.toISOString()}`,
+        lineReadingDebugMessageCreator: createReadingLineDebugMessage,
         parseCSV: parseHoraireCSV,
         toDTO,
         frequencesRepository: horairesRepository,
         saveProgressRepository,
         departement,
+        overwrite,
         queue,
+        deleteCSV,
     });
 }

@@ -91,3 +91,7 @@ export function parseDecadaireAgroCSV(
 ): AsyncGenerator<Result<DecadaireAgroLine, ParseError<unknown>>> {
     return parseCSV<DecadaireAgroHeaders, DecadaireAgroLine>(lines, { parseHeaders, parseLine });
 }
+
+export function createReadingLineDebugMessage(line: DecadaireAgroLine): string {
+    return `Reading line : [${line.NUM_POSTE}] ${line.NOM_USUEL} at ${line.AAAAMM.toISOString()}-${line.NUM_DECADE}`;
+}

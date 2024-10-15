@@ -38,6 +38,7 @@ describe('saveCSVsToDB', () => {
             }),
             decadairesAgroRepository,
             saveProgressRepository,
+            overwrite: false,
         });
         assert.sameDeepMembers(await saveProgressRepository.getAlreadySaved(), [
             'DECADAGRO_01_1940-1949',
