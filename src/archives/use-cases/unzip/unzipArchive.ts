@@ -13,7 +13,7 @@ export async function unzipArchive({
     gunzip: Unzipper;
     overwrite: boolean;
 }): Promise<void> {
-    const csvpath = gzpath.replace('.gz', '');
+    const csvpath = gzpath.replace(/\.gz$/, '');
     if (!fileExists(csvpath)) {
         LoggerSingleton.getSingleton().info({ message: `Unzipping '${gzpath}'` });
         await gunzip(gzpath, csvpath);
