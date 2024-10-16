@@ -28,7 +28,7 @@ export function toDTO(line: DecadaireLine): DecadaireDTO {
         PMERMINAB: line.PMERMINAB.value(),
         QPMERMINAB: line.QPMERMINAB.value(),
         PMERMINABDAT: line.PMERMINABDAT.value(),
-        TX: line.TX.value(),
+        TX: line.TX,
         QTX: line.QTX.value(),
         NBTX: line.NBTX.value(),
         TXAB: line.TXAB,

@@ -28,7 +28,7 @@ export function toDTO(line: MensuelleLine): MensuelleDTO {
         PMERMINAB: line.PMERMINAB.value(),
         QPMERMINAB: line.QPMERMINAB.value(),
         PMERMINABDAT: line.PMERMINABDAT.value(),
-        TX: line.TX.value(),
+        TX: line.TX,
         QTX: line.QTX.value(),
         NBTX: line.NBTX.value(),
         TX_ME: line.TX_ME,

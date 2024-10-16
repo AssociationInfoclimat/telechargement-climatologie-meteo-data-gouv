@@ -68,7 +68,7 @@ const decadaireLineSchema = z.object({
     // PMERMINABDAT    : jour du PMERMINAB maximum
     PMERMINABDAT: z.string().transform(parseJour), // 15
     // TX              : moyenne decadaire des températures maximales (TX) quotidiennes (en °C et 1/10)
-    TX: z.string().transform(parsePositiveFloat), // 1.1
+    TX: z.string().transform(parseFloatOrNull), // -2.2
     // QTX             : code qualité de TX
     QTX: z.string().transform(parseCodeQualite), // 9
     // NBTX            : nombre de valeurs présentes de TX quotidienne

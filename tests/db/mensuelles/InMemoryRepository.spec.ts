@@ -29,7 +29,7 @@ export const dto1: MensuelleDTO = {
     PMERMINAB: 1.1,
     QPMERMINAB: 9,
     PMERMINABDAT: 15,
-    TX: 1.1,
+    TX: -2.2,
     QTX: 9,
     NBTX: 31,
     TX_ME: -2.2,
