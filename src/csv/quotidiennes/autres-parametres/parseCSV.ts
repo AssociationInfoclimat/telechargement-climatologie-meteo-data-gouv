@@ -63,7 +63,7 @@ const quotidienneLineSchema = z.object({
     INFRART: z.string().transform(parsePositiveInteger), // 1
     QINFRART: z.string().transform(parseCodeQualite), // 9
     // UV          : cumul quotidien de rayonnement ultra-violet (en J/cm2)
-    UV: z.string().transform(parseUVIndex), // 12
+    UV: z.string().transform(parsePositiveFloat), // 2.2
     QUV: z.string().transform(parseCodeQualite), // 9
     // UV_INDICEX  : maximum des indices UV horaires
     UV_INDICEX: z.string().transform(parseUVIndex), // 12

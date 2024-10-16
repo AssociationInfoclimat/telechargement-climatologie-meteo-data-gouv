@@ -26,7 +26,7 @@ export const dto1: QuotidienneAutresParametresDTO = {
     QDIRT: 9,
     INFRART: 1,
     QINFRART: 9,
-    UV: 12,
+    UV: 2.2,
     QUV: 9,
     UV_INDICEX: 12,
     QUV_INDICEX: 9,

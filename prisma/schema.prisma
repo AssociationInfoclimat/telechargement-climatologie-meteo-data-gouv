@@ -559,7 +559,7 @@ model QuotidienneAutresParametres {
     QDIRT        Int?
     INFRART      Int?
     QINFRART     Int?
-    UV           Int?
+    UV           Float?
     QUV          Int?
     UV_INDICEX   Int?
     QUV_INDICEX  Int?
@@ -814,9 +814,9 @@ model Horaire {
     QDIF         Int?
     DIF2         Int?
     QDIF2        Int?
-    UV           Int?
+    UV           Float?
     QUV          Int?
-    UV2          Int?
+    UV2          Float?
     QUV2         Int?
     UV_INDICE    Int?
     QUV_INDICE   Int?
