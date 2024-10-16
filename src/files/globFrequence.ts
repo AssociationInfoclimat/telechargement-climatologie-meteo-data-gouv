@@ -3,7 +3,7 @@ import { Frequence, FREQUENCES } from '@/files/Frequence.js';
 import { Globber } from '@/lib/fs/glob/Globber.js';
 import { join } from 'node:path';
 
-export function globFrequence({
+export async function globFrequence({
     frequence,
     departement,
     extension,
@@ -21,5 +21,11 @@ export function globFrequence({
         frequence === FREQUENCES.quotidienne || frequence === FREQUENCES.quotidienneAutresParametres ?
             `_${frequence.split('_')[1]}`
         :   '';
-    return glob(join(directory, `${prefix}_${departement ? `${departement}_` : ''}*${suffix}.${extension}`));
+    const normal = await glob(
+        join(directory, `${prefix}_${departement ? `${departement}_` : ''}*${suffix}.${extension}`)
+    );
+    const comp = await glob(
+        join(directory, `${prefix}-COMP_${departement ? `${departement}_` : ''}*${suffix}.${extension}`)
+    );
+    return [...normal, ...comp];
 }
