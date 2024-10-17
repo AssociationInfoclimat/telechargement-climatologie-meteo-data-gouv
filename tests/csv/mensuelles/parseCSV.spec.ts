@@ -1,5 +1,6 @@
 import { MensuelleLine, parseMensuelleCSV } from '@/csv/mensuelles/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
+import { HumiditeRelative } from '@/data/value-objects/HumiditeRelative.js';
 import { Integer } from '@/data/value-objects/Integer.js';
 import { Jour } from '@/data/value-objects/Jour.js';
 import { NbJours } from '@/data/value-objects/NbJours.js';
@@ -115,7 +116,7 @@ describe('parseCSV', () => {
                     QUXAB: CodeQualite.of(Integer.of(1)),
                     UXABDAT: Jour.of(PositiveInteger.of(31)),
                     NBUX: NbJours.of(PositiveInteger.of(31)),
-                    UMM: Percentage.of(PositiveInteger.of(85)),
+                    UMM: HumiditeRelative.of(85),
                     QUMM: CodeQualite.of(Integer.of(1)),
                     NBUM: NbJours.of(PositiveInteger.of(31)),
                     TSVM: PositiveFloat.of(6.5),
@@ -279,7 +280,7 @@ describe('parseCSV', () => {
                     QUXAB: CodeQualite.of(Integer.of(1)),
                     UXABDAT: Jour.of(PositiveInteger.of(25)),
                     NBUX: NbJours.of(PositiveInteger.of(28)),
-                    UMM: Percentage.of(PositiveInteger.of(82)),
+                    UMM: HumiditeRelative.of(82),
                     QUMM: CodeQualite.of(Integer.of(1)),
                     NBUM: NbJours.of(PositiveInteger.of(28)),
                     TSVM: PositiveFloat.of(6.0),
@@ -443,7 +444,7 @@ describe('parseCSV', () => {
                     QUXAB: CodeQualite.of(Integer.of(9)),
                     UXABDAT: Jour.of(PositiveInteger.of(15)),
                     NBUX: NbJours.of(PositiveInteger.of(31)),
-                    UMM: Percentage.of(PositiveInteger.of(100)),
+                    UMM: HumiditeRelative.of(100),
                     QUMM: CodeQualite.of(Integer.of(9)),
                     NBUM: NbJours.of(PositiveInteger.of(31)),
                     TSVM: PositiveFloat.of(1.1),
@@ -607,7 +608,7 @@ describe('parseCSV', () => {
                     QUXAB: CodeQualite.of(Integer.of(null)),
                     UXABDAT: Jour.of(PositiveInteger.of(null)),
                     NBUX: NbJours.of(PositiveInteger.of(null)),
-                    UMM: Percentage.of(PositiveInteger.of(null)),
+                    UMM: HumiditeRelative.of(null),
                     QUMM: CodeQualite.of(Integer.of(null)),
                     NBUM: NbJours.of(PositiveInteger.of(null)),
                     TSVM: PositiveFloat.of(null),

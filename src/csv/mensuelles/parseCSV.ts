@@ -3,6 +3,7 @@ import {
     parseCodeQualite,
     ParseError,
     parseFloatOrNull,
+    parseHumiditeRelative,
     parseInteger,
     parseJour,
     parseNbJours,
@@ -192,7 +193,7 @@ const mensuelleLineSchema = z.object({
     // NBUX            : nombre de valeurs présentes de UX quotidienne
     NBUX: z.string().transform(parseNbJours), // 31
     // UMM             : moyenne mensuelle des humidités moyennes (UM) quotidiennes (en %)
-    UMM: z.string().transform(parsePercentage), // 100
+    UMM: z.string().transform(parseHumiditeRelative), // 100
     // QUMM            : code qualité de UMM
     QUMM: z.string().transform(parseCodeQualite), // 9
     // NBUM            : nombre de valeurs présentes de UM quotidienne

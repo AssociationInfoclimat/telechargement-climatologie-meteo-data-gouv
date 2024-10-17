@@ -1,6 +1,7 @@
 import { DecadaireLine, parseDecadaireCSV } from '@/csv/decadaires/parseCSV.js';
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { Decade } from '@/data/value-objects/Decade.js';
+import { HumiditeRelative } from '@/data/value-objects/HumiditeRelative.js';
 import { Integer } from '@/data/value-objects/Integer.js';
 import { Jour } from '@/data/value-objects/Jour.js';
 import { NbJours } from '@/data/value-objects/NbJours.js';
@@ -115,7 +116,7 @@ describe('parseCSV', () => {
                     QUXAB: CodeQualite.of(Integer.of(1)),
                     UXABDAT: Jour.of(PositiveInteger.of(6)),
                     NBUX: NbJours.of(PositiveInteger.of(10)),
-                    UMM: Percentage.of(PositiveInteger.of(82)),
+                    UMM: HumiditeRelative.of(82),
                     QUMM: CodeQualite.of(Integer.of(1)),
                     NBUM: NbJours.of(PositiveInteger.of(10)),
                     TSVM: PositiveFloat.of(8.7),
@@ -275,7 +276,7 @@ describe('parseCSV', () => {
                     QUXAB: CodeQualite.of(Integer.of(1)),
                     UXABDAT: Jour.of(PositiveInteger.of(20)),
                     NBUX: NbJours.of(PositiveInteger.of(10)),
-                    UMM: Percentage.of(PositiveInteger.of(88)),
+                    UMM: HumiditeRelative.of(88),
                     QUMM: CodeQualite.of(Integer.of(1)),
                     NBUM: NbJours.of(PositiveInteger.of(10)),
                     TSVM: PositiveFloat.of(6.4),
@@ -435,7 +436,7 @@ describe('parseCSV', () => {
                     QUXAB: CodeQualite.of(Integer.of(9)),
                     UXABDAT: Jour.of(PositiveInteger.of(15)),
                     NBUX: NbJours.of(PositiveInteger.of(31)),
-                    UMM: Percentage.of(PositiveInteger.of(100)),
+                    UMM: HumiditeRelative.of(100),
                     QUMM: CodeQualite.of(Integer.of(9)),
                     NBUM: NbJours.of(PositiveInteger.of(31)),
                     TSVM: PositiveFloat.of(1.1),
@@ -595,7 +596,7 @@ describe('parseCSV', () => {
                     QUXAB: CodeQualite.of(Integer.of(null)),
                     UXABDAT: Jour.of(PositiveInteger.of(null)),
                     NBUX: NbJours.of(PositiveInteger.of(null)),
-                    UMM: Percentage.of(PositiveInteger.of(null)),
+                    UMM: HumiditeRelative.of(null),
                     QUMM: CodeQualite.of(Integer.of(null)),
                     NBUM: NbJours.of(PositiveInteger.of(null)),
                     TSVM: PositiveFloat.of(null),
