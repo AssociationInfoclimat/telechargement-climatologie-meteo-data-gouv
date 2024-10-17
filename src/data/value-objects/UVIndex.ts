@@ -3,7 +3,7 @@ import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
 export class InvalidUVIndexError extends ValidationError {
     constructor(index: PositiveInteger) {
-        super(`Invalid idnex: '${index}'. Must be an integer between 0 and 12.`);
+        super(`Invalid index: '${index}'. Must be an integer between 0 and 20.`);
     }
 }
 
@@ -16,7 +16,7 @@ export class UVIndex {
 
     static of(index: PositiveInteger): UVIndex {
         const value = index.value();
-        if (value !== null && !(0 <= value && value <= 12)) {
+        if (value !== null && !(0 <= value && value <= 20)) {
             throw new InvalidUVIndexError(index);
         }
         return new UVIndex(index);
