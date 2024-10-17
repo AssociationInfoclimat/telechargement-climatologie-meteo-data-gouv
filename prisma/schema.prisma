@@ -723,7 +723,7 @@ model Horaire {
     PSTAT        Float?
     QPSTAT       Int?
     PMERMIN      Float?
-    QPERMIN      Int?
+    QPMERMIN     Int?
     GEOP         Int?
     QGEOP        Int?
     N            Int?

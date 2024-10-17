@@ -92,7 +92,7 @@ export interface HoraireDTO {
     PSTAT: number | null;
     QPSTAT: number | null;
     PMERMIN: number | null;
-    QPERMIN: number | null;
+    QPMERMIN: number | null;
     GEOP: number | null;
     QGEOP: number | null;
     N: number | null;

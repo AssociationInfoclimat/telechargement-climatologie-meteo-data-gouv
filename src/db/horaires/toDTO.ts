@@ -96,7 +96,7 @@ export function toDTO(line: HoraireLine): HoraireDTO {
         PSTAT: line.PSTAT.value(),
         QPSTAT: line.QPSTAT.value(),
         PMERMIN: line.PMERMIN.value(),
-        QPERMIN: line.QPERMIN.value(),
+        QPMERMIN: line.QPMERMIN.value(),
         GEOP: line.GEOP.value(),
         QGEOP: line.QGEOP.value(),
         N: line.N.value(),

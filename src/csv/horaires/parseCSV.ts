@@ -16,6 +16,7 @@ import {
     parseTime,
     parseUVIndex,
     parseWindDirection,
+    tmpFixHeader,
 } from '@/csv/parseCSVUtils.js';
 import { Result } from '@/lib/resultUtils.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
@@ -143,7 +144,7 @@ const horaireLineSchema = z.object({
     PSTAT: z.string().transform(parsePositiveFloat), // 3.3
     QPSTAT: z.string().transform(parseCodeQualite), // 2
     PMERMIN: z.string().transform(parsePositiveFloat), // 3.3
-    QPERMIN: z.string().transform(parseCodeQualite), // 9
+    QPMERMIN: z.string().transform(parseCodeQualite), // 9
     GEOP: z.string().transform(parsePositiveInteger), // 4
     QGEOP: z.string().transform(parseCodeQualite), // 0
     N: z.string().transform(parseOcta), // 8
@@ -262,7 +263,7 @@ export type HoraireHeaders = ReturnType<typeof headersSchema.parse>;
 
 export function parseHeaders(line: string): HoraireHeaders {
     const headers = line.split(';').map(header => header.trim());
-    const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [header, index]));
+    const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [tmpFixHeader(header), index]));
     return headersSchema.parse(headersNameToIndex);
 }
 

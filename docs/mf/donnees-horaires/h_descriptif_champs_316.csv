@@ -91,7 +91,7 @@ QPMER       : pression mer, seulement pour les postes dont l’altitude est inf�
 PSTAT       : pression station (en hPa et 1/10)
 QPSTAT      : pression station (en hPa et 1/10)
 PMERMIN     : minimum horaire de la pression mer (en hPa et 1/10)
-QPERMIN     : minimum horaire de la pression mer (en hPa et 1/10)
+QPMERMIN    : minimum horaire de la pression mer (en hPa et 1/10)
 GEOP        : géopotentiel, seulement pour les stations dont l’altitude est supérieure à 750 m (en mgp)
 QGEOP       : géopotentiel, seulement pour les stations dont l’altitude est supérieure à 750 m (en mgp)
 N           : nébulosité totale (en octa), 9=ciel invisible par brouillard et/ou autre phénomène météorologique

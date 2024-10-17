@@ -13,6 +13,7 @@ import {
     parseRelativePercentage,
     parseTime,
     parseUVIndex,
+    tmpFixHeader,
 } from '@/csv/parseCSVUtils.js';
 import { parseDate } from '@/csv/quotidiennes/parseCSVUtils.js';
 import { Result } from '@/lib/resultUtils.js';
@@ -171,7 +172,7 @@ export type QuotidienneAutresParametresHeaders = z.infer<typeof headersSchema>;
 
 export function parseHeaders(line: string): QuotidienneAutresParametresHeaders {
     const headers = line.split(';').map(header => header.trim());
-    const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [header, index]));
+    const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [tmpFixHeader(header), index]));
     return headersSchema.parse(headersNameToIndex);
 }
 

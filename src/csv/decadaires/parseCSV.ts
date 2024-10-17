@@ -4,6 +4,7 @@ import {
     parseDecade,
     ParseError,
     parseFloatOrNull,
+    parseHumiditeRelative,
     parseInteger,
     parseJour,
     parseNbJours,
@@ -13,6 +14,7 @@ import {
     parsePositiveFloat,
     parsePositiveInteger,
     parseWindDirection,
+    tmpFixHeader,
 } from '@/csv/parseCSVUtils.js';
 import { Result } from '@/lib/resultUtils.js';
 import { z } from 'zod';
@@ -188,7 +190,7 @@ const decadaireLineSchema = z.object({
     // NBUX            : nombre de valeurs présentes de UX quotidienne
     NBUX: z.string().transform(parseNbJours), // 31
     // UMM             : moyenne decadaire des humidités moyennes (UM) quotidiennes (en %)
-    UMM: z.string().transform(parsePercentage), // 100
+    UMM: z.string().transform(parseHumiditeRelative), // 100
     // QUMM            : code qualité de UMM
     QUMM: z.string().transform(parseCodeQualite), // 9
     // NBUM            : nombre de valeurs présentes de UM quotidienne
@@ -341,14 +343,9 @@ const headersSchema = z.object(
 );
 export type DecadaireHeaders = ReturnType<typeof headersSchema.parse>;
 
-// Remove once the csv headers are fixed
-function tmpFixNBJGREL(value: string): string {
-    return value === 'NBGREL' ? 'NBJGREL' : value;
-}
-
 export function parseHeaders(line: string): DecadaireHeaders {
     const headers = line.split(';').map(header => header.trim());
-    const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [tmpFixNBJGREL(header), index]));
+    const headersNameToIndex = Object.fromEntries(headers.map((header, index) => [tmpFixHeader(header), index]));
     return headersSchema.parse(headersNameToIndex);
 }
 

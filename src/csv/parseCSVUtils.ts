@@ -103,3 +103,15 @@ CSV     : ${line}
         this.data = data;
     }
 }
+
+// TODO : Remove once the csv headers are fixed
+export function tmpFixHeader(value: string): string {
+    switch (value) {
+        case 'NBGREL':
+            return 'NBJGREL';
+        case 'QPERMIN':
+            return 'QPMERMIN';
+        default:
+            return value;
+    }
+}
