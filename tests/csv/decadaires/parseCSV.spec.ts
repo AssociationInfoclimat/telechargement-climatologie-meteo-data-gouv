@@ -5,7 +5,6 @@ import { HumiditeRelative } from '@/data/value-objects/HumiditeRelative.js';
 import { Integer } from '@/data/value-objects/Integer.js';
 import { Jour } from '@/data/value-objects/Jour.js';
 import { NbJours } from '@/data/value-objects/NbJours.js';
-import { Percentage } from '@/data/value-objects/Percentage.js';
 import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { WindDirection } from '@/data/value-objects/WindDirection.js';
@@ -108,11 +107,11 @@ describe('parseCSV', () => {
                     TMMAX: 14.7,
                     QTMMAX: CodeQualite.of(Integer.of(1)),
                     TMMAXDAT: Jour.of(PositiveInteger.of(1)),
-                    UNAB: Percentage.of(PositiveInteger.of(38)),
+                    UNAB: HumiditeRelative.of(38),
                     QUNAB: CodeQualite.of(Integer.of(1)),
                     UNABDAT: Jour.of(PositiveInteger.of(2)),
                     NBUN: NbJours.of(PositiveInteger.of(10)),
-                    UXAB: Percentage.of(PositiveInteger.of(100)),
+                    UXAB: HumiditeRelative.of(100),
                     QUXAB: CodeQualite.of(Integer.of(1)),
                     UXABDAT: Jour.of(PositiveInteger.of(6)),
                     NBUX: NbJours.of(PositiveInteger.of(10)),
@@ -268,11 +267,11 @@ describe('parseCSV', () => {
                     TMMAX: 6.6,
                     QTMMAX: CodeQualite.of(Integer.of(1)),
                     TMMAXDAT: Jour.of(PositiveInteger.of(13)),
-                    UNAB: Percentage.of(PositiveInteger.of(35)),
+                    UNAB: HumiditeRelative.of(35),
                     QUNAB: CodeQualite.of(Integer.of(1)),
                     UNABDAT: Jour.of(PositiveInteger.of(14)),
                     NBUN: NbJours.of(PositiveInteger.of(10)),
-                    UXAB: Percentage.of(PositiveInteger.of(100)),
+                    UXAB: HumiditeRelative.of(100),
                     QUXAB: CodeQualite.of(Integer.of(1)),
                     UXABDAT: Jour.of(PositiveInteger.of(20)),
                     NBUX: NbJours.of(PositiveInteger.of(10)),
@@ -428,11 +427,11 @@ describe('parseCSV', () => {
                     TMMAX: -2.2,
                     QTMMAX: CodeQualite.of(Integer.of(9)),
                     TMMAXDAT: Jour.of(PositiveInteger.of(15)),
-                    UNAB: Percentage.of(PositiveInteger.of(100)),
+                    UNAB: HumiditeRelative.of(100),
                     QUNAB: CodeQualite.of(Integer.of(9)),
                     UNABDAT: Jour.of(PositiveInteger.of(15)),
                     NBUN: NbJours.of(PositiveInteger.of(31)),
-                    UXAB: Percentage.of(PositiveInteger.of(100)),
+                    UXAB: HumiditeRelative.of(100),
                     QUXAB: CodeQualite.of(Integer.of(9)),
                     UXABDAT: Jour.of(PositiveInteger.of(15)),
                     NBUX: NbJours.of(PositiveInteger.of(31)),
@@ -588,11 +587,11 @@ describe('parseCSV', () => {
                     TMMAX: null,
                     QTMMAX: CodeQualite.of(Integer.of(null)),
                     TMMAXDAT: Jour.of(PositiveInteger.of(null)),
-                    UNAB: Percentage.of(PositiveInteger.of(null)),
+                    UNAB: HumiditeRelative.of(null),
                     QUNAB: CodeQualite.of(Integer.of(null)),
                     UNABDAT: Jour.of(PositiveInteger.of(null)),
                     NBUN: NbJours.of(PositiveInteger.of(null)),
-                    UXAB: Percentage.of(PositiveInteger.of(null)),
+                    UXAB: HumiditeRelative.of(null),
                     QUXAB: CodeQualite.of(Integer.of(null)),
                     UXABDAT: Jour.of(PositiveInteger.of(null)),
                     NBUX: NbJours.of(PositiveInteger.of(null)),

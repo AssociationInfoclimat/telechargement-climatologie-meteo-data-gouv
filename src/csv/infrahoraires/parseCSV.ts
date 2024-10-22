@@ -1,12 +1,13 @@
 import { parseCSV } from '@/csv/parseCSV.js';
 import {
-    parseCodeQualite,
     ParseError,
-    parseInteger,
-    parseNomUsuel,
-    parseNumeroPoste,
-    parsePositiveFloat,
+    toCodeQualite,
+    toInteger,
+    toNomUsuel,
+    toNumeroPoste,
+    toPositiveFloat,
 } from '@/csv/parseCSVUtils.js';
+import { createTransform } from '@/lib/createTransform.js';
 import { Result } from '@/lib/resultUtils.js';
 import { z } from 'zod';
 
@@ -19,15 +20,17 @@ export function parseDate(date: string): Date {
     return new Date(`${yyyy}-${mm}-${dd}T${hh}:${mn}:00Z`);
 }
 
+export const toDate = createTransform(parseDate);
+
 const infrahoraireLineSchema = z.object({
-    NUM_POSTE: z.string().transform(parseNumeroPoste),
-    NOM_USUEL: z.string().transform(parseNomUsuel),
+    NUM_POSTE: z.string().transform(toNumeroPoste),
+    NOM_USUEL: z.string().transform(toNomUsuel),
     LAT: z.string().transform(parseFloat),
     LON: z.string().transform(parseFloat),
-    ALTI: z.string().transform(parseInteger),
-    AAAAMMJJHHMN: z.string().transform(parseDate),
-    RR: z.string().transform(parsePositiveFloat),
-    QRR: z.string().transform(parseCodeQualite),
+    ALTI: z.string().transform(toInteger),
+    AAAAMMJJHHMN: z.string().transform(toDate),
+    RR: z.string().transform(toPositiveFloat),
+    QRR: z.string().transform(toCodeQualite),
 });
 export type InfrahoraireLine = ReturnType<typeof infrahoraireLineSchema.parse>;
 

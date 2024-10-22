@@ -5,21 +5,23 @@ import { HouleDirection } from '@/csv/horaires/value-objects/HouleDirection.js';
 import { Visibility } from '@/csv/horaires/value-objects/Visibility.js';
 import { parseCSV } from '@/csv/parseCSV.js';
 import {
-    parseCodeQualite,
     ParseError,
-    parseFloatOrNull,
-    parseHumiditeRelative,
-    parseInteger,
-    parseOcta,
-    parsePositiveFloat,
     parsePositiveInteger,
-    parseTime,
-    parseUVIndex,
-    parseWindDirection,
     tmpFixHeader,
+    toCodeQualite,
+    toFloatOrNull,
+    toHumiditeRelative,
+    toInteger,
+    toNumeroPoste,
+    toOcta,
+    toPositiveFloat,
+    toPositiveInteger,
+    toTime,
+    toUVIndex,
+    toWindDirection,
 } from '@/csv/parseCSVUtils.js';
+import { createTransform } from '@/lib/createTransform.js';
 import { Result } from '@/lib/resultUtils.js';
-import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { z } from 'zod';
 
 export function parseDate(date: string): Date {
@@ -30,231 +32,243 @@ export function parseDate(date: string): Date {
     return new Date(`${yyyy}-${mm}-${dd}T${hh}:00:00Z`);
 }
 
+export const toDate = createTransform(parseDate);
+
 export function parseCodeSynop(value: string): CodeSynop {
     return CodeSynop.of(value);
 }
+
+export const toCodeSynop = createTransform(parseCodeSynop);
 
 export function parseCodeTemps(value: string): CodeTemps {
     return CodeTemps.of(value);
 }
 
+export const toCodeTemps = createTransform(parseCodeTemps);
+
 export function parseEtat(value: string): Etat {
     return Etat.of(parsePositiveInteger(value));
 }
+
+export const toEtat = createTransform(parseEtat);
 
 export function parseVisibility(value: string): Visibility {
     return Visibility.of(parsePositiveInteger(value));
 }
 
+export const toVisibility = createTransform(parseVisibility);
+
 export function parseHouleDirection(value: string): HouleDirection {
     return HouleDirection.of(parsePositiveInteger(value));
 }
 
+export const toHouleDirection = createTransform(parseHouleDirection);
+
 const horaireLineSchema = z.object({
-    NUM_POSTE: z.string().transform(NumeroPoste.of),
+    NUM_POSTE: z.string().transform(toNumeroPoste),
     NOM_USUEL: z.string(),
     LAT: z.string().transform(parseFloat),
     LON: z.string().transform(parseFloat),
-    ALTI: z.string().transform(parseInteger),
-    AAAAMMJJHH: z.string().transform(parseDate),
-    RR1: z.string().transform(parsePositiveFloat), // 3.3
-    QRR1: z.string().transform(parseCodeQualite), // 0
-    DRR1: z.string().transform(parsePositiveInteger), // 4
-    QDRR1: z.string().transform(parseCodeQualite), // 1
-    FF: z.string().transform(parsePositiveFloat), // 3.3
-    QFF: z.string().transform(parseCodeQualite), // 2
-    DD: z.string().transform(parseWindDirection), // 360
-    QDD: z.string().transform(parseCodeQualite), // 9
-    FXY: z.string().transform(parsePositiveFloat), // 3.3
-    QFXY: z.string().transform(parseCodeQualite), // 0
-    DXY: z.string().transform(parseWindDirection), // 360
-    QDXY: z.string().transform(parseCodeQualite), // 1
-    HXY: z.string().transform(parseTime), // 1230
-    QHXY: z.string().transform(parseCodeQualite), // 2
-    FXI: z.string().transform(parsePositiveFloat), // 3.3
-    QFXI: z.string().transform(parseCodeQualite), // 9
-    DXI: z.string().transform(parseWindDirection), // 360
-    QDXI: z.string().transform(parseCodeQualite), // 0
-    HXI: z.string().transform(parseTime), // 1230
-    QHXI: z.string().transform(parseCodeQualite), // 1
-    FF2: z.string().transform(parsePositiveFloat), // 3.3
-    QFF2: z.string().transform(parseCodeQualite), // 2
-    DD2: z.string().transform(parseWindDirection), // 360
-    QDD2: z.string().transform(parseCodeQualite), // 9
-    FXI2: z.string().transform(parsePositiveFloat), // 3.3
-    QFXI2: z.string().transform(parseCodeQualite), // 0
-    DXI2: z.string().transform(parseWindDirection), // 360
-    QDXI2: z.string().transform(parseCodeQualite), // 1
-    HXI2: z.string().transform(parseTime), // 1230
-    QHXI2: z.string().transform(parseCodeQualite), // 2
-    FXI3S: z.string().transform(parsePositiveFloat), // 3.3
-    QFXI3S: z.string().transform(parseCodeQualite), // 9
-    DXI3S: z.string().transform(parseWindDirection), // 360
-    QDXI3S: z.string().transform(parseCodeQualite), // 0
-    HFXI3S: z.string().transform(parseTime), // 1230
-    QHFXI3S: z.string().transform(parseCodeQualite), // 1
-    T: z.string().transform(parseFloatOrNull), // -5.5
-    QT: z.string().transform(parseCodeQualite), // 2
-    TD: z.string().transform(parseFloatOrNull), // -5.5
-    QTD: z.string().transform(parseCodeQualite), // 9
-    TN: z.string().transform(parseFloatOrNull), // -5.5
-    QTN: z.string().transform(parseCodeQualite), // 0
-    HTN: z.string().transform(parseTime), // 1230
-    QHTN: z.string().transform(parseCodeQualite), // 1
-    TX: z.string().transform(parseFloatOrNull), // -5.5
-    QTX: z.string().transform(parseCodeQualite), // 2
-    HTX: z.string().transform(parseTime), // 1230
-    QHTX: z.string().transform(parseCodeQualite), // 9
-    DG: z.string().transform(parsePositiveInteger), // 4
-    QDG: z.string().transform(parseCodeQualite), // 0
-    T10: z.string().transform(parseFloatOrNull), // -5.5
-    QT10: z.string().transform(parseCodeQualite), // 1
-    T20: z.string().transform(parseFloatOrNull), // -5.5
-    QT20: z.string().transform(parseCodeQualite), // 2
-    T50: z.string().transform(parseFloatOrNull), // -5.5
-    QT50: z.string().transform(parseCodeQualite), // 9
-    T100: z.string().transform(parseFloatOrNull), // -5.5
-    QT100: z.string().transform(parseCodeQualite), // 0
-    TNSOL: z.string().transform(parseFloatOrNull), // -5.5
-    QTNSOL: z.string().transform(parseCodeQualite), // 1
-    TN50: z.string().transform(parseFloatOrNull), // -5.5
-    QTN50: z.string().transform(parseCodeQualite), // 2
-    TCHAUSSEE: z.string().transform(parseFloatOrNull), // -5.5
-    QTCHAUSSEE: z.string().transform(parseCodeQualite), // 9
-    DHUMEC: z.string().transform(parsePositiveInteger), // 4
-    QDHUMEC: z.string().transform(parseCodeQualite), // 0
-    U: z.string().transform(parseHumiditeRelative), // 100
-    QU: z.string().transform(parseCodeQualite), // 1
-    UN: z.string().transform(parseHumiditeRelative), // 100
-    QUN: z.string().transform(parseCodeQualite), // 2
-    HUN: z.string().transform(parseTime), // 1230
-    QHUN: z.string().transform(parseCodeQualite), // 9
-    UX: z.string().transform(parseHumiditeRelative), // 100
-    QUX: z.string().transform(parseCodeQualite), // 0
-    HUX: z.string().transform(parseTime), // 1230
-    QHUX: z.string().transform(parseCodeQualite), // 1
-    DHUMI40: z.string().transform(parsePositiveInteger), // 4
-    QDHUMI40: z.string().transform(parseCodeQualite), // 2
-    DHUMI80: z.string().transform(parsePositiveInteger), // 4
-    QDHUMI80: z.string().transform(parseCodeQualite), // 9
-    TSV: z.string().transform(parsePositiveFloat), // 3.3
-    QTSV: z.string().transform(parseCodeQualite), // 0
-    PMER: z.string().transform(parsePositiveFloat), // 3.3
-    QPMER: z.string().transform(parseCodeQualite), // 1
-    PSTAT: z.string().transform(parsePositiveFloat), // 3.3
-    QPSTAT: z.string().transform(parseCodeQualite), // 2
-    PMERMIN: z.string().transform(parsePositiveFloat), // 3.3
-    QPMERMIN: z.string().transform(parseCodeQualite), // 9
-    GEOP: z.string().transform(parsePositiveInteger), // 4
-    QGEOP: z.string().transform(parseCodeQualite), // 0
-    N: z.string().transform(parseOcta), // 8
-    QN: z.string().transform(parseCodeQualite), // 1
-    NBAS: z.string().transform(parseOcta), // 8
-    QNBAS: z.string().transform(parseCodeQualite), // 2
-    CL: z.string().transform(parseCodeSynop), // /
-    QCL: z.string().transform(parseCodeQualite), // 9
-    CM: z.string().transform(parseCodeSynop), // /
-    QCM: z.string().transform(parseCodeQualite), // 0
-    CH: z.string().transform(parseCodeSynop), // /
-    QCH: z.string().transform(parseCodeQualite), // 1
-    N1: z.string().transform(parseOcta), // 8
-    QN1: z.string().transform(parseCodeQualite), // 2
-    C1: z.string().transform(parseCodeSynop), // /
-    QC1: z.string().transform(parseCodeQualite), // 9
-    B1: z.string().transform(parsePositiveInteger), // 4
-    QB1: z.string().transform(parseCodeQualite), // 0
-    N2: z.string().transform(parseOcta), // 8
-    QN2: z.string().transform(parseCodeQualite), // 1
-    C2: z.string().transform(parseCodeSynop), // /
-    QC2: z.string().transform(parseCodeQualite), // 2
-    B2: z.string().transform(parsePositiveInteger), // 4
-    QCB2: z.string().transform(parseCodeQualite), // 9
-    N3: z.string().transform(parseOcta), // 8
-    QN3: z.string().transform(parseCodeQualite), // 0
-    C3: z.string().transform(parseCodeSynop), // /
-    QC3: z.string().transform(parseCodeQualite), // 1
-    B3: z.string().transform(parsePositiveInteger), // 4
-    QB3: z.string().transform(parseCodeQualite), // 2
-    N4: z.string().transform(parseOcta), // 8
-    QN4: z.string().transform(parseCodeQualite), // 9
-    C4: z.string().transform(parseCodeSynop), // /
-    QC4: z.string().transform(parseCodeQualite), // 0
-    B4: z.string().transform(parsePositiveInteger), // 4
-    QB4: z.string().transform(parseCodeQualite), // 1
-    VV: z.string().transform(parsePositiveInteger), // 4
-    QVV: z.string().transform(parseCodeQualite), // 2
-    DVV200: z.string().transform(parsePositiveInteger), // 4
-    QDVV200: z.string().transform(parseCodeQualite), // 9
-    WW: z.string().transform(parseCodeTemps), // 00
-    QWW: z.string().transform(parseCodeQualite), // 0
-    W1: z.string().transform(parseCodeTemps), // 00
-    QW1: z.string().transform(parseCodeQualite), // 1
-    W2: z.string().transform(parseCodeTemps), // 00
-    QW2: z.string().transform(parseCodeQualite), // 2
-    SOL: z.string().transform(parseEtat), // 7
-    QSOL: z.string().transform(parseCodeQualite), // 9
-    SOLNG: z.string().transform(parseEtat), // 7
-    QSOLNG: z.string().transform(parseCodeQualite), // 0
-    TMER: z.string().transform(parseFloatOrNull), // -5.5
-    QTMER: z.string().transform(parseCodeQualite), // 1
-    VVMER: z.string().transform(parseVisibility), // 6
-    QVVMER: z.string().transform(parseCodeQualite), // 2
-    ETATMER: z.string().transform(parseEtat), // 7
-    QETATMER: z.string().transform(parseCodeQualite), // 9
-    DIRHOULE: z.string().transform(parseHouleDirection), // 999
-    QDIRHOULE: z.string().transform(parseCodeQualite), // 0
-    HVAGUE: z.string().transform(parsePositiveFloat), // 3.3
-    QHVAGUE: z.string().transform(parseCodeQualite), // 1
-    PVAGUE: z.string().transform(parsePositiveFloat), // 3.3
-    QPVAGUE: z.string().transform(parseCodeQualite), // 2
-    HNEIGEF: z.string().transform(parsePositiveInteger), // 4
-    QHNEIGEF: z.string().transform(parseCodeQualite), // 9
-    NEIGETOT: z.string().transform(parsePositiveInteger), // 4
-    QNEIGETOT: z.string().transform(parseCodeQualite), // 0
-    TSNEIGE: z.string().transform(parsePositiveFloat), // 3.3
-    QTSNEIGE: z.string().transform(parseCodeQualite), // 1
-    TUBENEIGE: z.string().transform(parsePositiveInteger), // 4
-    QTUBENEIGE: z.string().transform(parseCodeQualite), // 2
-    HNEIGEFI3: z.string().transform(parsePositiveInteger), // 4
-    QHNEIGEFI3: z.string().transform(parseCodeQualite), // 9
-    HNEIGEFI1: z.string().transform(parsePositiveInteger), // 4
-    QHNEIGEFI1: z.string().transform(parseCodeQualite), // 0
-    ESNEIGE: z.string().transform(parseEtat), // 7
-    QESNEIGE: z.string().transform(parseCodeQualite), // 1
-    CHARGENEIGE: z.string().transform(parsePositiveInteger), // 4
-    QCHARGENEIGE: z.string().transform(parseCodeQualite), // 2
-    GLO: z.string().transform(parsePositiveInteger), // 4
-    QGLO: z.string().transform(parseCodeQualite), // 9
-    GLO2: z.string().transform(parsePositiveInteger), // 4
-    QGLO2: z.string().transform(parseCodeQualite), // 0
-    DIR: z.string().transform(parsePositiveInteger), // 4
-    QDIR: z.string().transform(parseCodeQualite), // 1
-    DIR2: z.string().transform(parsePositiveInteger), // 4
-    QDIR2: z.string().transform(parseCodeQualite), // 2
-    DIF: z.string().transform(parsePositiveInteger), // 4
-    QDIF: z.string().transform(parseCodeQualite), // 9
-    DIF2: z.string().transform(parsePositiveInteger), // 4
-    QDIF2: z.string().transform(parseCodeQualite), // 0
-    UV: z.string().transform(parsePositiveFloat), // 3.3
-    QUV: z.string().transform(parseCodeQualite), // 1
-    UV2: z.string().transform(parsePositiveFloat), // 3.3
-    QUV2: z.string().transform(parseCodeQualite), // 2
-    UV_INDICE: z.string().transform(parseUVIndex), // 12
-    QUV_INDICE: z.string().transform(parseCodeQualite), // 9
-    INFRAR: z.string().transform(parsePositiveInteger), // 4
-    QINFRAR: z.string().transform(parseCodeQualite), // 0
-    INFRAR2: z.string().transform(parsePositiveInteger), // 4
-    QINFRAR2: z.string().transform(parseCodeQualite), // 1
-    INS: z.string().transform(parsePositiveInteger), // 4
-    QINS: z.string().transform(parseCodeQualite), // 2
-    INS2: z.string().transform(parsePositiveInteger), // 4
-    QINS2: z.string().transform(parseCodeQualite), // 9
-    TLAGON: z.string().transform(parseFloatOrNull), // -5.5
-    QTLAGON: z.string().transform(parseCodeQualite), // 0
-    TVEGETAUX: z.string().transform(parseFloatOrNull), // -5.5
-    QTVEGETAUX: z.string().transform(parseCodeQualite), // 1
-    ECOULEMENT: z.string().transform(parseFloatOrNull), // -5.5
-    QECOULEMENT: z.string().transform(parseCodeQualite), // 2
+    ALTI: z.string().transform(toInteger),
+    AAAAMMJJHH: z.string().transform(toDate),
+    RR1: z.string().transform(toPositiveFloat), // 3.3
+    QRR1: z.string().transform(toCodeQualite), // 0
+    DRR1: z.string().transform(toPositiveInteger), // 4
+    QDRR1: z.string().transform(toCodeQualite), // 1
+    FF: z.string().transform(toPositiveFloat), // 3.3
+    QFF: z.string().transform(toCodeQualite), // 2
+    DD: z.string().transform(toWindDirection), // 360
+    QDD: z.string().transform(toCodeQualite), // 9
+    FXY: z.string().transform(toPositiveFloat), // 3.3
+    QFXY: z.string().transform(toCodeQualite), // 0
+    DXY: z.string().transform(toWindDirection), // 360
+    QDXY: z.string().transform(toCodeQualite), // 1
+    HXY: z.string().transform(toTime), // 1230
+    QHXY: z.string().transform(toCodeQualite), // 2
+    FXI: z.string().transform(toPositiveFloat), // 3.3
+    QFXI: z.string().transform(toCodeQualite), // 9
+    DXI: z.string().transform(toWindDirection), // 360
+    QDXI: z.string().transform(toCodeQualite), // 0
+    HXI: z.string().transform(toTime), // 1230
+    QHXI: z.string().transform(toCodeQualite), // 1
+    FF2: z.string().transform(toPositiveFloat), // 3.3
+    QFF2: z.string().transform(toCodeQualite), // 2
+    DD2: z.string().transform(toWindDirection), // 360
+    QDD2: z.string().transform(toCodeQualite), // 9
+    FXI2: z.string().transform(toPositiveFloat), // 3.3
+    QFXI2: z.string().transform(toCodeQualite), // 0
+    DXI2: z.string().transform(toWindDirection), // 360
+    QDXI2: z.string().transform(toCodeQualite), // 1
+    HXI2: z.string().transform(toTime), // 1230
+    QHXI2: z.string().transform(toCodeQualite), // 2
+    FXI3S: z.string().transform(toPositiveFloat), // 3.3
+    QFXI3S: z.string().transform(toCodeQualite), // 9
+    DXI3S: z.string().transform(toWindDirection), // 360
+    QDXI3S: z.string().transform(toCodeQualite), // 0
+    HFXI3S: z.string().transform(toTime), // 1230
+    QHFXI3S: z.string().transform(toCodeQualite), // 1
+    T: z.string().transform(toFloatOrNull), // -5.5
+    QT: z.string().transform(toCodeQualite), // 2
+    TD: z.string().transform(toFloatOrNull), // -5.5
+    QTD: z.string().transform(toCodeQualite), // 9
+    TN: z.string().transform(toFloatOrNull), // -5.5
+    QTN: z.string().transform(toCodeQualite), // 0
+    HTN: z.string().transform(toTime), // 1230
+    QHTN: z.string().transform(toCodeQualite), // 1
+    TX: z.string().transform(toFloatOrNull), // -5.5
+    QTX: z.string().transform(toCodeQualite), // 2
+    HTX: z.string().transform(toTime), // 1230
+    QHTX: z.string().transform(toCodeQualite), // 9
+    DG: z.string().transform(toPositiveInteger), // 4
+    QDG: z.string().transform(toCodeQualite), // 0
+    T10: z.string().transform(toFloatOrNull), // -5.5
+    QT10: z.string().transform(toCodeQualite), // 1
+    T20: z.string().transform(toFloatOrNull), // -5.5
+    QT20: z.string().transform(toCodeQualite), // 2
+    T50: z.string().transform(toFloatOrNull), // -5.5
+    QT50: z.string().transform(toCodeQualite), // 9
+    T100: z.string().transform(toFloatOrNull), // -5.5
+    QT100: z.string().transform(toCodeQualite), // 0
+    TNSOL: z.string().transform(toFloatOrNull), // -5.5
+    QTNSOL: z.string().transform(toCodeQualite), // 1
+    TN50: z.string().transform(toFloatOrNull), // -5.5
+    QTN50: z.string().transform(toCodeQualite), // 2
+    TCHAUSSEE: z.string().transform(toFloatOrNull), // -5.5
+    QTCHAUSSEE: z.string().transform(toCodeQualite), // 9
+    DHUMEC: z.string().transform(toPositiveInteger), // 4
+    QDHUMEC: z.string().transform(toCodeQualite), // 0
+    U: z.string().transform(toHumiditeRelative), // 100
+    QU: z.string().transform(toCodeQualite), // 1
+    UN: z.string().transform(toHumiditeRelative), // 100
+    QUN: z.string().transform(toCodeQualite), // 2
+    HUN: z.string().transform(toTime), // 1230
+    QHUN: z.string().transform(toCodeQualite), // 9
+    UX: z.string().transform(toHumiditeRelative), // 100
+    QUX: z.string().transform(toCodeQualite), // 0
+    HUX: z.string().transform(toTime), // 1230
+    QHUX: z.string().transform(toCodeQualite), // 1
+    DHUMI40: z.string().transform(toPositiveInteger), // 4
+    QDHUMI40: z.string().transform(toCodeQualite), // 2
+    DHUMI80: z.string().transform(toPositiveInteger), // 4
+    QDHUMI80: z.string().transform(toCodeQualite), // 9
+    TSV: z.string().transform(toPositiveFloat), // 3.3
+    QTSV: z.string().transform(toCodeQualite), // 0
+    PMER: z.string().transform(toPositiveFloat), // 3.3
+    QPMER: z.string().transform(toCodeQualite), // 1
+    PSTAT: z.string().transform(toPositiveFloat), // 3.3
+    QPSTAT: z.string().transform(toCodeQualite), // 2
+    PMERMIN: z.string().transform(toPositiveFloat), // 3.3
+    QPMERMIN: z.string().transform(toCodeQualite), // 9
+    GEOP: z.string().transform(toPositiveInteger), // 4
+    QGEOP: z.string().transform(toCodeQualite), // 0
+    N: z.string().transform(toOcta), // 8
+    QN: z.string().transform(toCodeQualite), // 1
+    NBAS: z.string().transform(toOcta), // 8
+    QNBAS: z.string().transform(toCodeQualite), // 2
+    CL: z.string().transform(toCodeSynop), // /
+    QCL: z.string().transform(toCodeQualite), // 9
+    CM: z.string().transform(toCodeSynop), // /
+    QCM: z.string().transform(toCodeQualite), // 0
+    CH: z.string().transform(toCodeSynop), // /
+    QCH: z.string().transform(toCodeQualite), // 1
+    N1: z.string().transform(toOcta), // 8
+    QN1: z.string().transform(toCodeQualite), // 2
+    C1: z.string().transform(toCodeSynop), // /
+    QC1: z.string().transform(toCodeQualite), // 9
+    B1: z.string().transform(toPositiveInteger), // 4
+    QB1: z.string().transform(toCodeQualite), // 0
+    N2: z.string().transform(toOcta), // 8
+    QN2: z.string().transform(toCodeQualite), // 1
+    C2: z.string().transform(toCodeSynop), // /
+    QC2: z.string().transform(toCodeQualite), // 2
+    B2: z.string().transform(toPositiveInteger), // 4
+    QB2: z.string().transform(toCodeQualite), // 9
+    N3: z.string().transform(toOcta), // 8
+    QN3: z.string().transform(toCodeQualite), // 0
+    C3: z.string().transform(toCodeSynop), // /
+    QC3: z.string().transform(toCodeQualite), // 1
+    B3: z.string().transform(toPositiveInteger), // 4
+    QB3: z.string().transform(toCodeQualite), // 2
+    N4: z.string().transform(toOcta), // 8
+    QN4: z.string().transform(toCodeQualite), // 9
+    C4: z.string().transform(toCodeSynop), // /
+    QC4: z.string().transform(toCodeQualite), // 0
+    B4: z.string().transform(toPositiveInteger), // 4
+    QB4: z.string().transform(toCodeQualite), // 1
+    VV: z.string().transform(toPositiveInteger), // 4
+    QVV: z.string().transform(toCodeQualite), // 2
+    DVV200: z.string().transform(toPositiveInteger), // 4
+    QDVV200: z.string().transform(toCodeQualite), // 9
+    WW: z.string().transform(toCodeTemps), // 00
+    QWW: z.string().transform(toCodeQualite), // 0
+    W1: z.string().transform(toCodeTemps), // 00
+    QW1: z.string().transform(toCodeQualite), // 1
+    W2: z.string().transform(toCodeTemps), // 00
+    QW2: z.string().transform(toCodeQualite), // 2
+    SOL: z.string().transform(toEtat), // 7
+    QSOL: z.string().transform(toCodeQualite), // 9
+    SOLNG: z.string().transform(toEtat), // 7
+    QSOLNG: z.string().transform(toCodeQualite), // 0
+    TMER: z.string().transform(toFloatOrNull), // -5.5
+    QTMER: z.string().transform(toCodeQualite), // 1
+    VVMER: z.string().transform(toVisibility), // 6
+    QVVMER: z.string().transform(toCodeQualite), // 2
+    ETATMER: z.string().transform(toEtat), // 7
+    QETATMER: z.string().transform(toCodeQualite), // 9
+    DIRHOULE: z.string().transform(toHouleDirection), // 999
+    QDIRHOULE: z.string().transform(toCodeQualite), // 0
+    HVAGUE: z.string().transform(toPositiveFloat), // 3.3
+    QHVAGUE: z.string().transform(toCodeQualite), // 1
+    PVAGUE: z.string().transform(toPositiveFloat), // 3.3
+    QPVAGUE: z.string().transform(toCodeQualite), // 2
+    HNEIGEF: z.string().transform(toPositiveInteger), // 4
+    QHNEIGEF: z.string().transform(toCodeQualite), // 9
+    NEIGETOT: z.string().transform(toPositiveInteger), // 4
+    QNEIGETOT: z.string().transform(toCodeQualite), // 0
+    TSNEIGE: z.string().transform(toPositiveFloat), // 3.3
+    QTSNEIGE: z.string().transform(toCodeQualite), // 1
+    TUBENEIGE: z.string().transform(toPositiveInteger), // 4
+    QTUBENEIGE: z.string().transform(toCodeQualite), // 2
+    HNEIGEFI3: z.string().transform(toPositiveInteger), // 4
+    QHNEIGEFI3: z.string().transform(toCodeQualite), // 9
+    HNEIGEFI1: z.string().transform(toPositiveInteger), // 4
+    QHNEIGEFI1: z.string().transform(toCodeQualite), // 0
+    ESNEIGE: z.string().transform(toEtat), // 7
+    QESNEIGE: z.string().transform(toCodeQualite), // 1
+    CHARGENEIGE: z.string().transform(toPositiveInteger), // 4
+    QCHARGENEIGE: z.string().transform(toCodeQualite), // 2
+    GLO: z.string().transform(toPositiveInteger), // 4
+    QGLO: z.string().transform(toCodeQualite), // 9
+    GLO2: z.string().transform(toPositiveInteger), // 4
+    QGLO2: z.string().transform(toCodeQualite), // 0
+    DIR: z.string().transform(toPositiveInteger), // 4
+    QDIR: z.string().transform(toCodeQualite), // 1
+    DIR2: z.string().transform(toPositiveInteger), // 4
+    QDIR2: z.string().transform(toCodeQualite), // 2
+    DIF: z.string().transform(toPositiveInteger), // 4
+    QDIF: z.string().transform(toCodeQualite), // 9
+    DIF2: z.string().transform(toPositiveInteger), // 4
+    QDIF2: z.string().transform(toCodeQualite), // 0
+    UV: z.string().transform(toPositiveFloat), // 3.3
+    QUV: z.string().transform(toCodeQualite), // 1
+    UV2: z.string().transform(toPositiveFloat), // 3.3
+    QUV2: z.string().transform(toCodeQualite), // 2
+    UV_INDICE: z.string().transform(toUVIndex), // 12
+    QUV_INDICE: z.string().transform(toCodeQualite), // 9
+    INFRAR: z.string().transform(toPositiveInteger), // 4
+    QINFRAR: z.string().transform(toCodeQualite), // 0
+    INFRAR2: z.string().transform(toPositiveInteger), // 4
+    QINFRAR2: z.string().transform(toCodeQualite), // 1
+    INS: z.string().transform(toPositiveInteger), // 4
+    QINS: z.string().transform(toCodeQualite), // 2
+    INS2: z.string().transform(toPositiveInteger), // 4
+    QINS2: z.string().transform(toCodeQualite), // 9
+    TLAGON: z.string().transform(toFloatOrNull), // -5.5
+    QTLAGON: z.string().transform(toCodeQualite), // 0
+    TVEGETAUX: z.string().transform(toFloatOrNull), // -5.5
+    QTVEGETAUX: z.string().transform(toCodeQualite), // 1
+    ECOULEMENT: z.string().transform(toFloatOrNull), // -5.5
+    QECOULEMENT: z.string().transform(toCodeQualite), // 2
 });
 export type HoraireLine = ReturnType<typeof horaireLineSchema.parse>;
 
