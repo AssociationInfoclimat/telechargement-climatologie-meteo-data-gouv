@@ -5,29 +5,26 @@ import { HouleDirection } from '@/csv/horaires/value-objects/HouleDirection.js';
 import { Visibility } from '@/csv/horaires/value-objects/Visibility.js';
 import { parseCSV } from '@/csv/parseCSV.js';
 import {
+    AltitudeSchema,
+    CodeQualiteSchema,
+    FloatOrNullSchema,
+    HumiditeRelativeSchema,
+    LatitudeSchema,
+    LongitudeSchema,
+    NomUsuelSchema,
+    NumeroPosteSchema,
+    OctaSchema,
     onCatch,
     ParseError,
     parsePositiveInteger,
+    PositiveFloatSchema,
+    PositiveIntegerSchema,
+    TimeSchema,
     tmpFixHeader,
-    toCodeQualite,
-    toFloatOrNull,
-    toHumiditeRelative,
-    toInteger,
-    toNumeroPoste,
-    toOcta,
-    toPositiveFloat,
-    toPositiveInteger,
-    toTime,
-    toUVIndex,
-    toWindDirection,
+    UVIndexSchema,
+    WindDirectionSchema,
 } from '@/csv/parseCSVUtils.js';
-import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
-import { Octa } from '@/data/value-objects/Octa.js';
-import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
 import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
-import { Time } from '@/data/value-objects/Time.js';
-import { UVIndex } from '@/data/value-objects/UVIndex.js';
-import { WindDirection } from '@/data/value-objects/WindDirection.js';
 import { createTransform } from '@/lib/createTransform.js';
 import { Result } from '@/lib/resultUtils.js';
 import { z } from 'zod';
@@ -41,1430 +38,278 @@ export function parseDate(date: string): Date {
 }
 
 export const toDate = createTransform(parseDate);
+export const DateSchema = z.string().transform(toDate);
 
 export function parseCodeSynop(value: string): CodeSynop {
     return CodeSynop.of(value);
 }
 
 export const toCodeSynop = createTransform(parseCodeSynop);
+export const CodeSynopSchema = z
+    .string()
+    .transform(toCodeSynop)
+    .catch(ctx => {
+        onCatch(ctx);
+        return CodeSynop.of('');
+    });
 
 export function parseCodeTemps(value: string): CodeTemps {
     return CodeTemps.of(value);
 }
 
 export const toCodeTemps = createTransform(parseCodeTemps);
+export const CodeTempsSchema = z
+    .string()
+    .transform(toCodeTemps)
+    .catch(ctx => {
+        onCatch(ctx);
+        return CodeTemps.of('');
+    });
 
 export function parseEtat(value: string): Etat {
     return Etat.of(parsePositiveInteger(value));
 }
 
 export const toEtat = createTransform(parseEtat);
+export const EtatSchema = z
+    .string()
+    .transform(toEtat)
+    .catch(ctx => {
+        onCatch(ctx);
+        return Etat.of(PositiveInteger.of(null));
+    });
 
 export function parseVisibility(value: string): Visibility {
     return Visibility.of(parsePositiveInteger(value));
 }
 
 export const toVisibility = createTransform(parseVisibility);
+export const VisibilitySchema = z
+    .string()
+    .transform(toVisibility)
+    .catch(ctx => {
+        onCatch(ctx);
+        return Visibility.of(PositiveInteger.of(null));
+    });
 
 export function parseHouleDirection(value: string): HouleDirection {
     return HouleDirection.of(parsePositiveInteger(value));
 }
 
 export const toHouleDirection = createTransform(parseHouleDirection);
+export const HouleDirectionSchema = z
+    .string()
+    .transform(toHouleDirection)
+    .catch(ctx => {
+        onCatch(ctx);
+        return HouleDirection.of(PositiveInteger.of(null));
+    });
 
 const horaireLineSchema = z.object({
-    NUM_POSTE: z.string().transform(toNumeroPoste),
-    NOM_USUEL: z.string(),
-    LAT: z.string().transform(parseFloat),
-    LON: z.string().transform(parseFloat),
-    ALTI: z.string().transform(toInteger),
-    AAAAMMJJHH: z.string().transform(toDate),
-    RR1: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QRR1: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    DRR1: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDRR1: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    FF: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QFF: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    DD: z
-        .string()
-        .transform(toWindDirection)
-        .catch(ctx => {
-            onCatch(ctx);
-            return WindDirection.of(PositiveInteger.of(null));
-        }), // 360
-    QDD: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    FXY: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QFXY: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    DXY: z
-        .string()
-        .transform(toWindDirection)
-        .catch(ctx => {
-            onCatch(ctx);
-            return WindDirection.of(PositiveInteger.of(null));
-        }), // 360
-    QDXY: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    HXY: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHXY: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    FXI: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QFXI: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    DXI: z
-        .string()
-        .transform(toWindDirection)
-        .catch(ctx => {
-            onCatch(ctx);
-            return WindDirection.of(PositiveInteger.of(null));
-        }), // 360
-    QDXI: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    HXI: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHXI: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    FF2: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QFF2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    DD2: z
-        .string()
-        .transform(toWindDirection)
-        .catch(ctx => {
-            onCatch(ctx);
-            return WindDirection.of(PositiveInteger.of(null));
-        }), // 360
-    QDD2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    FXI2: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QFXI2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    DXI2: z
-        .string()
-        .transform(toWindDirection)
-        .catch(ctx => {
-            onCatch(ctx);
-            return WindDirection.of(PositiveInteger.of(null));
-        }), // 360
-    QDXI2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    HXI2: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHXI2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    FXI3S: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QFXI3S: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    DXI3S: z
-        .string()
-        .transform(toWindDirection)
-        .catch(ctx => {
-            onCatch(ctx);
-            return WindDirection.of(PositiveInteger.of(null));
-        }), // 360
-    QDXI3S: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    HFXI3S: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHFXI3S: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    T: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QT: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    TD: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTD: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    TN: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    HTN: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHTN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    TX: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    HTX: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHTX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    DG: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDG: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    T10: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QT10: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    T20: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QT20: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    T50: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QT50: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    T100: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QT100: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    TNSOL: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTNSOL: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    TN50: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTN50: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    TCHAUSSEE: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTCHAUSSEE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    DHUMEC: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDHUMEC: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    U: z
-        .string()
-        .transform(toHumiditeRelative)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 100
-    QU: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    UN: z
-        .string()
-        .transform(toHumiditeRelative)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 100
-    QUN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    HUN: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHUN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    UX: z
-        .string()
-        .transform(toHumiditeRelative)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 100
-    QUX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    HUX: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHUX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    DHUMI40: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDHUMI40: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    DHUMI80: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDHUMI80: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    TSV: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QTSV: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    PMER: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QPMER: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    PSTAT: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QPSTAT: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    PMERMIN: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QPMERMIN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    GEOP: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QGEOP: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    N: z
-        .string()
-        .transform(toOcta)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Octa.of(PositiveInteger.of(null));
-        }), // 8
-    QN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    NBAS: z
-        .string()
-        .transform(toOcta)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Octa.of(PositiveInteger.of(null));
-        }), // 8
-    QNBAS: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    CL: z
-        .string()
-        .transform(toCodeSynop)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeSynop.of('');
-        }), // /
-    QCL: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    CM: z
-        .string()
-        .transform(toCodeSynop)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeSynop.of('');
-        }), // /
-    QCM: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    CH: z
-        .string()
-        .transform(toCodeSynop)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeSynop.of('');
-        }), // /
-    QCH: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    N1: z
-        .string()
-        .transform(toOcta)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Octa.of(PositiveInteger.of(null));
-        }), // 8
-    QN1: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    C1: z
-        .string()
-        .transform(toCodeSynop)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeSynop.of('');
-        }), // /
-    QC1: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    B1: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QB1: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    N2: z
-        .string()
-        .transform(toOcta)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Octa.of(PositiveInteger.of(null));
-        }), // 8
-    QN2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    C2: z
-        .string()
-        .transform(toCodeSynop)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeSynop.of('');
-        }), // /
-    QC2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    B2: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QB2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    N3: z
-        .string()
-        .transform(toOcta)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Octa.of(PositiveInteger.of(null));
-        }), // 8
-    QN3: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    C3: z
-        .string()
-        .transform(toCodeSynop)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeSynop.of('');
-        }), // /
-    QC3: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    B3: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QB3: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    N4: z
-        .string()
-        .transform(toOcta)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Octa.of(PositiveInteger.of(null));
-        }), // 8
-    QN4: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    C4: z
-        .string()
-        .transform(toCodeSynop)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeSynop.of('');
-        }), // /
-    QC4: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    B4: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QB4: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    VV: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QVV: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    DVV200: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDVV200: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    WW: z
-        .string()
-        .transform(toCodeTemps)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeTemps.of('');
-        }), // 00
-    QWW: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    W1: z
-        .string()
-        .transform(toCodeTemps)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeTemps.of('');
-        }), // 00
-    QW1: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    W2: z
-        .string()
-        .transform(toCodeTemps)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeTemps.of('');
-        }), // 00
-    QW2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    SOL: z
-        .string()
-        .transform(toEtat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Etat.of(PositiveInteger.of(null));
-        }), // 7
-    QSOL: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    SOLNG: z
-        .string()
-        .transform(toEtat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Etat.of(PositiveInteger.of(null));
-        }), // 7
-    QSOLNG: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    TMER: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTMER: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    VVMER: z
-        .string()
-        .transform(toVisibility)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Visibility.of(PositiveInteger.of(null));
-        }), // 6
-    QVVMER: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    ETATMER: z
-        .string()
-        .transform(toEtat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Etat.of(PositiveInteger.of(null));
-        }), // 7
-    QETATMER: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    DIRHOULE: z
-        .string()
-        .transform(toHouleDirection)
-        .catch(ctx => {
-            onCatch(ctx);
-            return HouleDirection.of(PositiveInteger.of(null));
-        }), // 999
-    QDIRHOULE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    HVAGUE: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QHVAGUE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    PVAGUE: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QPVAGUE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    HNEIGEF: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QHNEIGEF: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    NEIGETOT: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QNEIGETOT: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    TSNEIGE: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QTSNEIGE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    TUBENEIGE: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QTUBENEIGE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    HNEIGEFI3: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QHNEIGEFI3: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    HNEIGEFI1: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QHNEIGEFI1: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    ESNEIGE: z
-        .string()
-        .transform(toEtat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Etat.of(PositiveInteger.of(null));
-        }), // 7
-    QESNEIGE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    CHARGENEIGE: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QCHARGENEIGE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    GLO: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QGLO: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    GLO2: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QGLO2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    DIR: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDIR: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    DIR2: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDIR2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    DIF: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDIF: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    DIF2: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QDIF2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    UV: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QUV: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    UV2: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 3.3
-    QUV2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    UV_INDICE: z
-        .string()
-        .transform(toUVIndex)
-        .catch(ctx => {
-            onCatch(ctx);
-            return UVIndex.of(PositiveInteger.of(null));
-        }), // 12
-    QUV_INDICE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    INFRAR: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QINFRAR: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    INFRAR2: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QINFRAR2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    INS: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QINS: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
-    INS2: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 4
-    QINS2: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
-    TLAGON: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTLAGON: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 0
-    TVEGETAUX: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QTVEGETAUX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 1
-    ECOULEMENT: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -5.5
-    QECOULEMENT: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 2
+    NUM_POSTE: NumeroPosteSchema,
+    NOM_USUEL: NomUsuelSchema,
+    LAT: LatitudeSchema,
+    LON: LongitudeSchema,
+    ALTI: AltitudeSchema,
+    AAAAMMJJHH: DateSchema,
+    RR1: PositiveFloatSchema, // 3.3
+    QRR1: CodeQualiteSchema, // 0
+    DRR1: PositiveIntegerSchema, // 4
+    QDRR1: CodeQualiteSchema, // 1
+    FF: PositiveFloatSchema, // 3.3
+    QFF: CodeQualiteSchema, // 2
+    DD: WindDirectionSchema, // 360
+    QDD: CodeQualiteSchema, // 9
+    FXY: PositiveFloatSchema, // 3.3
+    QFXY: CodeQualiteSchema, // 0
+    DXY: WindDirectionSchema, // 360
+    QDXY: CodeQualiteSchema, // 1
+    HXY: TimeSchema, // 1230
+    QHXY: CodeQualiteSchema, // 2
+    FXI: PositiveFloatSchema, // 3.3
+    QFXI: CodeQualiteSchema, // 9
+    DXI: WindDirectionSchema, // 360
+    QDXI: CodeQualiteSchema, // 0
+    HXI: TimeSchema, // 1230
+    QHXI: CodeQualiteSchema, // 1
+    FF2: PositiveFloatSchema, // 3.3
+    QFF2: CodeQualiteSchema, // 2
+    DD2: WindDirectionSchema, // 360
+    QDD2: CodeQualiteSchema, // 9
+    FXI2: PositiveFloatSchema, // 3.3
+    QFXI2: CodeQualiteSchema, // 0
+    DXI2: WindDirectionSchema, // 360
+    QDXI2: CodeQualiteSchema, // 1
+    HXI2: TimeSchema, // 1230
+    QHXI2: CodeQualiteSchema, // 2
+    FXI3S: PositiveFloatSchema, // 3.3
+    QFXI3S: CodeQualiteSchema, // 9
+    DXI3S: WindDirectionSchema, // 360
+    QDXI3S: CodeQualiteSchema, // 0
+    HFXI3S: TimeSchema, // 1230
+    QHFXI3S: CodeQualiteSchema, // 1
+    T: FloatOrNullSchema, // -5.5
+    QT: CodeQualiteSchema, // 2
+    TD: FloatOrNullSchema, // -5.5
+    QTD: CodeQualiteSchema, // 9
+    TN: FloatOrNullSchema, // -5.5
+    QTN: CodeQualiteSchema, // 0
+    HTN: TimeSchema, // 1230
+    QHTN: CodeQualiteSchema, // 1
+    TX: FloatOrNullSchema, // -5.5
+    QTX: CodeQualiteSchema, // 2
+    HTX: TimeSchema, // 1230
+    QHTX: CodeQualiteSchema, // 9
+    DG: PositiveIntegerSchema, // 4
+    QDG: CodeQualiteSchema, // 0
+    T10: FloatOrNullSchema, // -5.5
+    QT10: CodeQualiteSchema, // 1
+    T20: FloatOrNullSchema, // -5.5
+    QT20: CodeQualiteSchema, // 2
+    T50: FloatOrNullSchema, // -5.5
+    QT50: CodeQualiteSchema, // 9
+    T100: FloatOrNullSchema, // -5.5
+    QT100: CodeQualiteSchema, // 0
+    TNSOL: FloatOrNullSchema, // -5.5
+    QTNSOL: CodeQualiteSchema, // 1
+    TN50: FloatOrNullSchema, // -5.5
+    QTN50: CodeQualiteSchema, // 2
+    TCHAUSSEE: FloatOrNullSchema, // -5.5
+    QTCHAUSSEE: CodeQualiteSchema, // 9
+    DHUMEC: PositiveIntegerSchema, // 4
+    QDHUMEC: CodeQualiteSchema, // 0
+    U: HumiditeRelativeSchema, // 100
+    QU: CodeQualiteSchema, // 1
+    UN: HumiditeRelativeSchema, // 100
+    QUN: CodeQualiteSchema, // 2
+    HUN: TimeSchema, // 1230
+    QHUN: CodeQualiteSchema, // 9
+    UX: HumiditeRelativeSchema, // 100
+    QUX: CodeQualiteSchema, // 0
+    HUX: TimeSchema, // 1230
+    QHUX: CodeQualiteSchema, // 1
+    DHUMI40: PositiveIntegerSchema, // 4
+    QDHUMI40: CodeQualiteSchema, // 2
+    DHUMI80: PositiveIntegerSchema, // 4
+    QDHUMI80: CodeQualiteSchema, // 9
+    TSV: PositiveFloatSchema, // 3.3
+    QTSV: CodeQualiteSchema, // 0
+    PMER: PositiveFloatSchema, // 3.3
+    QPMER: CodeQualiteSchema, // 1
+    PSTAT: PositiveFloatSchema, // 3.3
+    QPSTAT: CodeQualiteSchema, // 2
+    PMERMIN: PositiveFloatSchema, // 3.3
+    QPMERMIN: CodeQualiteSchema, // 9
+    GEOP: PositiveIntegerSchema, // 4
+    QGEOP: CodeQualiteSchema, // 0
+    N: OctaSchema, // 8
+    QN: CodeQualiteSchema, // 1
+    NBAS: OctaSchema, // 8
+    QNBAS: CodeQualiteSchema, // 2
+    CL: CodeSynopSchema, // /
+    QCL: CodeQualiteSchema, // 9
+    CM: CodeSynopSchema, // /
+    QCM: CodeQualiteSchema, // 0
+    CH: CodeSynopSchema, // /
+    QCH: CodeQualiteSchema, // 1
+    N1: OctaSchema, // 8
+    QN1: CodeQualiteSchema, // 2
+    C1: CodeSynopSchema, // /
+    QC1: CodeQualiteSchema, // 9
+    B1: PositiveIntegerSchema, // 4
+    QB1: CodeQualiteSchema, // 0
+    N2: OctaSchema, // 8
+    QN2: CodeQualiteSchema, // 1
+    C2: CodeSynopSchema, // /
+    QC2: CodeQualiteSchema, // 2
+    B2: PositiveIntegerSchema, // 4
+    QB2: CodeQualiteSchema, // 9
+    N3: OctaSchema, // 8
+    QN3: CodeQualiteSchema, // 0
+    C3: CodeSynopSchema, // /
+    QC3: CodeQualiteSchema, // 1
+    B3: PositiveIntegerSchema, // 4
+    QB3: CodeQualiteSchema, // 2
+    N4: OctaSchema, // 8
+    QN4: CodeQualiteSchema, // 9
+    C4: CodeSynopSchema, // /
+    QC4: CodeQualiteSchema, // 0
+    B4: PositiveIntegerSchema, // 4
+    QB4: CodeQualiteSchema, // 1
+    VV: PositiveIntegerSchema, // 4
+    QVV: CodeQualiteSchema, // 2
+    DVV200: PositiveIntegerSchema, // 4
+    QDVV200: CodeQualiteSchema, // 9
+    WW: CodeTempsSchema, // 00
+    QWW: CodeQualiteSchema, // 0
+    W1: CodeTempsSchema, // 00
+    QW1: CodeQualiteSchema, // 1
+    W2: CodeTempsSchema, // 00
+    QW2: CodeQualiteSchema, // 2
+    SOL: EtatSchema, // 7
+    QSOL: CodeQualiteSchema, // 9
+    SOLNG: EtatSchema, // 7
+    QSOLNG: CodeQualiteSchema, // 0
+    TMER: FloatOrNullSchema, // -5.5
+    QTMER: CodeQualiteSchema, // 1
+    VVMER: VisibilitySchema, // 6
+    QVVMER: CodeQualiteSchema, // 2
+    ETATMER: EtatSchema, // 7
+    QETATMER: CodeQualiteSchema, // 9
+    DIRHOULE: HouleDirectionSchema, // 999
+    QDIRHOULE: CodeQualiteSchema, // 0
+    HVAGUE: PositiveFloatSchema, // 3.3
+    QHVAGUE: CodeQualiteSchema, // 1
+    PVAGUE: PositiveFloatSchema, // 3.3
+    QPVAGUE: CodeQualiteSchema, // 2
+    HNEIGEF: PositiveIntegerSchema, // 4
+    QHNEIGEF: CodeQualiteSchema, // 9
+    NEIGETOT: PositiveIntegerSchema, // 4
+    QNEIGETOT: CodeQualiteSchema, // 0
+    TSNEIGE: PositiveFloatSchema, // 3.3
+    QTSNEIGE: CodeQualiteSchema, // 1
+    TUBENEIGE: PositiveIntegerSchema, // 4
+    QTUBENEIGE: CodeQualiteSchema, // 2
+    HNEIGEFI3: PositiveIntegerSchema, // 4
+    QHNEIGEFI3: CodeQualiteSchema, // 9
+    HNEIGEFI1: PositiveIntegerSchema, // 4
+    QHNEIGEFI1: CodeQualiteSchema, // 0
+    ESNEIGE: EtatSchema, // 7
+    QESNEIGE: CodeQualiteSchema, // 1
+    CHARGENEIGE: PositiveIntegerSchema, // 4
+    QCHARGENEIGE: CodeQualiteSchema, // 2
+    GLO: PositiveIntegerSchema, // 4
+    QGLO: CodeQualiteSchema, // 9
+    GLO2: PositiveIntegerSchema, // 4
+    QGLO2: CodeQualiteSchema, // 0
+    DIR: PositiveIntegerSchema, // 4
+    QDIR: CodeQualiteSchema, // 1
+    DIR2: PositiveIntegerSchema, // 4
+    QDIR2: CodeQualiteSchema, // 2
+    DIF: PositiveIntegerSchema, // 4
+    QDIF: CodeQualiteSchema, // 9
+    DIF2: PositiveIntegerSchema, // 4
+    QDIF2: CodeQualiteSchema, // 0
+    UV: PositiveFloatSchema, // 3.3
+    QUV: CodeQualiteSchema, // 1
+    UV2: PositiveFloatSchema, // 3.3
+    QUV2: CodeQualiteSchema, // 2
+    UV_INDICE: UVIndexSchema, // 12
+    QUV_INDICE: CodeQualiteSchema, // 9
+    INFRAR: PositiveIntegerSchema, // 4
+    QINFRAR: CodeQualiteSchema, // 0
+    INFRAR2: PositiveIntegerSchema, // 4
+    QINFRAR2: CodeQualiteSchema, // 1
+    INS: PositiveIntegerSchema, // 4
+    QINS: CodeQualiteSchema, // 2
+    INS2: PositiveIntegerSchema, // 4
+    QINS2: CodeQualiteSchema, // 9
+    TLAGON: FloatOrNullSchema, // -5.5
+    QTLAGON: CodeQualiteSchema, // 0
+    TVEGETAUX: FloatOrNullSchema, // -5.5
+    QTVEGETAUX: CodeQualiteSchema, // 1
+    ECOULEMENT: FloatOrNullSchema, // -5.5
+    QECOULEMENT: CodeQualiteSchema, // 2
 });
 export type HoraireLine = ReturnType<typeof horaireLineSchema.parse>;
 

@@ -1,4 +1,5 @@
 import { createTransform } from '@/lib/createTransform.js';
+import { z } from 'zod';
 
 export function parseDate(date: string): Date {
     const yyyy = date.slice(''.length, 'YYYY'.length);
@@ -8,3 +9,4 @@ export function parseDate(date: string): Date {
 }
 
 export const toDate = createTransform(parseDate);
+export const DateSchema = z.string().transform(toDate);

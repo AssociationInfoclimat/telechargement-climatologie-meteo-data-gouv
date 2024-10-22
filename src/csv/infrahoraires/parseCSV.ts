@@ -1,16 +1,14 @@
 import { parseCSV } from '@/csv/parseCSV.js';
 import {
-    onCatch,
+    AltitudeSchema,
+    CodeQualiteSchema,
+    LatitudeSchema,
+    LongitudeSchema,
+    NomUsuelSchema,
+    NumeroPosteSchema,
     ParseError,
-    toCodeQualite,
-    toInteger,
-    toNomUsuel,
-    toNumeroPoste,
-    toPositiveFloat,
+    PositiveFloatSchema,
 } from '@/csv/parseCSVUtils.js';
-import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
-import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
-import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { createTransform } from '@/lib/createTransform.js';
 import { Result } from '@/lib/resultUtils.js';
 import { z } from 'zod';
@@ -25,28 +23,17 @@ export function parseDate(date: string): Date {
 }
 
 export const toDate = createTransform(parseDate);
+export const DateSchema = z.string().transform(toDate);
 
 const infrahoraireLineSchema = z.object({
-    NUM_POSTE: z.string().transform(toNumeroPoste),
-    NOM_USUEL: z.string().transform(toNomUsuel),
-    LAT: z.string().transform(parseFloat),
-    LON: z.string().transform(parseFloat),
-    ALTI: z.string().transform(toInteger),
-    AAAAMMJJHHMN: z.string().transform(toDate),
-    RR: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }),
-    QRR: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }),
+    NUM_POSTE: NumeroPosteSchema,
+    NOM_USUEL: NomUsuelSchema,
+    LAT: LatitudeSchema,
+    LON: LongitudeSchema,
+    ALTI: AltitudeSchema,
+    AAAAMMJJHHMN: DateSchema,
+    RR: PositiveFloatSchema,
+    QRR: CodeQualiteSchema,
 });
 export type InfrahoraireLine = ReturnType<typeof infrahoraireLineSchema.parse>;
 

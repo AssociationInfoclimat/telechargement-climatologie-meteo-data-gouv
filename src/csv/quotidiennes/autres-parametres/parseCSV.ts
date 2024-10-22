@@ -1,28 +1,24 @@
 import { parseCSV } from '@/csv/parseCSV.js';
 import {
+    AltitudeSchema,
+    CodeQualiteSchema,
+    FloatOrNullSchema,
+    HumiditeRelativeSchema,
+    LatitudeSchema,
+    LongitudeSchema,
+    NomUsuelSchema,
+    NumeroPosteSchema,
+    OctaSchema,
     onCatch,
     ParseError,
+    PositiveFloatSchema,
+    PositiveIntegerSchema,
+    RelativePercentageSchema,
+    TimeSchema,
     tmpFixHeader,
-    toCodeQualite,
-    toFloatOrNull,
-    toHumiditeRelative,
-    toInteger,
-    toNomUsuel,
-    toNumeroPoste,
-    toOcta,
-    toPositiveFloat,
-    toPositiveInteger,
-    toRelativePercentage,
-    toTime,
-    toUVIndex,
+    UVIndexSchema,
 } from '@/csv/parseCSVUtils.js';
-import { toDate } from '@/csv/quotidiennes/parseCSVUtils.js';
-import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
-import { Octa } from '@/data/value-objects/Octa.js';
-import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
-import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
-import { Time } from '@/data/value-objects/Time.js';
-import { UVIndex } from '@/data/value-objects/UVIndex.js';
+import { DateSchema } from '@/csv/quotidiennes/parseCSVUtils.js';
 import { createTransform } from '@/lib/createTransform.js';
 import { Result } from '@/lib/resultUtils.js';
 import { z } from 'zod';
@@ -41,629 +37,144 @@ export function parseBooleanOrNull(value: string): boolean | null {
 }
 
 export const toBooleanOrNull = createTransform(parseBooleanOrNull);
+export const BooleanOrNullSchema = z
+    .string()
+    .transform(toBooleanOrNull)
+    .catch(ctx => {
+        onCatch(ctx);
+        return null;
+    });
 
 const quotidienneLineSchema = z.object({
-    NUM_POSTE: z.string().transform(toNumeroPoste),
-    NOM_USUEL: z.string().transform(toNomUsuel),
-    LAT: z.string().transform(parseFloat),
-    LON: z.string().transform(parseFloat),
-    ALTI: z.string().transform(toInteger),
-    AAAAMMJJ: z.string().transform(toDate),
+    NUM_POSTE: NumeroPosteSchema,
+    NOM_USUEL: NomUsuelSchema,
+    LAT: LatitudeSchema,
+    LON: LongitudeSchema,
+    ALTI: AltitudeSchema,
+    AAAAMMJJ: DateSchema,
     // DHUMEC      : durée d’humectation (en mn)
-    DHUMEC: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QDHUMEC: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    DHUMEC: PositiveIntegerSchema, // 1
+    QDHUMEC: CodeQualiteSchema, // 9
     // PMERM       : moyenne quotidienne des pressions mer horaires (en hPa et 1/10)
-    PMERM: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 2.2
-    QPMERM: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    PMERM: PositiveFloatSchema, // 2.2
+    QPMERM: CodeQualiteSchema, // 9
     // PMERMIN     : minimum quotidien des pressions mer minimales horaires (en hPa et 1/10)
-    PMERMIN: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 2.2
-    QPMERMIN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    PMERMIN: PositiveFloatSchema, // 2.2
+    QPMERMIN: CodeQualiteSchema, // 9
     // INST        : durée d’insolation quotidienne (en mn)
-    INST: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QINST: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    INST: PositiveIntegerSchema, // 1
+    QINST: CodeQualiteSchema, // 9
     // GLOT        : rayonnement global quotidien (en J/cm2)
-    GLOT: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QGLOT: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    GLOT: PositiveIntegerSchema, // 1
+    QGLOT: CodeQualiteSchema, // 9
     // DIFT        : rayonnement diffus quotidien (en J/cm2)
-    DIFT: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QDIFT: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    DIFT: PositiveIntegerSchema, // 1
+    QDIFT: CodeQualiteSchema, // 9
     // DIRT        : rayonnement direct quotidien (en J/cm2)
-    DIRT: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QDIRT: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    DIRT: PositiveIntegerSchema, // 1
+    QDIRT: CodeQualiteSchema, // 9
     // INFRART     : somme des rayonnements infra-rouge horaires (en J/cm2)
-    INFRART: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QINFRART: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    INFRART: PositiveIntegerSchema, // 1
+    QINFRART: CodeQualiteSchema, // 9
     // UV          : cumul quotidien de rayonnement ultra-violet (en J/cm2)
-    UV: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 2.2
-    QUV: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    UV: PositiveFloatSchema, // 2.2
+    QUV: CodeQualiteSchema, // 9
     // UV_INDICEX  : maximum des indices UV horaires
-    UV_INDICEX: z
-        .string()
-        .transform(toUVIndex)
-        .catch(ctx => {
-            onCatch(ctx);
-            return UVIndex.of(PositiveInteger.of(null));
-        }), // 12
-    QUV_INDICEX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    UV_INDICEX: UVIndexSchema, // 12
+    QUV_INDICEX: CodeQualiteSchema, // 9
     // SIGMA       : fraction d’insolation par rapport à la durée du jour (en %)
-    SIGMA: z
-        .string()
-        .transform(toRelativePercentage)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 100
-    QSIGMA: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    SIGMA: RelativePercentageSchema, // 100
+    QSIGMA: CodeQualiteSchema, // 9
     // UN          : minimum quotidien des humidités relatives minimales horaires (en %)
-    UN: z
-        .string()
-        .transform(toHumiditeRelative)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 100
-    QUN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    UN: HumiditeRelativeSchema, // 100
+    QUN: CodeQualiteSchema, // 9
     // HUN         : heure de UN (hhmm)
-    HUN: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHUN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    HUN: TimeSchema, // 1230
+    QHUN: CodeQualiteSchema, // 9
     // UX          : maximum quotidien des humidités relatives maximales horaires (en %)
-    UX: z
-        .string()
-        .transform(toHumiditeRelative)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 100
-    QUX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    UX: HumiditeRelativeSchema, // 100
+    QUX: CodeQualiteSchema, // 9
     // HUX         : heure de UX (hhmm)
-    HUX: z
-        .string()
-        .transform(toTime)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Time.of('');
-        }), // 1230
-    QHUX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    HUX: TimeSchema, // 1230
+    QHUX: CodeQualiteSchema, // 9
     // UM          : moyenne quotidienne des humidités relatives horaires (en %)
-    UM: z
-        .string()
-        .transform(toHumiditeRelative)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 100
-    QUM: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    UM: HumiditeRelativeSchema, // 100
+    QUM: CodeQualiteSchema, // 9
     // DHUMI40     : durée humidité avec U ≤ 40 % (en mn)
-    DHUMI40: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QDHUMI40: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    DHUMI40: PositiveIntegerSchema, // 1
+    QDHUMI40: CodeQualiteSchema, // 9
     // DHUMI80     : durée humidité U ≥ 80 % (en mn)
-    DHUMI80: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QDHUMI80: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    DHUMI80: PositiveIntegerSchema, // 1
+    QDHUMI80: CodeQualiteSchema, // 9
     // TSVM        : tension de vapeur moyenne (en hPa et 1/10)
-    TSVM: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 2.2
-    QTSVM: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    TSVM: PositiveFloatSchema, // 2.2
+    QTSVM: CodeQualiteSchema, // 9
     // ETPMON      : ETP Monteith quotidienne (en mm et 1/10)
-    ETPMON: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 2.2
-    QETPMON: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    ETPMON: PositiveFloatSchema, // 2.2
+    QETPMON: CodeQualiteSchema, // 9
     // ETPGRILLE   : ETP calculée au point de grille le plus proche (en mm et 1/10)
-    ETPGRILLE: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 2.2
-    QETPGRILLE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    ETPGRILLE: PositiveFloatSchema, // 2.2
+    QETPGRILLE: CodeQualiteSchema, // 9
     // ECOULEMENTM : moyenne des niveaux d’écoulement horaires
-    ECOULEMENTM: z
-        .string()
-        .transform(toPositiveFloat)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 2.2
-    QECOULEMENTM: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    ECOULEMENTM: PositiveFloatSchema, // 2.2
+    QECOULEMENTM: CodeQualiteSchema, // 9
     // HNEIGEF	   : hauteur de neige fraîche tombée en 24 heures (de 06h FU le jour J à 06h FU le jour J+1) qui reste au sol à 06h FU. La valeur relevée à J+1 est affectée au jour J (en cm)
-    HNEIGEF: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QHNEIGEF: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    HNEIGEF: PositiveIntegerSchema, // 1
+    QHNEIGEF: CodeQualiteSchema, // 9
     // NEIGETOTX   : épaisseur maximale de neige quotidienne (entre 01h et 24h FU) (en cm)
-    NEIGETOTX: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QNEIGETOTX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    NEIGETOTX: PositiveIntegerSchema, // 1
+    QNEIGETOTX: CodeQualiteSchema, // 9
     // NEIGETOT06  : épaisseur totale de neige au sol mesurée à 6h (NEIGETOT de 6h) (en cm)
-    NEIGETOT06: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QNEIGETOT06: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    NEIGETOT06: PositiveIntegerSchema, // 1
+    QNEIGETOT06: CodeQualiteSchema, // 9
     // NEIG        : occurrence de neige (0 s’il n’a pas neigé, 1 s’il a neigé)
-    NEIG: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QNEIG: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    NEIG: BooleanOrNullSchema, // true
+    QNEIG: CodeQualiteSchema, // 9
     // BROU        : occurrence de brouillard (0 ou 1 si phéno.)
-    BROU: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QBROU: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    BROU: BooleanOrNullSchema, // true
+    QBROU: CodeQualiteSchema, // 9
     // ORAG        : occurrence d’orage (0 ou 1 si phéno.)
-    ORAG: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QORAG: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    ORAG: BooleanOrNullSchema, // true
+    QORAG: CodeQualiteSchema, // 9
     // GRESIL      : occurrence de grésil (0 ou 1 si phéno.)
-    GRESIL: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QGRESIL: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    GRESIL: BooleanOrNullSchema, // true
+    QGRESIL: CodeQualiteSchema, // 9
     // GRELE       : occurrence de grêle (0 ou 1 si phéno.)
-    GRELE: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QGRELE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    GRELE: BooleanOrNullSchema, // true
+    QGRELE: CodeQualiteSchema, // 9
     // ROSEE       : occurrence de rosée (0 ou 1 si phéno.)
-    ROSEE: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QROSEE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    ROSEE: BooleanOrNullSchema, // true
+    QROSEE: CodeQualiteSchema, // 9
     // VERGLAS     : occurrence de verglas (0 ou 1 si phéno.)
-    VERGLAS: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QVERGLAS: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    VERGLAS: BooleanOrNullSchema, // true
+    QVERGLAS: CodeQualiteSchema, // 9
     // SOLNEIGE    : occurrence de sol couvert de neige (0 ou 1 si phéno.)
-    SOLNEIGE: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QSOLNEIGE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    SOLNEIGE: BooleanOrNullSchema, // true
+    QSOLNEIGE: CodeQualiteSchema, // 9
     // GELEE       : occurrence de gelée blanche (0 ou 1 si phéno.)
-    GELEE: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QGELEE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    GELEE: BooleanOrNullSchema, // true
+    QGELEE: CodeQualiteSchema, // 9
     // FUMEE       : occurrence de fumée (0 ou 1 si phéno.)
-    FUMEE: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QFUMEE: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    FUMEE: BooleanOrNullSchema, // true
+    QFUMEE: CodeQualiteSchema, // 9
     // BRUME       : occurrence de brume (0 ou 1 si phéno.)
-    BRUME: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QBRUME: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    BRUME: BooleanOrNullSchema, // true
+    QBRUME: CodeQualiteSchema, // 9
     // ECLAIR      : occurrence d’éclair (0 ou 1 si phéno)
-    ECLAIR: z
-        .string()
-        .transform(toBooleanOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // true
-    QECLAIR: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    ECLAIR: BooleanOrNullSchema, // true
+    QECLAIR: CodeQualiteSchema, // 9
     // NB300       : nébulosité maximale > 4/8 et couche < 300 m (en octa)
-    NB300: z
-        .string()
-        .transform(toOcta)
-        .catch(ctx => {
-            onCatch(ctx);
-            return Octa.of(PositiveInteger.of(null));
-        }), // 8
-    QNB300: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    NB300: OctaSchema, // 8
+    QNB300: CodeQualiteSchema, // 9
     // BA300       : hauteur minimale de NB300 (en m)
-    BA300: z
-        .string()
-        .transform(toPositiveInteger)
-        .catch(ctx => {
-            onCatch(ctx);
-            return PositiveFloat.of(null);
-        }), // 1
-    QBA300: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    BA300: PositiveIntegerSchema, // 1
+    QBA300: CodeQualiteSchema, // 9
     // TMERMIN     : température minimale quotidienne de l’eau de mer (en °C et 1/10)
-    TMERMIN: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -3.3
-    QTMERMIN: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    TMERMIN: FloatOrNullSchema, // -3.3
+    QTMERMIN: CodeQualiteSchema, // 9
     // TMERMAX     : température maximale quotidienne de l’eau de mer (en °C et 1/10)
-    TMERMAX: z
-        .string()
-        .transform(toFloatOrNull)
-        .catch(ctx => {
-            onCatch(ctx);
-            return null;
-        }), // -3.3
-    QTMERMAX: z
-        .string()
-        .transform(toCodeQualite)
-        .catch(ctx => {
-            onCatch(ctx);
-            return CodeQualite.of(PositiveInteger.of(null));
-        }), // 9
+    TMERMAX: FloatOrNullSchema, // -3.3
+    QTMERMAX: CodeQualiteSchema, // 9
 });
 export type QuotidienneAutresParametresLine = ReturnType<typeof quotidienneLineSchema.parse>;
 
