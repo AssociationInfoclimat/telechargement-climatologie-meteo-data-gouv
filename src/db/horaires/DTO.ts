@@ -116,7 +116,7 @@ export interface HoraireDTO {
     C2: string | null;
     QC2: number | null;
     B2: number | null;
-    QCB2: number | null;
+    QB2: number | null;
     N3: number | null;
     QN3: number | null;
     C3: string | null;

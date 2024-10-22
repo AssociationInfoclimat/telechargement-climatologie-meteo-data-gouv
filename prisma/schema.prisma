@@ -747,7 +747,7 @@ model Horaire {
     C2           String?
     QC2          Int?
     B2           Int?
-    QCB2         Int?
+    QB2          Int?
     N3           Int?
     QN3          Int?
     C3           String?

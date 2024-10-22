@@ -120,7 +120,7 @@ export function toDTO(line: HoraireLine): HoraireDTO {
         C2: line.C2.value()?.toString() ?? null,
         QC2: line.QC2.value(),
         B2: line.B2.value(),
-        QCB2: line.QCB2.value(),
+        QB2: line.QB2.value(),
         N3: line.N3.value(),
         QN3: line.QN3.value(),
         C3: line.C3.value()?.toString() ?? null,
