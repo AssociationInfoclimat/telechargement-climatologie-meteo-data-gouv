@@ -17,7 +17,6 @@ import {
     parseWindDirection,
 } from '@/csv/parseCSVUtils.js';
 import { InvalidDecadeError } from '@/data/value-objects/Decade.js';
-import { InvalidIntegerError } from '@/data/value-objects/Integer.js';
 import { InvalidPositiveIntegerError } from '@/data/value-objects/PositiveInteger.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
 import { describe, expect, it } from 'vitest';
@@ -88,7 +87,7 @@ describe('parseCSVUtils', () => {
             expect(parseCodeQualite('').value()).toEqual(null);
         });
         it('should not accept a float', () => {
-            expect(() => parseCodeQualite('0.5')).toThrow(InvalidIntegerError);
+            expect(() => parseCodeQualite('0.5')).toThrow(InvalidPositiveIntegerError);
         });
     });
 

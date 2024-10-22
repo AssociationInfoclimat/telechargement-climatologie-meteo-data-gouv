@@ -1,6 +1,7 @@
 import { AngstromCodeCalcul, CodeCalcul } from '@/csv/decadaires-agro/value-objects/CodeCalcul.js';
 import { parseCSV } from '@/csv/parseCSV.js';
 import {
+    onCatch,
     ParseError,
     parsePositiveInteger,
     toDecade,
@@ -11,6 +12,8 @@ import {
     toPositiveFloat,
     toPositiveInteger,
 } from '@/csv/parseCSVUtils.js';
+import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
+import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { createTransform } from '@/lib/createTransform.js';
 import { Result } from '@/lib/resultUtils.js';
 import { z } from 'zod';
@@ -44,35 +47,125 @@ const decadaireAgroLineSchema = z.object({
     AAAAMM: z.string().transform(toDate),
     NUM_DECADE: z.string().transform(toDecade),
     // RR         : cumul décadaire des hauteurs de précipitation (en mm et 1/10)
-    RR: z.string().transform(toPositiveFloat), // 1.1
+    RR: z
+        .string()
+        .transform(toPositiveFloat)
+        .catch(ctx => {
+            onCatch(ctx);
+            return PositiveFloat.of(null);
+        }), // 1.1
     // CRR        : code calcul de RR pour la décade
-    CRR: z.string().transform(toCodeCalcul), // 0
+    CRR: z
+        .string()
+        .transform(toCodeCalcul)
+        .catch(ctx => {
+            onCatch(ctx);
+            return CodeCalcul.of(PositiveInteger.of(null));
+        }), // 0
     // TN         : moyenne décadaire de la température minimale (en °C et 1/10)
-    TN: z.string().transform(toFloatOrNull), // -3.3
+    TN: z
+        .string()
+        .transform(toFloatOrNull)
+        .catch(ctx => {
+            onCatch(ctx);
+            return null;
+        }), // -3.3
     // CTN        : code calcul de TN pour la décade
-    CTN: z.string().transform(toCodeCalcul), // 0
+    CTN: z
+        .string()
+        .transform(toCodeCalcul)
+        .catch(ctx => {
+            onCatch(ctx);
+            return CodeCalcul.of(PositiveInteger.of(null));
+        }), // 0
     // TX         : moyenne décadaire de la température maximale (en °C et 1/10)
-    TX: z.string().transform(toFloatOrNull), // -3.3
+    TX: z
+        .string()
+        .transform(toFloatOrNull)
+        .catch(ctx => {
+            onCatch(ctx);
+            return null;
+        }), // -3.3
     // CTX        : code calcul de TX pour la décade
-    CTX: z.string().transform(toCodeCalcul), // 0
+    CTX: z
+        .string()
+        .transform(toCodeCalcul)
+        .catch(ctx => {
+            onCatch(ctx);
+            return CodeCalcul.of(PositiveInteger.of(null));
+        }), // 0
     // FFM        : moyenne décadaire de la force du vent moyenné sur 10 mn, à 10 m (en m/s et 1/10)
-    FFM: z.string().transform(toPositiveFloat), // 1.1
+    FFM: z
+        .string()
+        .transform(toPositiveFloat)
+        .catch(ctx => {
+            onCatch(ctx);
+            return PositiveFloat.of(null);
+        }), // 1.1
     // CFFM       : code calcul de FFM pour la décade
-    CFFM: z.string().transform(toCodeCalcul), // 0
+    CFFM: z
+        .string()
+        .transform(toCodeCalcul)
+        .catch(ctx => {
+            onCatch(ctx);
+            return CodeCalcul.of(PositiveInteger.of(null));
+        }), // 0
     // TSVM       : moyenne décadaire de la tension de vapeur (en hPa et 1/10)
-    TSVM: z.string().transform(toPositiveFloat), // 1.1
+    TSVM: z
+        .string()
+        .transform(toPositiveFloat)
+        .catch(ctx => {
+            onCatch(ctx);
+            return PositiveFloat.of(null);
+        }), // 1.1
     // CTSVM      : code calcul de TSVM pour la décade
-    CTSVM: z.string().transform(toCodeCalcul), // 0
+    CTSVM: z
+        .string()
+        .transform(toCodeCalcul)
+        .catch(ctx => {
+            onCatch(ctx);
+            return CodeCalcul.of(PositiveInteger.of(null));
+        }), // 0
     // INST       : durée totale d’insolation sur la décade (en mn)
-    INST: z.string().transform(toPositiveInteger), // 4
+    INST: z
+        .string()
+        .transform(toPositiveInteger)
+        .catch(ctx => {
+            onCatch(ctx);
+            return PositiveFloat.of(null);
+        }), // 4
     // CINST      : code calcul de l’insolation pour la décade
-    CINST: z.string().transform(toAngstromCodeCalcul), // 2
+    CINST: z
+        .string()
+        .transform(toAngstromCodeCalcul)
+        .catch(ctx => {
+            onCatch(ctx);
+            return AngstromCodeCalcul.of(PositiveInteger.of(null));
+        }), // 2
     // GLOT       : cumul de rayonnement global (en J/cm2)
-    GLOT: z.string().transform(toPositiveInteger), // 4
+    GLOT: z
+        .string()
+        .transform(toPositiveInteger)
+        .catch(ctx => {
+            onCatch(ctx);
+            return PositiveFloat.of(null);
+        }), // 4
     // CGLOT      : code calcul de rayonnement pour la décade
-    CGLOT: z.string().transform(toAngstromCodeCalcul), // 2
+    CGLOT: z
+        .string()
+        .transform(toAngstromCodeCalcul)
+        .catch(ctx => {
+            onCatch(ctx);
+            return AngstromCodeCalcul.of(PositiveInteger.of(null));
+        }), // 2
     // ETP        : ETP Penman décadaire (en mm et 1/10)
-    ETP: z.string().transform(toPositiveFloat), // 1.1
+    ETP: z
+        .string()
+        .transform(toPositiveFloat)
+        .catch(ctx => {
+            onCatch(ctx);
+            return PositiveFloat.of(null);
+        }), // 1.1
 });
 export type DecadaireAgroLine = z.infer<typeof decadaireAgroLineSchema>;
 

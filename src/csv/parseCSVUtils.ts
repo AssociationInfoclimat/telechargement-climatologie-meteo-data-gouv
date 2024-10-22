@@ -1,7 +1,6 @@
 import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
 import { Decade } from '@/data/value-objects/Decade.js';
 import { HumiditeRelative } from '@/data/value-objects/HumiditeRelative.js';
-import { Integer } from '@/data/value-objects/Integer.js';
 import { Jour } from '@/data/value-objects/Jour.js';
 import { NbJours } from '@/data/value-objects/NbJours.js';
 import { Octa } from '@/data/value-objects/Octa.js';
@@ -13,7 +12,9 @@ import { Time } from '@/data/value-objects/Time.js';
 import { UVIndex } from '@/data/value-objects/UVIndex.js';
 import { WindDirection } from '@/data/value-objects/WindDirection.js';
 import { createTransform } from '@/lib/createTransform.js';
+import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
 import { NumeroPoste } from '@/postes/NumeroPoste.js';
+import { ZodError } from 'zod';
 
 export function parseNumeroPoste(numero: string): NumeroPoste {
     return NumeroPoste.of(numero);
@@ -58,7 +59,7 @@ export function parsePositiveFloat(value: string): PositiveFloat {
 export const toPositiveFloat = createTransform(parsePositiveFloat);
 
 export function parseCodeQualite(value: string): CodeQualite {
-    return CodeQualite.of(Integer.of(parseFloatOrNull(value)));
+    return CodeQualite.of(PositiveInteger.of(parseFloatOrNull(value)));
 }
 
 export const toCodeQualite = createTransform(parseCodeQualite);
@@ -153,4 +154,11 @@ export function tmpFixHeader(value: string): string {
         default:
             return value;
     }
+}
+
+export function onCatch(ctx: { error: ZodError; input: unknown }): void {
+    LoggerSingleton.getSingleton().warn({
+        message: 'Invalid value in incoming data replaced by default value',
+        data: ctx.error,
+    });
 }

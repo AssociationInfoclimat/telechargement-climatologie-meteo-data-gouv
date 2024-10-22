@@ -1,5 +1,6 @@
 import { parseCSV } from '@/csv/parseCSV.js';
 import {
+    onCatch,
     ParseError,
     toCodeQualite,
     toInteger,
@@ -7,6 +8,9 @@ import {
     toNumeroPoste,
     toPositiveFloat,
 } from '@/csv/parseCSVUtils.js';
+import { CodeQualite } from '@/data/value-objects/CodeQualite.js';
+import { PositiveFloat } from '@/data/value-objects/PositiveFloat.js';
+import { PositiveInteger } from '@/data/value-objects/PositiveInteger.js';
 import { createTransform } from '@/lib/createTransform.js';
 import { Result } from '@/lib/resultUtils.js';
 import { z } from 'zod';
@@ -29,8 +33,20 @@ const infrahoraireLineSchema = z.object({
     LON: z.string().transform(parseFloat),
     ALTI: z.string().transform(toInteger),
     AAAAMMJJHHMN: z.string().transform(toDate),
-    RR: z.string().transform(toPositiveFloat),
-    QRR: z.string().transform(toCodeQualite),
+    RR: z
+        .string()
+        .transform(toPositiveFloat)
+        .catch(ctx => {
+            onCatch(ctx);
+            return PositiveFloat.of(null);
+        }),
+    QRR: z
+        .string()
+        .transform(toCodeQualite)
+        .catch(ctx => {
+            onCatch(ctx);
+            return CodeQualite.of(PositiveInteger.of(null));
+        }),
 });
 export type InfrahoraireLine = ReturnType<typeof infrahoraireLineSchema.parse>;
 
