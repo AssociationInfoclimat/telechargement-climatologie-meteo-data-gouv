@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
     provider = "prisma-client-js"
 }
@@ -88,6 +94,74 @@ model CommandeStation {
     idStation      String   @db.Char(8)
     frequence      String   @db.VarChar(15)
     station        Station  @relation(fields: [idStation, frequence], references: [id, frequence], onDelete: Cascade)
+}
+
+model InfrahoraireTempsReel {
+    geo_id_insee   String   @db.Char(8)
+    lat            Float
+    lon            Float
+    reference_time DateTime
+    insert_time    DateTime
+    validity_time  DateTime
+    t              Float?
+    td             Float?
+    u              Int?
+    dd             Int?
+    ff             Float?
+    dxi10          Int?
+    fxi10          Float?
+    rr_per         Float?
+    t_10           Float?
+    t_20           Float?
+    t_50           Float?
+    t_100          Float?
+    vv             Int?
+    etat_sol       Int?
+    sss            Float?
+    n              Int?
+    insolh         Float?
+    ray_glo01      Float?
+    pres           Float?
+    pmer           Float?
+
+    @@id([geo_id_insee, validity_time])
+}
+
+model HoraireTempsReel {
+    geo_id_insee   String   @db.Char(8)
+    lat            Float
+    lon            Float
+    reference_time DateTime
+    insert_time    DateTime
+    validity_time  DateTime
+    t              Float?
+    td             Float?
+    tx             Float?
+    tn             Float?
+    u              Int?
+    ux             Int?
+    un             Int?
+    dd             Int?
+    ff             Float?
+    dxy            Int?
+    fxy            Float?
+    dxi            Int?
+    fxi            Float?
+    rr1            Float?
+    t_10           Float?
+    t_20           Float?
+    t_50           Float?
+    t_100          Float?
+    vv             Int?
+    etat_sol       Int?
+    sss            Float?
+    n              Int?
+    insolh         Float?
+    ray_glo01      Float?
+    pres           Float?
+    pmer           Float?
+
+    @@id([geo_id_insee, validity_time])
 }
 
 model Mensuelle {
