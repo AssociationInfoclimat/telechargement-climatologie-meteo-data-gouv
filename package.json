@@ -34,6 +34,8 @@
         "save-all-csvs-to-db-sequentially:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/save/saveAllCSVsToDB.ts",
         "save-all-csvs-to-db-in-parallel": "bash scripts/save-all-csvs-to-db-in-parallel.sh",
         "save-all-csvs-to-db-in-parallel:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- bash scripts/save-all-csvs-to-db-in-parallel.sh",
+        "unzip-save-delete-all-csvs-sequentially": "tsx src/apps/unzip-save-delete/unzipSaveDeleteAllCSVs.ts",
+        "unzip-save-delete-all-csvs-sequentially:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/unzip-save-delete/unzipSaveDeleteAllCSVs.ts",
         "unzip-save-delete-all-csvs-in-parallel": "bash scripts/unzip-save-delete-all-csvs-in-parallel.sh",
         "unzip-save-delete-all-csvs-in-parallel:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- bash scripts/unzip-save-delete-all-csvs-in-parallel.sh"
     },
