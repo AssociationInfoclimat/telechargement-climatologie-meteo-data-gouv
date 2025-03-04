@@ -25,7 +25,7 @@ DHUMI80     : durée humidité U ≥ 80 % (en mn)
 TSVM        : tension de vapeur moyenne (en hPa et 1/10)
 ETPMON      : ETP Monteith quotidienne (en mm et 1/10)
 ETPGRILLE   : ETP calculée au point de grille le plus proche (en mm et 1/10)
-ECOULEMENTM : moyenne des niveaux d’écoulement horaires
+ECOULEMENTM : moyenne des niveaux d’écoulement horaires (champ inutilisé)
 HNEIGEF	    : hauteur de neige fraîche tombée en 24 heures (de 06h FU le jour J à 06h FU le jour J+1) qui reste au sol à 06h FU. La valeur relevée à J+1 est affectée au jour J (en cm)
 NEIGETOTX   : épaisseur maximale de neige quotidienne (entre 01h et 24h FU) (en cm)
 NEIGETOT06  : épaisseur totale de neige au sol mesurée à 6h (NEIGETOT de 6h) (en cm)
