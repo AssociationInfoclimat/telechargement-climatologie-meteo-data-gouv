@@ -2,7 +2,9 @@ import { ValidationError } from '@/data/value-objects/ValidationError.js';
 
 export class InvalidDepartementError extends ValidationError {
     constructor(numero: number) {
-        super(`Invalid departement: '${numero}'. Must be between 1 and 95, 971 and 975, or 984 and 988.`);
+        super(
+            `Invalid departement: '${numero}'. Must be between 1 and 95, or 99, or between 971 and 975, or between 984 and 988.`
+        );
     }
 }
 
@@ -15,7 +17,14 @@ export class Departement {
 
     static of(numero: number | string): Departement {
         numero = parseInt(numero.toString(), 10);
-        if (!((1 <= numero && numero <= 95) || (971 <= numero && numero <= 975) || (984 <= numero && numero <= 988))) {
+        if (
+            !(
+                (1 <= numero && numero <= 95) ||
+                numero === 99 ||
+                (971 <= numero && numero <= 975) ||
+                (984 <= numero && numero <= 988)
+            )
+        ) {
             throw new InvalidDepartementError(numero);
         }
         return new Departement(numero.toString().padStart(2, '0'));
