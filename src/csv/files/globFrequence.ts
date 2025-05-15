@@ -5,18 +5,18 @@ import { Globber } from '@/lib/fs/glob/Globber.js';
 
 export function globFrequence({
     frequence,
-    departement,
+    departements,
     directory,
     glob,
 }: {
     frequence: Frequence;
-    departement?: Departement;
+    departements?: Departement[];
     directory: string;
     glob: Globber;
 }): Promise<string[]> {
     return globFileFrequence({
         frequence,
-        departement,
+        departements,
         extension: 'csv',
         directory,
         glob,

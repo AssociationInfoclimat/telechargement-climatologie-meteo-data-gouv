@@ -14,7 +14,7 @@ async function main() {
     const prisma = new PrismaClient();
 
     const directory: string = `${process.cwd()}/data`;
-    const departement: Departement | undefined = Departement.of(974);
+    const departements: Departement[] | undefined = [Departement.of(76)];
 
     LoggerSingleton.getSingleton().info({ message: 'Reading mensuelles CSVs :' });
     await saveMensuellesCSVsToDB({
@@ -23,7 +23,7 @@ async function main() {
         lineReader: readLines,
         mensuellesRepository: new PrismaMensuellesRepository({ prisma }),
         saveProgressRepository: new PrismaSaveProgressRepository(prisma),
-        departement,
+        departements,
         overwrite: false,
         queue: new PQueue({ concurrency: 10 }),
     });

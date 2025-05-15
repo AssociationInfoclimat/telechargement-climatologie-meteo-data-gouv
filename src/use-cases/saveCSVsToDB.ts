@@ -23,7 +23,7 @@ export async function saveCSVsToDB<L, D>({
     frequencesRepository,
     saveProgressRepository,
     overwrite,
-    departement,
+    departements,
     queue,
     deleteCSV,
 }: {
@@ -37,7 +37,7 @@ export async function saveCSVsToDB<L, D>({
     frequencesRepository: FrequenceRepository<D>;
     saveProgressRepository: SaveProgressRepository;
     overwrite: boolean;
-    departement?: Departement;
+    departements?: Departement[];
     queue?: PQueue;
     deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
@@ -45,7 +45,7 @@ export async function saveCSVsToDB<L, D>({
         frequence,
         directory,
         glob: globber,
-        departement,
+        departements,
     });
     const alreadySaved = await saveProgressRepository.getAlreadySaved();
     for (const csv of csvs) {

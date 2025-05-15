@@ -25,7 +25,7 @@ export async function saveDecadairesAgroArchivesToDB({
     decadairesAgroRepository,
     saveProgressRepository,
     overwrite,
-    departement,
+    departements,
     queue,
     deleteCSV,
 }: {
@@ -37,7 +37,7 @@ export async function saveDecadairesAgroArchivesToDB({
     decadairesAgroRepository: DecadairesAgroRepository;
     saveProgressRepository: SaveProgressRepository;
     overwrite: boolean;
-    departement?: Departement;
+    departements?: Departement[];
     queue?: PQueue;
     deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
@@ -54,7 +54,7 @@ export async function saveDecadairesAgroArchivesToDB({
         frequencesRepository: decadairesAgroRepository,
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });

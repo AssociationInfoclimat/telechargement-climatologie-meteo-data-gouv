@@ -33,7 +33,7 @@ async function main() {
     const prisma = new PrismaClient();
 
     const directory: string = `${process.cwd()}/data`;
-    const departement: Departement | undefined = Departement.of(974);
+    const departements: Departement[] | undefined = [Departement.of(974)];
 
     const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
 
@@ -50,7 +50,7 @@ async function main() {
         infrahorairesRepository: new PrismaInfrahorairesRepository({ prisma }),
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });
@@ -65,7 +65,7 @@ async function main() {
         horairesRepository: new PrismaHorairesRepository({ prisma }),
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });
@@ -80,7 +80,7 @@ async function main() {
         quotidiennesRepository: new PrismaQuotidiennesRepository({ prisma }),
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });
@@ -95,7 +95,7 @@ async function main() {
         quotidiennesAutresParametresRepository: new PrismaQuotidiennesAutresParametresRepository({ prisma }),
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });
@@ -110,7 +110,7 @@ async function main() {
         mensuellesRepository: new PrismaMensuellesRepository({ prisma }),
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });
@@ -125,7 +125,7 @@ async function main() {
         decadairesRepository: new PrismaDecadairesRepository({ prisma }),
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });
@@ -140,7 +140,7 @@ async function main() {
         decadairesAgroRepository: new PrismaDecadairesAgroRepository({ prisma }),
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });

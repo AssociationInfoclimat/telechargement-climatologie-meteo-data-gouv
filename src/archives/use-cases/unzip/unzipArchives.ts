@@ -12,14 +12,14 @@ export async function unzipArchives({
     fileExistenceChecker,
     unzipper,
     overwrite,
-    departement,
+    departements,
 }: {
     directory: string;
     globber: Globber;
     fileExistenceChecker: FileExistenceChecker;
     unzipper: Unzipper;
     overwrite: boolean;
-    departement?: Departement;
+    departements?: Departement[];
 }): Promise<void> {
     for (const [name, frequence] of Object.entries(FREQUENCES)) {
         LoggerSingleton.getSingleton().info({ message: `Unzipping '${name}' :` });
@@ -30,7 +30,7 @@ export async function unzipArchives({
             unzipper,
             fileExistenceChecker,
             overwrite,
-            departement,
+            departements,
         });
     }
 }

@@ -13,7 +13,7 @@ export async function unzipFrequenceArchives({
     fileExistenceChecker,
     unzipper,
     overwrite,
-    departement,
+    departements,
 }: {
     frequence: Frequence;
     directory: string;
@@ -21,9 +21,9 @@ export async function unzipFrequenceArchives({
     fileExistenceChecker: FileExistenceChecker;
     unzipper: Unzipper;
     overwrite: boolean;
-    departement?: Departement;
+    departements?: Departement[];
 }): Promise<void> {
-    const paths = await globFrequence({ frequence, directory, glob: globber, departement });
+    const paths = await globFrequence({ frequence, directory, glob: globber, departements });
     for (const path of paths) {
         await unzipArchive({
             gzpath: path,

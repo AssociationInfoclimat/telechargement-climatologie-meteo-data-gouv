@@ -25,7 +25,7 @@ export async function saveQuotidiennesAutresParametresArchivesToDB({
     quotidiennesAutresParametresRepository,
     saveProgressRepository,
     overwrite,
-    departement,
+    departements,
     queue,
     deleteCSV,
 }: {
@@ -37,7 +37,7 @@ export async function saveQuotidiennesAutresParametresArchivesToDB({
     quotidiennesAutresParametresRepository: QuotidiennesAutresParametresRepository;
     saveProgressRepository: SaveProgressRepository;
     overwrite: boolean;
-    departement?: Departement;
+    departements?: Departement[];
     queue?: PQueue;
     deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
@@ -54,7 +54,7 @@ export async function saveQuotidiennesAutresParametresArchivesToDB({
         frequencesRepository: quotidiennesAutresParametresRepository,
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });

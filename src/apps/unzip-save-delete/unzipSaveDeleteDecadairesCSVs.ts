@@ -21,7 +21,7 @@ async function main() {
     const prisma = new PrismaClient();
 
     const directory: string = `${process.cwd()}/data`;
-    const departement: Departement | undefined = Departement.of(974);
+    const departements: Departement[] | undefined = [Departement.of(76)];
 
     const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
 
@@ -38,7 +38,7 @@ async function main() {
         decadairesRepository: new PrismaDecadairesRepository({ prisma }),
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });

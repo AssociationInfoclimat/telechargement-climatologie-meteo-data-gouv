@@ -5,13 +5,13 @@ import { join } from 'node:path';
 
 export async function globFrequence({
     frequence,
-    departement,
+    departements,
     extension,
     directory,
     glob,
 }: {
     frequence: Frequence;
-    departement?: Departement;
+    departements?: Departement[];
     extension: 'csv' | 'csv.gz';
     directory: string;
     glob: Globber;
@@ -21,11 +21,22 @@ export async function globFrequence({
         frequence === FREQUENCES.quotidienne || frequence === FREQUENCES.quotidienneAutresParametres ?
             `_${frequence.split('_')[1]}`
         :   '';
-    const normal = await glob(
-        join(directory, `${prefix}_${departement ? `${departement}_` : ''}*${suffix}.${extension}`)
+    const departementList = departements && departements.length > 0 ? departements : [undefined];
+
+    function makePattern(comp: boolean, departement?: Departement) {
+        return join(
+            directory,
+            `${prefix}${comp ? '-COMP' : ''}_${departement ? `${departement}_` : ''}*${suffix}.${extension}`
+        );
+    }
+
+    const allResults = await Promise.all(
+        departementList.map(async departement => {
+            const normal = await glob(makePattern(false, departement));
+            const comp = await glob(makePattern(true, departement));
+            return [...normal, ...comp];
+        })
     );
-    const comp = await glob(
-        join(directory, `${prefix}-COMP_${departement ? `${departement}_` : ''}*${suffix}.${extension}`)
-    );
-    return [...normal, ...comp];
+
+    return allResults.flat();
 }

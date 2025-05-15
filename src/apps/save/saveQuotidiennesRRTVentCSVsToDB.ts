@@ -16,7 +16,7 @@ async function main() {
 
     // const directory: string = resolve(`${process.cwd()}/../../data`);
     const directory: string = `${process.cwd()}/data`;
-    const departement: Departement | undefined = Departement.of(974);
+    const departements: Departement[] | undefined = [Departement.of(76)];
 
     LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (RR T Vent) CSVs :' });
     await saveQuotidiennesCSVsToDB({
@@ -25,7 +25,7 @@ async function main() {
         lineReader: readLines,
         quotidiennesRepository: new PrismaQuotidiennesRepository({ prisma }),
         saveProgressRepository: new PrismaSaveProgressRepository(prisma),
-        departement,
+        departements,
         overwrite: false,
         queue: new PQueue({ concurrency: 10 }),
     });

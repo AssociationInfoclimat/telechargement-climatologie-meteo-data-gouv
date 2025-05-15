@@ -26,7 +26,7 @@ async function main() {
     const prisma = new PrismaClient();
 
     const directory: string = `${process.cwd()}/data`;
-    const departement: Departement | undefined = Departement.of(974);
+    const departements: Departement[] | undefined = [Departement.of(76)];
 
     const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
 
@@ -41,7 +41,7 @@ async function main() {
         lineReader: readLines,
         infrahorairesRepository: new PrismaInfrahorairesRepository({ prisma }),
         saveProgressRepository,
-        departement,
+        departements,
         overwrite,
         queue,
     });
@@ -53,7 +53,7 @@ async function main() {
         lineReader: readLines,
         horairesRepository: new PrismaHorairesRepository({ prisma }),
         saveProgressRepository,
-        departement,
+        departements,
         overwrite,
         queue,
     });
@@ -65,7 +65,7 @@ async function main() {
         lineReader: readLines,
         quotidiennesRepository: new PrismaQuotidiennesRepository({ prisma }),
         saveProgressRepository,
-        departement,
+        departements,
         overwrite,
         queue,
     });
@@ -77,7 +77,7 @@ async function main() {
         lineReader: readLines,
         quotidiennesAutresParametresRepository: new PrismaQuotidiennesAutresParametresRepository({ prisma }),
         saveProgressRepository,
-        departement,
+        departements,
         overwrite,
         queue,
     });
@@ -89,7 +89,7 @@ async function main() {
         lineReader: readLines,
         mensuellesRepository: new PrismaMensuellesRepository({ prisma }),
         saveProgressRepository,
-        departement,
+        departements,
         overwrite,
         queue,
     });
@@ -101,7 +101,7 @@ async function main() {
         lineReader: readLines,
         decadairesRepository: new PrismaDecadairesRepository({ prisma }),
         saveProgressRepository,
-        departement,
+        departements,
         overwrite,
         queue,
     });
@@ -113,7 +113,7 @@ async function main() {
         lineReader: readLines,
         decadairesAgroRepository: new PrismaDecadairesAgroRepository({ prisma }),
         saveProgressRepository,
-        departement,
+        departements,
         overwrite,
         queue,
     });

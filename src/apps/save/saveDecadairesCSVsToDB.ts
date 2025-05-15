@@ -14,7 +14,7 @@ async function main() {
     const prisma = new PrismaClient();
 
     const directory: string = `${process.cwd()}/data`;
-    const departement: Departement | undefined = Departement.of(974);
+    const departements: Departement[] | undefined = [Departement.of(76)];
 
     LoggerSingleton.getSingleton().info({ message: 'Reading decadaires CSVs :' });
     await saveDecadairesCSVsToDB({
@@ -23,7 +23,7 @@ async function main() {
         lineReader: readLines,
         decadairesRepository: new PrismaDecadairesRepository({ prisma }),
         saveProgressRepository: new PrismaSaveProgressRepository(prisma),
-        departement,
+        departements,
         overwrite: false,
         queue: new PQueue({ concurrency: 10 }),
     });

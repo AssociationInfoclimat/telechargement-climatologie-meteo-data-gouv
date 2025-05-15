@@ -21,7 +21,7 @@ export async function saveHorairesArchivesToDB({
     horairesRepository,
     saveProgressRepository,
     overwrite,
-    departement,
+    departements,
     queue,
     deleteCSV,
 }: {
@@ -33,7 +33,7 @@ export async function saveHorairesArchivesToDB({
     horairesRepository: HorairesRepository;
     saveProgressRepository: SaveProgressRepository;
     overwrite: boolean;
-    departement?: Departement;
+    departements?: Departement[];
     queue?: PQueue;
     deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
@@ -50,7 +50,7 @@ export async function saveHorairesArchivesToDB({
         frequencesRepository: horairesRepository,
         saveProgressRepository,
         overwrite,
-        departement,
+        departements,
         queue,
         deleteCSV,
     });
