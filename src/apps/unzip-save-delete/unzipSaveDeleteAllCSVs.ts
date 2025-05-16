@@ -27,13 +27,33 @@ export async function deleteCSV(csv: string): Promise<void> {
     await unlink(csv);
 }
 
+function parseDepartementsArg(arg?: string): Departement[] | undefined {
+    if (!arg) {
+        return undefined;
+    }
+    const departements = arg
+        .split(',')
+        .map(d => d.trim())
+        .filter(d => d.length > 0)
+        .map(d => {
+            try {
+                return Departement.of(d);
+            } catch (e) {
+                LoggerSingleton.getSingleton().error({ data: e });
+                return null;
+            }
+        })
+        .filter((d): d is Departement => d !== null);
+    return departements.length > 0 ? departements : undefined;
+}
+
 async function main() {
     LoggerSingleton.getSingleton().setLogLevel('info');
 
     const prisma = new PrismaClient();
 
     const directory: string = `${process.cwd()}/data`;
-    const departements: Departement[] | undefined = [Departement.of(974)];
+    const departements = parseDepartementsArg(process.argv[2]);
 
     const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
 
