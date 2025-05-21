@@ -23,7 +23,7 @@ describe('downloadFrequenceArchives', () => {
             overwrite: true,
             page: 1,
             pageSize: 2,
-            departement: Departement.of(1),
+            departements: [Departement.of(1)],
         });
         expect(existsSync(`${import.meta.dirname}/downloads/MN_01_2000-2009.csv.gz`)).toBeTruthy();
         expect(existsSync(`${import.meta.dirname}/downloads/MN_01_2010-2019.csv.gz`)).toBeTruthy();

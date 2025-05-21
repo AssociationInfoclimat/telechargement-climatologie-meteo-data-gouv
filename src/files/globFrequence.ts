@@ -6,12 +6,14 @@ import { join } from 'node:path';
 export async function globFrequence({
     frequence,
     departements,
+    latest = false,
     extension,
     directory,
     glob,
 }: {
     frequence: Frequence;
     departements?: Departement[];
+    latest?: boolean;
     extension: 'csv' | 'csv.gz';
     directory: string;
     glob: Globber;
@@ -26,7 +28,7 @@ export async function globFrequence({
     function makePattern(comp: boolean, departement?: Departement) {
         return join(
             directory,
-            `${prefix}${comp ? '-COMP' : ''}_${departement ? `${departement}_` : ''}*${suffix}.${extension}`
+            `${prefix}${comp ? '-COMP' : ''}_${departement ? `${departement}_` : '*'}${latest ? 'latest-' : '*'}*${suffix}.${extension}`
         );
     }
 

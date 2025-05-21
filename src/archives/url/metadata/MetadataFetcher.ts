@@ -8,5 +8,6 @@ export type MetadataFetcher = (
         page?: number;
         pageSize?: number;
         departement?: Departement;
+        latest?: boolean;
     }
 ) => Promise<UrlsData>;

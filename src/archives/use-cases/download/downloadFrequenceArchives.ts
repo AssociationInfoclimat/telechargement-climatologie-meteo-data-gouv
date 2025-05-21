@@ -15,7 +15,8 @@ export async function downloadFrequenceArchives({
     overwrite,
     page = 1,
     pageSize = 999999,
-    departement,
+    departements,
+    latest,
 }: {
     datasetId: DatasetId;
     metadataFetcher: MetadataFetcher;
@@ -25,14 +26,16 @@ export async function downloadFrequenceArchives({
     overwrite: boolean;
     page?: number;
     pageSize?: number;
-    departement?: Departement;
+    departements?: Departement[];
+    latest?: boolean;
 }): Promise<void> {
     const urls = await getURLs({
         datasetId,
         fetchMetadata: metadataFetcher,
         page,
         pageSize,
-        departement,
+        departements,
+        latest,
     });
     for (const url of urls) {
         await downloadArchive({

@@ -14,7 +14,8 @@ export async function downloadArchives({
     overwrite,
     page = 1,
     pageSize = 999999,
-    departement,
+    departements,
+    latest,
 }: {
     metadataFetcher: MetadataFetcher;
     fileExistenceChecker: FileExistenceChecker;
@@ -23,7 +24,8 @@ export async function downloadArchives({
     overwrite: boolean;
     page?: number;
     pageSize?: number;
-    departement?: Departement;
+    departements?: Departement[];
+    latest?: boolean;
 }): Promise<void> {
     for (const [name, datasetId] of Object.entries(DATASETS_IDS)) {
         LoggerSingleton.getSingleton().info({ message: `Downloading '${name}' :` });
@@ -36,7 +38,8 @@ export async function downloadArchives({
             overwrite,
             page,
             pageSize,
-            departement,
+            departements,
+            latest,
         });
     }
 }

@@ -10,15 +10,24 @@ export const fetchMetadata: MetadataFetcher = async function (
         page = 1,
         pageSize = 999999,
         departement,
+        latest = false,
     }: {
         page?: number;
         pageSize?: number;
         departement?: Departement;
+        latest?: boolean;
     } = {}
 ): Promise<UrlsData> {
-    const q = departement ? `&q=departement_${departement.value()}` : '';
+    let q = '';
+    if (latest) {
+        const currentYear = new Date().getFullYear();
+        const previousYear = currentYear - 1;
+        q = `&q=_${previousYear}-${currentYear}`;
+    } else if (departement) {
+        q = `&q=departement_${departement.value()}`;
+    }
     const response = await fetch(
-        `https://www.data.gouv.fr/api/2/datasets/${datasetId}/resources/?page=${page}&page_size=${pageSize}${q}`
+        `https://www.data.gouv.fr/api/2/datasets/${datasetId}/resources/?type=main&page=${page}&page_size=${pageSize}${q}`
     );
     const json = await response.json();
     const schema = z.object({

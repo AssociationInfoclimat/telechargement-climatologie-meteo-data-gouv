@@ -8,14 +8,24 @@ export async function getURLs({
     fetchMetadata,
     page = 1,
     pageSize = 999999,
-    departement,
+    departements,
+    latest = false,
 }: {
     datasetId: DatasetId;
     fetchMetadata: MetadataFetcher;
     page?: number;
     pageSize?: number;
-    departement?: Departement;
+    departements?: Departement[];
+    latest?: boolean;
 }): Promise<string[]> {
-    const data = await fetchMetadata(datasetId, { page, pageSize, departement });
-    return extractUrls(data);
+    if (!departements || departements.length === 0) {
+        const data = await fetchMetadata(datasetId, { page, pageSize, latest });
+        return extractUrls(data);
+    }
+    const urls: string[] = [];
+    for (const departement of departements) {
+        const data = await fetchMetadata(datasetId, { page, pageSize, departement, latest });
+        urls.push(...extractUrls(data));
+    }
+    return urls;
 }
