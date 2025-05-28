@@ -1,0 +1,187 @@
+import { download } from '@/archives/download/download.real.js';
+import { fetchMetadata } from '@/archives/url/metadata/fetchMetadata.meteo-data.js';
+import { downloadArchives } from '@/archives/use-cases/download/downloadArchives.js';
+import { parseDepartementsArg } from '@/cli/parseDepartementsArg.js';
+import { PrismaDecadairesAgroRepository } from '@/db/decadaires-agro/PrismaRepository.js';
+import { PrismaDecadairesRepository } from '@/db/decadaires/PrismaRepository.js';
+import { PrismaHorairesRepository } from '@/db/horaires/PrismaRepository.js';
+import { PrismaInfrahorairesRepository } from '@/db/infrahoraires/PrismaRepository.js';
+import { PrismaMensuellesRepository } from '@/db/mensuelles/PrismaRepository.js';
+import { PrismaQuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/PrismaRepository.js';
+import { PrismaQuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/PrismaRepository.js';
+import { saveLatestDecadairesAgroArchivesToDB } from '@/decadaires-agro/use-cases/saveLatestArchivesToDB.js';
+import { saveLatestDecadairesArchivesToDB } from '@/decadaires/use-cases/saveLatestArchivesToDB.js';
+import { createDayGrepper } from '@/files/grep/createDayGrepper.js';
+import { createMonthGrepper } from '@/files/grep/createMonthGrepper.js';
+import { saveLatestHorairesArchivesToDB } from '@/horaires/use-cases/saveLatestArchivesToDB.js';
+import { saveLatestInfrahorairesArchivesToDB } from '@/infrahoraires/use-cases/saveLatestArchivesToDB.js';
+import { fileExists } from '@/lib/fs/file-exists/fileExists.node.js';
+import { glob } from '@/lib/fs/glob/glob.glob.js';
+import { grep } from '@/lib/fs/grep/grep.exec.js';
+import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
+import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
+import { gunzip } from '@/lib/unzip/gunzip.node.js';
+import { saveLatestMensuellesArchivesToDB } from '@/mensuelles/use-cases/saveLatestArchivesToDB.js';
+import { saveLatestQuotidiennesAutresParametresArchivesToDB } from '@/quotidiennes/autres-parametres/use-cases/saveLatestArchivesToDB.js';
+import { saveLatestQuotidiennesArchivesToDB as saveLatestQuotidiennesRRTVentArchivesToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveLatestArchivesToDB.js';
+import { FileSaveHistoryRepository } from '@/save-history/db/PrismaSaveHistoryRepository.js';
+import { PrismaClient } from '@prisma/client';
+import { unlink } from 'node:fs/promises';
+import PQueue from 'p-queue';
+
+export async function deleteCSV(csv: string): Promise<void> {
+    await unlink(csv);
+}
+
+async function main() {
+    LoggerSingleton.getSingleton().setLogLevel('debug');
+
+    const prisma = new PrismaClient();
+
+    const directory: string = `${process.cwd()}/data`;
+    const departements = parseDepartementsArg(process.argv[2]);
+
+    const saveHistoryRepository = new FileSaveHistoryRepository(`${process.cwd()}/save-history.txt`);
+
+    const queue = new PQueue({ concurrency: 10 }); // new PQueue({ concurrency: Math.round(Number.MAX_SAFE_INTEGER / 20) });
+
+    LoggerSingleton.getSingleton().info({ message: 'Downloading latest archives...' });
+    await downloadArchives({
+        metadataFetcher: fetchMetadata,
+        fileExistenceChecker: fileExists,
+        downloader: download,
+        directory,
+        overwrite: true,
+        departements,
+        latest: true,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading infrahoraires CSVs :' });
+    await saveLatestInfrahorairesArchivesToDB({
+        directory,
+        globber: glob,
+        fileExistenceChecker: fileExists,
+        unzipper: gunzip,
+        dateGrepper: createDayGrepper(grep, -7),
+        lineReader: readLines,
+        // infrahorairesRepository: new DiscardRepository(),
+        infrahorairesRepository: new PrismaInfrahorairesRepository({ prisma }),
+        saveHistoryRepository,
+        currentDate: new Date(),
+        departements,
+        queue,
+        deleteCSV,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading horaires CSVs :' });
+    await saveLatestHorairesArchivesToDB({
+        directory,
+        globber: glob,
+        fileExistenceChecker: fileExists,
+        unzipper: gunzip,
+        dateGrepper: createDayGrepper(grep, -7),
+        lineReader: readLines,
+        // horairesRepository: new DiscardRepository(),
+        horairesRepository: new PrismaHorairesRepository({ prisma }),
+        saveHistoryRepository,
+        currentDate: new Date(),
+        departements,
+        queue,
+        deleteCSV,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (RR T Vent) CSVs :' });
+    await saveLatestQuotidiennesRRTVentArchivesToDB({
+        directory,
+        globber: glob,
+        fileExistenceChecker: fileExists,
+        unzipper: gunzip,
+        dateGrepper: createMonthGrepper(grep, -1),
+        lineReader: readLines,
+        // quotidiennesRepository: new DiscardRepository(),
+        quotidiennesRepository: new PrismaQuotidiennesRepository({ prisma }),
+        saveHistoryRepository,
+        currentDate: new Date(),
+        departements,
+        queue,
+        deleteCSV,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading quotidiennes (autres paramètres) CSVs :' });
+    await saveLatestQuotidiennesAutresParametresArchivesToDB({
+        directory,
+        globber: glob,
+        fileExistenceChecker: fileExists,
+        unzipper: gunzip,
+        dateGrepper: createMonthGrepper(grep, -1),
+        lineReader: readLines,
+        // quotidiennesAutresParametresRepository: new DiscardRepository(),
+        quotidiennesAutresParametresRepository: new PrismaQuotidiennesAutresParametresRepository({ prisma }),
+        saveHistoryRepository,
+        currentDate: new Date(),
+        departements,
+        queue,
+        deleteCSV,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading mensuelles CSVs :' });
+    await saveLatestMensuellesArchivesToDB({
+        directory,
+        globber: glob,
+        fileExistenceChecker: fileExists,
+        unzipper: gunzip,
+        dateGrepper: createMonthGrepper(grep, -1),
+        lineReader: readLines,
+        // mensuellesRepository: new DiscardRepository(),
+        mensuellesRepository: new PrismaMensuellesRepository({ prisma }),
+        saveHistoryRepository,
+        currentDate: new Date(),
+        departements,
+        queue,
+        deleteCSV,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading decadaires CSVs :' });
+    await saveLatestDecadairesArchivesToDB({
+        directory,
+        globber: glob,
+        fileExistenceChecker: fileExists,
+        unzipper: gunzip,
+        dateGrepper: createMonthGrepper(grep, -1),
+        lineReader: readLines,
+        // decadairesRepository: new DiscardRepository(),
+        decadairesRepository: new PrismaDecadairesRepository({ prisma }),
+        saveHistoryRepository,
+        currentDate: new Date(),
+        departements,
+        queue,
+        deleteCSV,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading decadaires agro CSVs :' });
+    await saveLatestDecadairesAgroArchivesToDB({
+        directory,
+        globber: glob,
+        fileExistenceChecker: fileExists,
+        unzipper: gunzip,
+        dateGrepper: createMonthGrepper(grep, -1),
+        lineReader: readLines,
+        // decadairesAgroRepository: new DiscardRepository(),
+        decadairesAgroRepository: new PrismaDecadairesAgroRepository({ prisma }),
+        saveHistoryRepository,
+        currentDate: new Date(),
+        departements,
+        queue,
+        deleteCSV,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Done' });
+}
+
+try {
+    console.time();
+    await main();
+    console.timeEnd();
+} catch (e) {
+    LoggerSingleton.getSingleton().error({ data: e });
+}

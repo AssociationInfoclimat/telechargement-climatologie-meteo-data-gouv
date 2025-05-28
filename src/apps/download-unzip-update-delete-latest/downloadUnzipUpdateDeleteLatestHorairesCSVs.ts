@@ -1,0 +1,58 @@
+import { parseDepartementsArg } from '@/cli/parseDepartementsArg.js';
+import { PrismaHorairesRepository } from '@/db/horaires/PrismaRepository.js';
+import { createDayGrepper } from '@/files/grep/createDayGrepper.js';
+import { saveLatestHorairesArchivesToDB } from '@/horaires/use-cases/saveLatestArchivesToDB.js';
+import { fileExists } from '@/lib/fs/file-exists/fileExists.node.js';
+import { glob } from '@/lib/fs/glob/glob.glob.js';
+import { grep } from '@/lib/fs/grep/grep.exec.js';
+import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
+import { LoggerSingleton } from '@/lib/logger/LoggerSingleton.js';
+import { gunzip } from '@/lib/unzip/gunzip.node.js';
+import { FileSaveHistoryRepository } from '@/save-history/db/PrismaSaveHistoryRepository.js';
+import { PrismaClient } from '@prisma/client';
+import { unlink } from 'node:fs/promises';
+import PQueue from 'p-queue';
+
+export async function deleteCSV(csv: string): Promise<void> {
+    await unlink(csv);
+}
+
+async function main() {
+    LoggerSingleton.getSingleton().setLogLevel('info');
+
+    const prisma = new PrismaClient();
+
+    const directory: string = `${process.cwd()}/data`;
+    const departements = parseDepartementsArg(process.argv[2]);
+
+    const saveHistoryRepository = new FileSaveHistoryRepository(`${process.cwd()}/save-history.txt`);
+
+    const queue = new PQueue({ concurrency: 10 }); // new PQueue({ concurrency: Math.round(Number.MAX_SAFE_INTEGER / 20) });
+
+    LoggerSingleton.getSingleton().info({ message: 'Reading horaires CSVs :' });
+    await saveLatestHorairesArchivesToDB({
+        directory,
+        globber: glob,
+        fileExistenceChecker: fileExists,
+        unzipper: gunzip,
+        dateGrepper: createDayGrepper(grep, -7),
+        lineReader: readLines,
+        // horairesRepository: new DiscardRepository(),
+        horairesRepository: new PrismaHorairesRepository({ prisma }),
+        saveHistoryRepository,
+        currentDate: new Date(),
+        departements,
+        queue,
+        deleteCSV,
+    });
+
+    LoggerSingleton.getSingleton().info({ message: 'Done' });
+}
+
+try {
+    console.time();
+    await main();
+    console.timeEnd();
+} catch (e) {
+    LoggerSingleton.getSingleton().error({ data: e });
+}
