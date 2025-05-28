@@ -38,7 +38,19 @@
         "unzip-save-delete-all-csvs-sequentially": "tsx src/apps/unzip-save-delete/unzipSaveDeleteAllCSVs.ts",
         "unzip-save-delete-all-csvs-sequentially:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/unzip-save-delete/unzipSaveDeleteAllCSVs.ts",
         "unzip-save-delete-all-csvs-in-parallel": "bash scripts/unzip-save-delete-all-csvs-in-parallel.sh",
-        "unzip-save-delete-all-csvs-in-parallel:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- bash scripts/unzip-save-delete-all-csvs-in-parallel.sh"
+        "unzip-save-delete-all-csvs-in-parallel:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- bash scripts/unzip-save-delete-all-csvs-in-parallel.sh",
+        "download-unzip-update-delete-latest-infrahoraires-csvs": "tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestInfrahorairesCSVs.ts",
+        "download-unzip-update-delete-latest-infrahoraires-csvs:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestInfrahorairesCSVs.ts",
+        "download-unzip-update-delete-latest-horaires-csvs": "tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestHorairesCSVs.ts",
+        "download-unzip-update-delete-latest-horaires-csvs:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestHorairesCSVs.ts",
+        "download-unzip-update-delete-latest-quotidiennes-csvs": "tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestQuotidiennesCSVs.ts",
+        "download-unzip-update-delete-latest-quotidiennes-csvs:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestQuotidiennesCSVs.ts",
+        "download-unzip-update-delete-latest-mensuelles-csvs": "tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestMensuellesCSVs.ts",
+        "download-unzip-update-delete-latest-mensuelles-csvs:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestMensuellesCSVs.ts",
+        "download-unzip-update-delete-latest-decadaires-csvs": "tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestDecadairesCSVs.ts",
+        "download-unzip-update-delete-latest-decadaires-csvs:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestDecadairesCSVs.ts",
+        "download-unzip-update-delete-latest-decadaires-agro-csvs": "tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestDecadairesAgroCSVs.ts",
+        "download-unzip-update-delete-latest-decadaires-agro-csvs:preprod": "pnpm run deploy:preprod && dotenv -e .env.preprod -- tsx src/apps/download-unzip-update-delete-latest/downloadUnzipUpdateDeleteLatestDecadairesAgroCSVs.ts"
     },
     "lint-staged": {
         "*.html": "prettier --write --ignore-unknown",
