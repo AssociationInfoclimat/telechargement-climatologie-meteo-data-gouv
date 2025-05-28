@@ -8,7 +8,7 @@ import { grep } from '@/lib/fs/grep/grep.exec.js';
 import { readLines } from '@/lib/fs/read-lines/readLines.node.js';
 import { getArrayFromAsyncGenerator } from '@/lib/generator/generatorUtils.js';
 import { gunzip } from '@/lib/unzip/gunzip.node.js';
-import { FileSaveHistoryRepository } from '@/save-history/db/PrismaSaveHistoryRepository.js';
+import { FileSaveHistoryRepository } from '@/save-history/db/FileSaveHistoryRepository.js';
 import { PrismaClient } from '@prisma/client';
 import { rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -24,7 +24,9 @@ describe('saveLatestArchivesToDB', () => {
         const infrahorairesRepository = new PrismaInfrahorairesRepository({ prisma });
         const currentDate = new Date('2025-05-28T15:30:45Z');
         await writeFile(`${import.meta.dirname}/save-history.txt`, '2025-05-26T15:30:45Z');
-        const saveHistoryRepository = new FileSaveHistoryRepository(`${import.meta.dirname}/save-history.txt`);
+        const saveHistoryRepository = await FileSaveHistoryRepository.getInstance(
+            `${import.meta.dirname}/save-history.txt`
+        );
         await saveLatestInfrahorairesArchivesToDB({
             directory: resolve(`${import.meta.dirname}/data-samples`),
             globber: glob,

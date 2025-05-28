@@ -24,7 +24,7 @@ import { gunzip } from '@/lib/unzip/gunzip.node.js';
 import { saveLatestMensuellesArchivesToDB } from '@/mensuelles/use-cases/saveLatestArchivesToDB.js';
 import { saveLatestQuotidiennesAutresParametresArchivesToDB } from '@/quotidiennes/autres-parametres/use-cases/saveLatestArchivesToDB.js';
 import { saveLatestQuotidiennesArchivesToDB as saveLatestQuotidiennesRRTVentArchivesToDB } from '@/quotidiennes/rr-t-vent/use-cases/saveLatestArchivesToDB.js';
-import { FileSaveHistoryRepository } from '@/save-history/db/PrismaSaveHistoryRepository.js';
+import { FileSaveHistoryRepository } from '@/save-history/db/FileSaveHistoryRepository.js';
 import { PrismaClient } from '@prisma/client';
 import { unlink } from 'node:fs/promises';
 import PQueue from 'p-queue';
@@ -41,7 +41,7 @@ async function main() {
     const directory: string = `${process.cwd()}/data`;
     const departements = parseDepartementsArg(process.argv[2]);
 
-    const saveHistoryRepository = new FileSaveHistoryRepository(`${process.cwd()}/save-history.txt`);
+    const saveHistoryRepository = await FileSaveHistoryRepository.getInstance(`${process.cwd()}/save-history.txt`);
 
     const queue = new PQueue({ concurrency: 10 }); // new PQueue({ concurrency: Math.round(Number.MAX_SAFE_INTEGER / 20) });
 

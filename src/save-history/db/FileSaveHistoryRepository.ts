@@ -8,6 +8,12 @@ export class FileSaveHistoryRepository implements SaveHistoryRepository {
         this.path = path;
     }
 
+    static async getInstance(path: string): Promise<FileSaveHistoryRepository> {
+        const instance = new FileSaveHistoryRepository(path);
+        await instance.initializeFile();
+        return instance;
+    }
+
     updateLastSuccessfulIngestionDate(): Promise<void> {
         return writeFile(this.path, new Date().toISOString(), 'utf-8');
     }
@@ -19,5 +25,16 @@ export class FileSaveHistoryRepository implements SaveHistoryRepository {
         }
         const parsed = new Date(content.trim());
         return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    private async initializeFile(): Promise<void> {
+        try {
+            await readFile(this.path, 'utf-8');
+        } catch (error) {
+            if (!(error instanceof Error) || !('code' in error) || error['code'] !== 'ENOENT') {
+                throw error;
+            }
+            await writeFile(this.path, '', 'utf-8');
+        }
     }
 }
