@@ -12,7 +12,7 @@ describe('execute', () => {
     });
     describe('error', () => {
         it('should fail and return the error', async () => {
-            expect(() => execute('pwdd')).rejects.toThrow(Error);
+            await expect(() => execute('pwdd')).rejects.toThrow(Error);
         });
     });
 });
