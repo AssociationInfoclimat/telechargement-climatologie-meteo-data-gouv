@@ -1,4 +1,4 @@
-import { Departement } from '@/archives/departements/Departement.js';
+import { parseDepartementsArg } from '@/cli/parseDepartementsArg.js';
 import { PrismaQuotidiennesAutresParametresRepository } from '@/db/quotidiennes/autres-parametres/PrismaRepository.js';
 import { PrismaQuotidiennesRepository } from '@/db/quotidiennes/rr-t-vent/PrismaRepository.js';
 import { fileExists } from '@/lib/fs/file-exists/fileExists.node.js';
@@ -23,7 +23,7 @@ async function main() {
     const prisma = new PrismaClient();
 
     const directory: string = `${process.cwd()}/data`;
-    const departements: Departement[] | undefined = [Departement.of(76)];
+    const departements = parseDepartementsArg(process.argv[2]);
 
     const saveProgressRepository = new PrismaSaveProgressRepository(prisma);
 

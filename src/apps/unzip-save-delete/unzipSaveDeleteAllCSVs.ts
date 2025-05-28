@@ -1,4 +1,4 @@
-import { Departement } from '@/archives/departements/Departement.js';
+import { parseDepartementsArg } from '@/cli/parseDepartementsArg.js';
 import { PrismaDecadairesAgroRepository } from '@/db/decadaires-agro/PrismaRepository.js';
 import { PrismaDecadairesRepository } from '@/db/decadaires/PrismaRepository.js';
 import { PrismaHorairesRepository } from '@/db/horaires/PrismaRepository.js';
@@ -25,26 +25,6 @@ import PQueue from 'p-queue';
 
 export async function deleteCSV(csv: string): Promise<void> {
     await unlink(csv);
-}
-
-function parseDepartementsArg(arg?: string): Departement[] | undefined {
-    if (!arg) {
-        return undefined;
-    }
-    const departements = arg
-        .split(',')
-        .map(d => d.trim())
-        .filter(d => d.length > 0)
-        .map(d => {
-            try {
-                return Departement.of(d);
-            } catch (e) {
-                LoggerSingleton.getSingleton().error({ data: e });
-                return null;
-            }
-        })
-        .filter((d): d is Departement => d !== null);
-    return departements.length > 0 ? departements : undefined;
 }
 
 async function main() {
