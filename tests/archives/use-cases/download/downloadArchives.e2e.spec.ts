@@ -38,4 +38,29 @@ describe('downloadArchives', () => {
         expect(existsSync(`${import.meta.dirname}/downloads/DECADAGRO_29_1855-1949.csv.gz`)).toBeTruthy();
         expect(existsSync(`${import.meta.dirname}/downloads/DECADAGRO-COMP_29_latest-2024-2025.csv.gz`)).toBeTruthy();
     });
+
+    it('should download the latest archives', async () => {
+        await downloadArchives({
+            metadataFetcher: fetchMetadata,
+            fileExistenceChecker: fileExists,
+            downloader: download,
+            directory: `${import.meta.dirname}/downloads`,
+            overwrite: true,
+            page: 1,
+            pageSize: 1,
+            latest: true,
+        });
+        expect(existsSync(`${import.meta.dirname}/downloads/MN_01_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/MN-COMP_74_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/H_01_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/H-COMP_37_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/Q_01_latest-2024-2025_RR-T-Vent.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/Q-COMP_37_latest-2024-2025_RR-T-Vent.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/MENSQ_01_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/MENSQ-COMP_37_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/DECADQ_01_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/DECADQ-COMP_37_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/DECADAGRO_01_latest-2024-2025.csv.gz`)).toBeTruthy();
+        expect(existsSync(`${import.meta.dirname}/downloads/DECADAGRO-COMP_37_latest-2024-2025.csv.gz`)).toBeTruthy();
+    });
 });
