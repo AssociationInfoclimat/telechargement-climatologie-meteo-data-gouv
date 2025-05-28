@@ -25,7 +25,7 @@ export async function saveCSVToDB<L, D>({
     parseCSV: CSVParser<L>;
     toDTO: DTOAdapter<L, D>;
     frequencesRepository: FrequenceRepository<D>;
-    saveProgressRepository: SaveProgressRepository;
+    saveProgressRepository?: SaveProgressRepository;
     queue?: PQueue;
     deleteCSV?: (csv: string) => Promise<void>;
 }): Promise<void> {
@@ -57,7 +57,9 @@ ${result.error.message}`,
     buffer.flush();
 
     await queue.onIdle();
-    await saveProgressRepository.markAsSaved(getCSVName(csv));
+    if (saveProgressRepository) {
+        await saveProgressRepository.markAsSaved(getCSVName(csv));
+    }
     if (deleteCSV) {
         LoggerSingleton.getSingleton().info({ message: `Deleting file : '${csv}'` });
         await deleteCSV(csv);
