@@ -28,6 +28,7 @@
         "start-docker": "docker compose --file db/compose.yaml up -d",
         "update-all-archives": "tsx src/apps/download/updateAllArchives.ts",
         "download-missing-archives": "tsx src/apps/download/downloadMissingArchives.ts",
+        "update-latest-archives": "tsx src/apps/download/updateLatestArchives.ts",
         "unzip-all-archives": "tsx src/apps/unzip/unzipAllArchives.ts",
         "unzip-remaining-archives": "tsx src/apps/unzip/unzipRemainingArchives.ts",
         "save-all-csvs-to-db-sequentially": "tsx src/apps/save/saveAllCSVsToDB.ts",
