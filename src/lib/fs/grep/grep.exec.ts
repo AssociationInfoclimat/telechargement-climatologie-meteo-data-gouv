@@ -6,6 +6,6 @@ const execPromise = promisify(exec);
 
 export const grep: Grepper = async (patterns: string[], sourceFile: string, targetFile: string): Promise<void> => {
     const patternArgs = patterns.map(pattern => `-e '${pattern}'`).join(' ');
-    const command = `(head -n 1 '${sourceFile}' && grep ${patternArgs} '${sourceFile}') > '${targetFile}'`;
+    const command = `(head -n 1 '${sourceFile}' && grep ${patternArgs} '${sourceFile}' || true) > '${targetFile}'`;
     await execPromise(command);
 };
