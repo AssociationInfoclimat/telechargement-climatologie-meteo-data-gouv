@@ -41,7 +41,7 @@ async function main() {
     const directory: string = `${process.cwd()}/data`;
     const departements = parseDepartementsArg(process.argv[2]);
 
-    const saveHistoryRepository = await FileSaveHistoryRepository.getInstance(`${process.cwd()}/save-history.txt`);
+    const saveHistoryRepository = await FileSaveHistoryRepository.getInstance(`${process.cwd()}/save-history.all.txt`);
 
     const queue = new PQueue({ concurrency: 10 }); // new PQueue({ concurrency: Math.round(Number.MAX_SAFE_INTEGER / 20) });
 
