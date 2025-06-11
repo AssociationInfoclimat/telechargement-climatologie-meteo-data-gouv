@@ -21,7 +21,6 @@
         "test:ci": "pnpm run deploy:dev && vitest run --no-file-parallelism",
         "coverage": "pnpm run deploy:dev && vitest run --coverage",
         "migrate:dev": "prisma migrate dev",
-        "migrate:preprod": "dotenv -e .env.preprod -- prisma migrate dev",
         "prisma-pull:preprod": "dotenv -e .env.preprod -- prisma db pull",
         "deploy:dev": "prisma migrate deploy",
         "deploy:preprod": "dotenv -e .env.preprod -- prisma migrate deploy",
