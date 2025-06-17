@@ -62,7 +62,7 @@
         ]
     },
     "dependencies": {
-        "@prisma/client": "6.8.2",
+        "@prisma/client": "^6.9.0",
         "axios": "^1.9.0",
         "decompress-targz": "^4.1.1",
         "decompress-unzip": "^4.0.1",
@@ -87,7 +87,7 @@
         "husky": "^9.1.7",
         "lint-staged": "^16.1.0",
         "prettier": "^3.5.3",
-        "prisma": "^6.8.2",
+        "prisma": "^6.9.0",
         "testcontainers": "^11.0.0",
         "tsx": "^4.19.4",
         "typescript-eslint": "^8.33.1",
